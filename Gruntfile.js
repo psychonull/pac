@@ -13,7 +13,8 @@ module.exports = function (grunt) {
     paths: {
       src: "src/",
       dist: "dist/",
-      test: "test/"
+      test: "test/",
+      specs: "test/specs"
     },
 
     clean: {
@@ -43,6 +44,15 @@ module.exports = function (grunt) {
         },
         src: ['<%= paths.src %>index.js'],
         dest: '<%= paths.dist %><%= pkg.name %>.js'
+      },
+      tests: {
+        src: [ 'test/suite.js' ],
+        dest: 'test/browserified_tests.js',
+        options: {
+          external: [ './<%= pkg.name %>.js' ],
+          // Embed source map for tests
+          debug: true
+        }
       }
     },
 
@@ -77,29 +87,10 @@ module.exports = function (grunt) {
     jshint: {
       all: {
         files: {
-          src: ["<%= paths.src %>**/*.js"]
+          src: ["<%= paths.src %>**/*.js", "<%= paths.specs %>**/*.js"]
         },
         options: {
-            bitwise: true
-          , curly: true
-          , eqeqeq: true
-          , forin: true
-          , immed: true
-          , latedef: true
-          , newcap: true
-          , noempty: true
-          , nonew: true
-          , quotmark: false
-          , undef: true
-          , unused: true
-          , laxcomma: true
-
-          , globals: {
-              window: true
-            , require: true
-            , module: true
-            , pac: true
-          }
+          jshintrc: '.jshintrc'
         }
       }
     },
@@ -113,7 +104,7 @@ module.exports = function (grunt) {
 
   });
 
-  
+
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-browserify");
   grunt.loadNpmTasks("grunt-contrib-watch");

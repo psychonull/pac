@@ -1,14 +1,26 @@
+var pac = require('../../src/pac');
+
+var chai = require('chai');
+var expect = chai.expect;
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 
 describe('PAC', function(){
-  
-  it("should be exposed in window.pac", function(){
-    expect(window.pac).to.be.an("object");
-  });
 
-  describe("Game", function(){
+  describe('Game', function(){
 
-    it("should exists Base Class", function(){
-      expect(window.pac.Base).to.be.a("function");
+    it('should exists Base Class', function(){
+      expect(pac.Base).to.be.a('function');
+    });
+
+    it('example of sinon stub', function(done){
+      var stub = sinon.stub();
+      pac.runAfter(stub, 20);
+      window.setTimeout(function(){
+        expect(stub).to.have.been.called;
+        done();
+      }, 30);
     });
 
   });
