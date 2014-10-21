@@ -79,11 +79,16 @@ describe('PAC.Emitter', function(){
   });
 
   it('should fire events in the current instance only', function(){
+    var testParent = new TestBaseEmitter();
+    var eventsThrown = 0;
+
+    testParent.on('an:event', function(data){
+      eventsThrown++;
+    });
+
     var test = new TestBaseEmitterB();
     expect(test.initA).to.be.equal(false);
     expect(test.initB).to.be.equal(true);
-
-    var eventsThrown = 0;
 
     test.on('an:event', function(data){
       expect(data).to.be.equal(1);
