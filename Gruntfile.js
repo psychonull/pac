@@ -14,7 +14,7 @@ module.exports = function (grunt) {
       src: "src/",
       dist: "dist/",
       test: "test/",
-      specs: "test/specs"
+      specs: "test/specs/"
     },
 
     clean: {
@@ -27,18 +27,10 @@ module.exports = function (grunt) {
     },
 
     watch: {
-      all: {
-        files: [
-          "<%= paths.src %>**/*",
-          "<%= paths.test %>/**/*",
-          "!<%= paths.test %>/lib/**/*"
-        ],
-        tasks: ['watcher']
-      },
       browserified: {
         files: [
           '<%= paths.dist %><%= pkg.name %>.js',
-          'test/browserified_tests.js'
+          '<%= paths.test %>browserified_tests.js'
         ],
         tasks: ['jshint', 'mocha_phantomjs']
       }
@@ -53,8 +45,8 @@ module.exports = function (grunt) {
         dest: '<%= paths.dist %><%= pkg.name %>.js'
       },
       tests: {
-        src: [ 'test/suite.js' ],
-        dest: 'test/browserified_tests.js',
+        src: [ '<%= paths.test %>suite.js' ],
+        dest: '<%= paths.test %>browserified_tests.js',
         options: {
           external: [ './<%= pkg.name %>.js' ],
           // Embed source map for tests
@@ -63,7 +55,7 @@ module.exports = function (grunt) {
       },
       watchify: {
         files: {
-          'test/browserified_tests.js': ['test/suite.js'],
+          '<%= paths.test %>browserified_tests.js': ['<%= paths.test %>suite.js'],
           '<%= paths.dist %><%= pkg.name %>.js': ['<%= paths.src %>index.js']
         },
         options: {
@@ -143,13 +135,7 @@ module.exports = function (grunt) {
     "mocha_phantomjs"
   ]);
 
-  grunt.registerTask("watcher", [
-    "build",
-    "test"
-  ]);
-
   grunt.registerTask("default", "test");
-  //grunt.registerTask("w", ["watcher", "watch"]);
   grunt.registerTask("w", ["test", "browserify:watchify", "watch:browserified"]);
   grunt.registerTask("dist", ["test", "uglify"]);
 
