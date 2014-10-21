@@ -34,6 +34,13 @@ module.exports = function (grunt) {
           "!<%= paths.test %>/lib/**/*"
         ],
         tasks: ['watcher']
+      },
+      browserified: {
+        files: [
+          '<%= paths.dist %><%= pkg.name %>.js',
+          'test/browserified_tests.js'
+        ],
+        tasks: ['jshint', 'mocha_phantomjs']
       }
     },
 
@@ -52,6 +59,16 @@ module.exports = function (grunt) {
           external: [ './<%= pkg.name %>.js' ],
           // Embed source map for tests
           debug: true
+        }
+      },
+      watchify: {
+        files: {
+          'test/browserified_tests.js': ['test/suite.js'],
+          '<%= paths.dist %><%= pkg.name %>.js': ['<%= paths.src %>index.js']
+        },
+        options: {
+          debug: true,
+          watch: true
         }
       }
     },
@@ -116,12 +133,13 @@ module.exports = function (grunt) {
   grunt.registerTask("build", [
     "clean:before",
     "jshint",
-    "browserify",
+    "browserify:all",
     "concat"
   ]);
 
   grunt.registerTask("test", [
     "build",
+    "browserify:tests",
     "mocha_phantomjs"
   ]);
 
@@ -131,7 +149,8 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask("default", "test");
-  grunt.registerTask("w", ["watcher", "watch"]);
+  //grunt.registerTask("w", ["watcher", "watch"]);
+  grunt.registerTask("w", ["test", "browserify:watchify", "watch:browserified"]);
   grunt.registerTask("dist", ["test", "uglify"]);
 
 };
