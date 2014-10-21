@@ -22,7 +22,8 @@
     "chai": "~1.9.2",
     "sinon-chai": "~2.6.0",
     "sinon": "~1.10.3",
-    "class-extend": "~0.1.1"
+    "class-extend": "~0.1.1",
+    "events": "~1.0.2"
   },
   "scripts": {
     "test": "grunt test"

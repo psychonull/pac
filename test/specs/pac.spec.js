@@ -10,10 +10,6 @@ describe('PAC', function(){
 
   describe('Game', function(){
 
-    it('should exists Base Class', function(){
-      expect(pac.Base).to.be.a('function');
-    });
-
     it('example of sinon stub', function(done){
       var stub = sinon.stub();
       pac.runAfter(stub, 20);

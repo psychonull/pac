@@ -1,6 +1,7 @@
 
 module.exports = {
-  Base: require('class-extend'),
+  Base: require('./Base'),
+  Emitter: require('./Emitter'),
   runAfter: function(fn, time){
     window.setTimeout(fn, time);
   }
