@@ -4,9 +4,12 @@ var EventEmitter = require('events').EventEmitter;
 
 var Emitter = module.exports = Base.extend({
 
-  start: function(){
+  constructor: function(){
     EventEmitter.call(this);
-  }
+    this.start();
+  },
+
+  start: function(){ }
 
 });
 
