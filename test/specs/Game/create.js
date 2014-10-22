@@ -6,7 +6,7 @@ var expect = chai.expect;
 
 describe('#create', function(){
 
-  it('must exist a create method', function() {
+  it('must exist', function() {
     expect(pac.create).to.be.a('function');
   });
 
