@@ -1,11 +1,13 @@
 
 var pac = require('../../../src/pac');
+var EngineComponent = require('../../../src/EngineComponent');
 
 var chai = require('chai');
 var expect = chai.expect;
 
-var DummyRenderer = pac.Base.extend({});
-var DummyLoader = pac.Base.extend({});
+var DummyInvalid = pac.Base.extend({});
+var DummyRenderer = pac.Renderer.extend({});
+var DummyLoader = EngineComponent.extend({});
 
 describe('#use', function(){
 
@@ -19,24 +21,38 @@ describe('#use', function(){
 
     expect(function(){
       newGame.use('dummy', pac.Base);
-    }).to.throw('Component type "dummy" not valid');
+    }).to.throw('The type "dummy" is not allowed.');
 
   });
 
-  it('must attach a renderer', function() {
+  it('must throw an error if a Component is not sent', function() {
     var newGame = pac.create();
-    expect(newGame.renderer).to.be.equal(null);
 
-    newGame.use('renderer', DummyRenderer);
-    expect(newGame.renderer).to.be.instanceof(DummyRenderer);
+    expect(function(){
+      newGame.use('renderer');
+    }).to.throw('Expected a "renderer" Component.');
+
   });
 
-  it('must attach a loader', function() {
-    var newGame = pac.create();
-    expect(newGame.loader).to.be.equal(null);
+  describe('Renderer', function(){
 
-    newGame.use('loader', DummyLoader);
-    expect(newGame.loader).to.be.instanceof(DummyLoader);
+    it('must attach a renderer', function() {
+      var newGame = pac.create();
+      expect(newGame.renderer).to.be.equal(null);
+
+      newGame.use('renderer', DummyRenderer);
+      expect(newGame.renderer).to.be.instanceof(DummyRenderer);
+    });
+
+    it('must throw an error if its not typeof Renderer', function() {
+      var newGame = pac.create();
+
+      expect(function(){
+        newGame.use('renderer', DummyInvalid);
+      }).to.throw('Type of "renderer" must inherit from pac.Renderer');
+
+    });
+
   });
 
 });
