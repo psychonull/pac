@@ -2,9 +2,9 @@ var pac = require('../../src/pac');
 
 var TestBase = pac.Base.extend({
 
-  init: false,
-  start: function(){
-    this.init = true;
+  _init: false,
+  init: function(){
+    this._init = true;
   },
 
 });
@@ -12,7 +12,7 @@ var TestBase = pac.Base.extend({
 var TestBaseEmitter = pac.Emitter.extend({
 
   initA: false,
-  start: function(){
+  init: function(){
     this.initA = true;
   },
 
@@ -25,7 +25,7 @@ var TestBaseEmitter = pac.Emitter.extend({
 var TestBaseEmitterB = TestBaseEmitter.extend({
 
   initB: false,
-  start: function(){
+  init: function(){
     this.initB = true;
   },
 
@@ -47,16 +47,16 @@ describe('Base', function(){
     expect(pac.Base).to.be.a('function');
   });
 
-  it('should call start constructor', function(){
+  it('should call init constructor', function(){
     var test = new TestBase();
-    expect(test.init).to.be.equal(true);
+    expect(test._init).to.be.equal(true);
   });
 
 });
 
 describe('Emitter', function(){
 
-  it('should call start constructor', function(){
+  it('should call init constructor', function(){
     var test = new TestBaseEmitter();
     expect(test.initA).to.be.equal(true);
   });

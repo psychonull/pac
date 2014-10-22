@@ -16,7 +16,7 @@ var Game = module.exports = Emitter.extend({
   // Engine Components
   renderer: null,
 
-  start: function(){
+  init: function(){
     this.scenes = new Scenes();
   },
 

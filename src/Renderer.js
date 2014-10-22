@@ -6,9 +6,8 @@ module.exports = EngineComponent.extend({
   size: null,
   backgroundColor: 0xFFFFFF,
 
-  start: function(){
-    
+  init: function(){
+
   }
 
 });
-

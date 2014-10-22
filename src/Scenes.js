@@ -7,9 +7,9 @@ module.exports = Emitter.extend({
   _current: null,
   _scenes: null,
 
-  start: function(){
+  init: function(){
     this._scenes = [];
-    
+
   },
 
   add: function(){

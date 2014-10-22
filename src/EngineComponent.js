@@ -3,6 +3,6 @@ var Base = require('./Base');
 
 module.exports = Base.extend({
 
-  start: function(){ }
+  init: function(){ }
 
 });
