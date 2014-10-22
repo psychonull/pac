@@ -4,7 +4,9 @@ var Base = require('class-extend');
 module.exports = Base.extend({
 
   constructor: function(){
-    this.start();
+    if (this.start){
+      this.start.apply(this, arguments);
+    }
   },
 
   start: function(){ }

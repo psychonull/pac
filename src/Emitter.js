@@ -6,7 +6,10 @@ var Emitter = module.exports = Base.extend({
 
   constructor: function(){
     EventEmitter.call(this);
-    this.start();
+    
+    if (this.start){
+      this.start.apply(this, arguments);
+    }
   },
 
   start: function(){ }

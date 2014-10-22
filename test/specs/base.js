@@ -41,7 +41,7 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-describe('PAC.Base', function(){
+describe('Base', function(){
 
   it('should exists Base Class', function(){
     expect(pac.Base).to.be.a('function');
@@ -54,7 +54,7 @@ describe('PAC.Base', function(){
 
 });
 
-describe('PAC.Emitter', function(){
+describe('Emitter', function(){
 
   it('should call start constructor', function(){
     var test = new TestBaseEmitter();
