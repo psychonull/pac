@@ -7,11 +7,12 @@ module.exports = {
 
   Stage: require('./Stage'),
   Renderer: require('./Renderer'),
+  Loader: require('./Loader'),
 
   NativeRenderer: require('./NativeRenderer'),
   PixiRenderer: require('./PixiRenderer'),
 
   Game: require('./Game'),
   create: require('./Game').create
-  
+
 };
