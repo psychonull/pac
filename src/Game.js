@@ -1,5 +1,5 @@
 
-var Emitter = require('./Emitter'),
+var Gameloop = require('gameloop'),
   Scenes = require('./Scenes');
 
 var componentTypes = ['renderer'];
@@ -8,7 +8,9 @@ var EngineComponents = {
   Renderer: require('./Renderer')
 };
 
-var Game = module.exports = Emitter.extend({
+Gameloop.extend = require('class-extend').extend;
+
+var Game = module.exports = Gameloop.extend({
 
   // Public members
   scenes: null,
@@ -16,7 +18,7 @@ var Game = module.exports = Emitter.extend({
   // Engine Components
   renderer: null,
 
-  init: function(){
+  constructor: function(){
     this.scenes = new Scenes();
   },
 
@@ -47,13 +49,39 @@ var Game = module.exports = Emitter.extend({
     this.renderer = instance;
     
     // TODO: renderer specific initialization
+  },
 
-  }
+  
+  start: function(){
+    Game.__super__.start.apply(this, arguments);
+  },
+
+  pause: function(){
+    Game.__super__.pause.apply(this, arguments);
+  },
+
+  resume: function(){
+    Game.__super__.resume.apply(this, arguments);
+  },
+
+  end: function(){
+    Game.__super__.end.apply(this, arguments);
+  },
+
+/*
+  update: function(){
+    Game.__super__.update.apply(this, arguments);
+  },
+
+  draw: function(){
+    Game.__super__.draw.apply(this, arguments);
+  },
+  */
 
 }, {
 
-  create: function(){
-    return new Game();
+  create: function(options){
+    return new Game(options);
   }
 
 });
