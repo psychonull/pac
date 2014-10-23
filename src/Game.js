@@ -23,7 +23,7 @@ var Game = module.exports = Gameloop.extend({
     this.scenes = new Scenes();
   },
 
-  use: function(type, Component){
+  use: function(type, Component, options){
 
     if (componentTypes.indexOf(type) === -1){
       throw new Error('The type "' + type + '" is not allowed.');
@@ -34,24 +34,21 @@ var Game = module.exports = Gameloop.extend({
     }
 
     switch(type){
-      case 'renderer': this._attachRenderer(Component);
+      case 'renderer': this._attachRenderer(Component, options);
     }
 
     return this;
   },
 
-  _attachRenderer: function(Renderer){
-    var instance = new Renderer();
+  _attachRenderer: function(Renderer, options){
+    var instance = new Renderer(options);
 
     if (!(instance instanceof EngineComponents.Renderer)){
       throw new Error('Type of "renderer" must inherit from pac.Renderer');
     }
 
     this.renderer = instance;
-    
-    // TODO: renderer specific initialization
   },
-
   
   start: function(){
     Game.__super__.start.apply(this, arguments);
@@ -69,12 +66,13 @@ var Game = module.exports = Gameloop.extend({
     Game.__super__.end.apply(this, arguments);
   },
 
-  update: function(){
-    Game.__super__.update.apply(this, arguments);
+  update: function(dt){
+    this.emit('update', dt);
   },
 
   draw: function(){
-    Game.__super__.draw.apply(this, arguments);
+    this.renderer.render();
+    this.emit('draw');
   },
 
 }, {

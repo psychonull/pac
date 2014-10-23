@@ -5,6 +5,7 @@ module.exports = {
 
   Scene: require('./Scene'),
 
+  Stage: require('./Stage'),
   Renderer: require('./Renderer'),
 
   Game: require('./Game'),
