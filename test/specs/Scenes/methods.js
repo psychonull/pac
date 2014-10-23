@@ -1,8 +1,11 @@
 
 var pac = require('../../../src/pac');
 var Scenes = require('../../../src/Scenes');
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
 var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 
 describe('#add', function(){
 
@@ -106,8 +109,10 @@ describe('#add', function(){
 });
 
 describe('#switch', function(){
-  var scenes = new Scenes();
-  scenes._scenes = [{name: 'x'}, {name:'y'}];
+  var scenes = new Scenes(),
+    sceneX = {name: 'x', emit: sinon.spy()},
+    sceneY = {name: 'y', emit: sinon.spy()};
+  scenes._scenes = [sceneX, sceneY];
   it('must exist load method', function(){
     expect(scenes.switch).to.be.a('function');
     expect(scenes.current).to.equal(null);
@@ -126,9 +131,13 @@ describe('#switch', function(){
     }).to.throw('Scene not found: "z"');
   });
 
-  it('must init the new scene');
-
-  it('must clean previous scene if any');
+  it('must emit "enter" in the new scene and "leave" in the previous',
+    function(){
+      scenes.switch('y');
+      expect(sceneX.emit).to.have.been.calledWith('leave');
+      expect(sceneY.emit).to.have.been.calledWith('enter');
+    }
+  );
 
 });
 

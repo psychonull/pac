@@ -1,9 +1,9 @@
 
-var Base = require('./Base');
+var Emitter = require('./Emitter');
 
 var required = ['name', 'size'];
 
-module.exports = Base.extend({
+module.exports = Emitter.extend({
 
   name: null,
   size: null,
@@ -26,6 +26,6 @@ module.exports = Base.extend({
 
     }, this);
 
-  },
+  }
 
 });

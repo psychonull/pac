@@ -39,10 +39,15 @@ module.exports = Emitter.extend({
   },
 
   switch: function(name){
-    var targetScene = this.get(name);
+    var targetScene = this.get(name),
+      previousScene = this.current;
     if(!targetScene){
       throw new Error('Scene not found: "' + name + '"');
     }
+    if(previousScene){
+      previousScene.emit('leave');
+    }
+    targetScene.emit('enter');
     this.current =  targetScene;
   },
 

@@ -10,12 +10,12 @@ describe('Constructor', function(){
 
     var name = 'Scene01';
     var size = { width: 500, height: 600 };
-    
+
     var scene = new Scene({
       name: name,
       size: size
     });
-    
+
     expect(scene.name).to.be.equal(name);
     expect(scene.size).to.be.equal(size);
 
@@ -32,7 +32,7 @@ describe('Constructor', function(){
   it('must throw an error if name is not provided', function(){
 
     expect(function(){
-      
+
       var scene = new Scene({
         size: { width: 500, height: 600 }
       });
@@ -44,7 +44,7 @@ describe('Constructor', function(){
   it('must throw an error if size is not provided', function(){
 
     expect(function(){
-      
+
       var scene = new Scene({
         name: 'Scene01'
       });
