@@ -1,11 +1,18 @@
 
 var pac = require('../../../../src/pac');
-var expect = require('chai').expect;
+
+var chai = require('chai');
+var expect = chai.expect;
 
 describe('Renderer', function(){
 
-  it('should expose Renderer Class', function(){
+  require('./Stage/index');
+
+  it('must expose Renderer Class', function(){
     expect(pac.Renderer).to.be.a('function');
   });
+
+  require('./constructor');
+  require('./methods');
 
 });

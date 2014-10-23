@@ -53,6 +53,18 @@ describe('#use', function(){
 
     });
 
+    it('must allow to set options', function() {
+      var newGame = pac.create();
+
+      var newSize = { width: 1000, height: 500 };
+
+      newGame.use('renderer', DummyRenderer, {
+        size: newSize
+      });
+
+      expect(newGame.renderer.size).to.be.eql(newSize);
+    });
+
   });
 
 });

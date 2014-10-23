@@ -4,9 +4,14 @@ var Scenes = require('../../../src/Scenes');
 
 var chai = require('chai');
 var expect = chai.expect;
+
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
+
+var MockRenderer = pac.Renderer.extend({
+  render: function(){}
+});
 
 var game;
 
@@ -14,6 +19,7 @@ describe('GameLoop', function(){
 
   before(function(){
     game = pac.create();
+    game.use('renderer', MockRenderer);
   });
 
   it('must be able to start', function(done) {
@@ -108,6 +114,10 @@ describe('GameLoop', function(){
       fps: 15
     });
 
+    sinon.spy(MockRenderer.prototype, 'render');
+
+    testGame.use('renderer', MockRenderer);
+
     var updateTime = 0;
     var drawTime = 0;
 
@@ -133,6 +143,10 @@ describe('GameLoop', function(){
       expect(drawTime).to.be.greaterThan(updateTime);
       
       testGame.end();
+
+      expect(testGame.renderer.render).to.have.been.called;
+
+      MockRenderer.prototype.render.restore();
       done();
 
     }, 50);
