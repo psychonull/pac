@@ -12,8 +12,8 @@ describe('Scenes', function(){
 
   it('must have default Values', function(){
     var scenes = new Scenes();
-    
-    expect(scenes._current).to.be.equal(null);
+
+    expect(scenes.current).to.be.equal(null);
 
     expect(scenes._scenes).to.be.an('array');
     expect(scenes._scenes.length).to.be.equal(0);

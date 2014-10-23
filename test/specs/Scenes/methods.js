@@ -2,6 +2,7 @@
 var pac = require('../../../src/pac');
 var Scenes = require('../../../src/Scenes');
 var expect = require('chai').expect;
+var sinon = require('sinon');
 
 describe('#add', function(){
 
@@ -57,7 +58,7 @@ describe('#add', function(){
       new pac.Scene({
         name: 'Scene1',
         size: { width: 400, height: 500 }
-      }), 
+      }),
       new pac.Scene({
         name: 'Scene2',
         size: { width: 400, height: 500 }
@@ -75,7 +76,7 @@ describe('#add', function(){
     var scenes = new Scenes();
 
     expect(function(){
-      
+
       scenes.add(new pac.Scene({
         name: 'Scene1',
       }));
@@ -84,13 +85,13 @@ describe('#add', function(){
 
   });
 
-  it('must throw an error if required prop is not provided in an array', 
+  it('must throw an error if required prop is not provided in an array',
     function(){
 
       var scenes = new Scenes();
 
       expect(function(){
-        
+
         scenes.add([{
           name: 'Scene1',
           size: { width: 400, height: 500 }
@@ -104,16 +105,44 @@ describe('#add', function(){
 
 });
 
-describe('#load', function(){
-
+describe('#switch', function(){
+  var scenes = new Scenes();
+  scenes._scenes = [{name: 'x'}, {name:'y'}];
   it('must exist load method', function(){
-    var scenes = new Scenes();
-    expect(scenes.load).to.be.a('function');
+    expect(scenes.switch).to.be.a('function');
+    expect(scenes.current).to.equal(null);
   });
 
-  it('must init an scene and set it as current by name');
-  it('must throw an error if scene name does not exist');
+  it('must set it as current by name', function(){
+    scenes.switch('x');
+    expect(scenes.current.name).to.equal('x');
+  });
+
+  it('must throw an error if scene name does not exist', function(){
+    expect(function(){
+
+      scenes.switch('z');
+
+    }).to.throw('Scene not found: "z"');
+  });
+
+  it('must init the new scene');
 
   it('must clean previous scene if any');
+
+});
+
+describe('#get', function(){
+  var scenes = new Scenes(),
+    sceneX = {name: 'x'};
+  scenes._scenes = [sceneX];
+
+  it('must return the scene by name', function(){
+    expect(scenes.get('x')).to.equal(sceneX);
+  });
+
+  it('must return null if not found', function(){
+    expect(scenes.get('xxx')).to.be.null;
+  });
 
 });

@@ -4,7 +4,7 @@ var Scene = require('./Scene');
 
 module.exports = Emitter.extend({
 
-  _current: null,
+  current: null,
   _scenes: null,
 
   init: function(){
@@ -29,8 +29,21 @@ module.exports = Emitter.extend({
     return this;
   },
 
-  load: function(){
+  get: function(name){
+    for(var i = 0; i < this._scenes.length; i++){
+      if(this._scenes[i].name === name){
+        return this._scenes[i];
+      }
+    }
+    return null;
+  },
 
+  switch: function(name){
+    var targetScene = this.get(name);
+    if(!targetScene){
+      throw new Error('Scene not found: "' + name + '"');
+    }
+    this.current =  targetScene;
   },
 
   _addOne: function(scene){
