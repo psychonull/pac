@@ -11,7 +11,7 @@ var NativeRenderer = module.exports = Renderer.extend({
 
     var canvas = document.createElement('canvas');
     
-    canvas.backgroundColor = this.backgroundColor;
+    canvas.style.backgroundColor = this.backgroundColor;
     canvas.width = this.size.width;
     canvas.height = this.size.height;
 
@@ -23,6 +23,18 @@ var NativeRenderer = module.exports = Renderer.extend({
 
   onStageAdd: function(obj){
     
+    (function(o){
+
+      var res = new Image();
+      
+      res.onload = function(){
+        o.image = res;
+      };
+
+      res.src = o.resource;
+
+    })(obj);
+
   },
 
   onStageClear: function(){
@@ -32,11 +44,12 @@ var NativeRenderer = module.exports = Renderer.extend({
   render: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-/*
-    this.stage.entities.forEach(function(entity){
-      this.context.drawImage(entity);
+    this.stage.entities.forEach(function(e){
+      if (e.image){
+        this.context.drawImage(e.image, 
+          e.position.x, e.position.y, e.size.width, e.size.height);
+      }
     }, this);
-*/
   }
 
 });

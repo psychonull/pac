@@ -21,6 +21,22 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   onStageAdd: function(obj){
     
+    // create a texture from an image path
+    var texture = PIXI.Texture.fromImage(obj.resource);
+
+    // create a new Sprite using the texture
+    var sprite = new PIXI.Sprite(texture);
+ 
+    // center the sprites anchor point
+    sprite.anchor.x = 0;
+    sprite.anchor.y = 0;
+ 
+    // move the sprite t the center of the screen
+    sprite.position.x = obj.position.x;
+    sprite.position.y = obj.position.y;
+ 
+    this.pixiStage.addChild(sprite);
+    
   },
 
   onStageClear: function(){
