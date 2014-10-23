@@ -65,6 +65,46 @@ describe('#use', function(){
       expect(newGame.renderer.size).to.be.eql(newSize);
     });
 
+    it('must allow to use NativeRenderer', function() {
+      var ctn = document.createElement('div');
+      ctn.id = 'native-render';
+
+      var newGame = pac.create();
+      newGame.use('renderer', pac.NativeRenderer, {
+        container: ctn
+      });
+
+      var child = ctn.childNodes[0];
+
+      expect(child).to.not.be.equal(undefined);
+
+      var tag = child.tagName.toLowerCase();
+      var parentId = child.parentNode.id;
+
+      expect(tag).to.be.equal('canvas');
+      expect(parentId).to.be.equal('native-render');
+    });
+
+    it('must allow to use PixiRenderer', function() {
+      var ctn = document.createElement('div');
+      ctn.id = 'pixi-render';
+
+      var newGame = pac.create();
+      newGame.use('renderer', pac.PixiRenderer, {
+        container: ctn
+      });
+
+      var child = ctn.childNodes[0];
+
+      expect(child).to.not.be.equal(undefined);
+
+      var tag = child.tagName.toLowerCase();
+      var parentId = child.parentNode.id;
+
+      expect(tag).to.be.equal('canvas');
+      expect(parentId).to.be.equal('pixi-render');
+    });
+
   });
 
 });

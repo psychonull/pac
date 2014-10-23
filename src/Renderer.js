@@ -5,7 +5,8 @@ var Stage = require('./Stage');
 module.exports = EngineComponent.extend({
 
   size: { width: 800, height: 600 },
-  backgroundColor: '#000',
+  backgroundColor: '#000000',
+  container: null,
 
   init: function(options){
     this.stage = new Stage();
@@ -13,9 +14,12 @@ module.exports = EngineComponent.extend({
     this.stage.on('add', this.onStageAdd.bind(this));
     this.stage.on('clear', this.onStageClear.bind(this));
 
+    this.container = document.body;
+
     if (options){
       this.size = options.size || this.size;
       this.backgroundColor = options.backgroundColor || this.backgroundColor;
+      this.container = options.container || this.container;
     }
   },
 

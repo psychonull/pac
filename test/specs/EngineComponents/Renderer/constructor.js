@@ -29,19 +29,30 @@ describe('Constructor', function(){
     expect(renderer.size).to.be.an('object');
     expect(renderer.size.width).to.be.equal(800);
     expect(renderer.size.height).to.be.equal(600);
-    expect(renderer.backgroundColor).to.be.equal('#000');
+    expect(renderer.backgroundColor).to.be.equal('#000000');
+    expect(renderer.container).to.be.equal(document.body);
+
   });
 
   it('must allow to set options', function(){
+
+    var dummyContainer = document.createElement('div');
+    dummyContainer.id = 'dummy-ctn';
+
     var renderer = new TestRenderer({
       size: { width: 500, height: 300 },
-      backgroundColor: '#fff'
+      backgroundColor: '#fff',
+      container: dummyContainer
     });
     
     expect(renderer.size).to.be.an('object');
     expect(renderer.size.width).to.be.equal(500);
     expect(renderer.size.height).to.be.equal(300);
     expect(renderer.backgroundColor).to.be.equal('#fff');
+
+    expect(renderer.container).to.be.equal(dummyContainer);
+    expect(renderer.container.id).to.be.equal(dummyContainer.id);
+    expect(renderer.container.tagName.toLowerCase()).to.be.equal('div');
   });
 
 });

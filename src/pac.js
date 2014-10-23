@@ -8,6 +8,9 @@ module.exports = {
   Stage: require('./Stage'),
   Renderer: require('./Renderer'),
 
+  NativeRenderer: require('./NativeRenderer'),
+  PixiRenderer: require('./PixiRenderer'),
+
   Game: require('./Game'),
   create: require('./Game').create
   
