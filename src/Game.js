@@ -12,13 +12,14 @@ Gameloop.extend = require('class-extend').extend;
 
 var Game = module.exports = Gameloop.extend({
 
-  // Public members
-  scenes: null,
-
-  // Engine Components
-  renderer: null,
-
   constructor: function(){
+    // call constructor of Gameloop
+    Game.__super__.constructor.apply(this, arguments);
+
+    // Engine Components
+    this.renderer = null;
+
+    // Public members    
     this.scenes = new Scenes();
   },
 
@@ -68,7 +69,6 @@ var Game = module.exports = Gameloop.extend({
     Game.__super__.end.apply(this, arguments);
   },
 
-/*
   update: function(){
     Game.__super__.update.apply(this, arguments);
   },
@@ -76,7 +76,6 @@ var Game = module.exports = Gameloop.extend({
   draw: function(){
     Game.__super__.draw.apply(this, arguments);
   },
-  */
 
 }, {
 

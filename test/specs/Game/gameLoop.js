@@ -104,7 +104,9 @@ describe('GameLoop', function(){
   });
 
   it('must call update and draw in that order', function(done) {
-    var testGame = pac.create();
+    var testGame = pac.create({
+      fps: 15
+    });
 
     var updateTime = 0;
     var drawTime = 0;
@@ -126,7 +128,7 @@ describe('GameLoop', function(){
       expect(testGame.time).to.be.greaterThan(currentTime);
 
       expect(drawTime).to.be.greaterThan(0);
-      //expect(updateTime).to.be.greaterThan(0);
+      expect(updateTime).to.be.greaterThan(0);
       
       expect(drawTime).to.be.greaterThan(updateTime);
       
