@@ -20,6 +20,33 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   onStageAdd: function(obj){
+
+    /*
+    var baseTexture = new PIXI.BaseTexture(obj.texture.image);
+    var texture = new PIXI.Texture(baseTexture);
+     */
+
+    /*
+
+      // use the entire texture, no crop
+      var texture = new PIXI.Texture(baseTexture);
+      var sprite = new PIXI.Sprite(texture);
+
+      // Sprite with size
+      var texture = new PIXI.Texture(baseTexture);
+      var sprite = new PIXI.TilingSprite(texture, 
+        obj.size.width, obj.size.height);
+      
+      obj.frame = { x, y, width, height };
+
+      // Use a texture frame
+      var texture = new PIXI.Texture ( baseTexture , obj.frame,  [crop] )
+      var sprite = new PIXI.TilingSprite(texture, 
+        obj.size.width, obj.size.height);
+  
+      // change current frame later
+      texture.setFrame(obj.frame);
+    */
     
     // create a texture from an image path
     var texture = PIXI.Texture.fromImage(obj.resource);

@@ -1,7 +1,7 @@
 
-var Base = require('class-extend');
+var ClassExtend = require('./ClassExtend');
 
-module.exports = Base.extend({
+module.exports = ClassExtend.extend({
 
   constructor: function(){
     if (this.init){

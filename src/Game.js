@@ -1,5 +1,6 @@
 
-var Gameloop = require('gameloop'),
+var ClassExtend = require('./ClassExtend'),
+  Gameloop = require('gameloop'),
   Scenes = require('./Scenes');
 
 var componentTypes = ['renderer'];
@@ -8,7 +9,7 @@ var EngineComponents = {
   Renderer: require('./Renderer')
 };
 
-Gameloop.extend = require('class-extend').extend;
+Gameloop.extend = ClassExtend.extend;
 
 var Game = module.exports = Gameloop.extend({
 
