@@ -1,9 +1,21 @@
 
 var Drawable = require('./Drawable');
+var Point = require('./Point');
 
-module.exports = Drawable.extend({
+var Sprite = module.exports = Drawable.extend({
 
-  init: function(){ },
+  position: null,
+  size: null,
+
+  init: function(options){
+    Sprite.__super__.init.apply(this, arguments);
+
+    if (!options || (options && !options.texture)){
+      throw new Error('Expected [texture] name of Sprite');
+    }
+
+    this.size = (options && options.size) || null;
+  },
 
   update: function() { }
 

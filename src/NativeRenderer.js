@@ -22,7 +22,6 @@ var NativeRenderer = module.exports = Renderer.extend({
   },
 
   onStageAdd: function(obj){
-    
     (function(o){
 
       var res = new Image();
@@ -34,7 +33,6 @@ var NativeRenderer = module.exports = Renderer.extend({
       res.src = o.resource;
 
     })(obj);
-
   },
 
   onStageClear: function(){
