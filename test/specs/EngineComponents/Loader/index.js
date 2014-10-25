@@ -8,4 +8,7 @@ describe('Loader', function(){
     expect(pac.Loader).to.be.a('function');
   });
 
+  require('./constructor');
+  require('./methods');
+
 });
