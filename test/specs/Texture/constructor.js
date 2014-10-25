@@ -12,6 +12,7 @@ describe('Constructor', function(){
   it('must create a Texture from an URL emitting an error event');
 
   it('must throw an error if URL is CORS');
+  it('must throw an error if Name is not set');
 
   it('must create a Texture from an String base64');
   it('must throw a parse error if base64 is wrong on creating');

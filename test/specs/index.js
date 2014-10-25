@@ -16,6 +16,13 @@ describe('PAC', function(){
     });
   });
 
+  describe('Utils', function(){
+    it ('must exist a pac._ for utility functions', function(){
+      var pac = require('../../src');
+      expect(pac._).to.be.a('function');
+    });
+  });
+
   require('./base');
   require('./Game/index.js');
 
@@ -25,6 +32,7 @@ describe('PAC', function(){
   require('./EngineComponents/index.js');
 
   require('./Point.js');
+  
   require('./GameObjects/index.js');
   require('./Texture/index.js');
 

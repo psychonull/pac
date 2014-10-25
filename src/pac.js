@@ -25,6 +25,8 @@ module.exports = {
   Texture: require('./Texture'),
 
   Game: require('./Game'),
-  create: require('./Game').create
+  create: require('./Game').create,
+
+  _: require('./utils')
 
 };
