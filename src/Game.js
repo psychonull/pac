@@ -3,10 +3,11 @@ var ClassExtend = require('./ClassExtend'),
   Gameloop = require('gameloop'),
   Scenes = require('./Scenes');
 
-var componentTypes = ['renderer'];
+var componentTypes = ['renderer', 'loader'];
 
 var EngineComponents = {
-  Renderer: require('./Renderer')
+  Renderer: require('./Renderer'),
+  Loader: require('./Loader')
 };
 
 Gameloop.extend = ClassExtend.extend;
@@ -19,8 +20,9 @@ var Game = module.exports = Gameloop.extend({
 
     // Engine Components
     this.renderer = null;
+    this.loader = null;
 
-    // Public members    
+    // Public members
     this.scenes = new Scenes();
   },
 
@@ -35,7 +37,8 @@ var Game = module.exports = Gameloop.extend({
     }
 
     switch(type){
-      case 'renderer': this._attachRenderer(Component, options);
+      case 'renderer': this._attachRenderer(Component, options); break;
+      case 'loader': this._attachLoader(Component, options); break;
     }
 
     return this;
@@ -50,7 +53,17 @@ var Game = module.exports = Gameloop.extend({
 
     this.renderer = instance;
   },
-  
+
+  _attachLoader: function(Loader, options){
+    var instance = new Loader(this, options);
+
+    if (!(instance instanceof EngineComponents.Loader)){
+      throw new Error('Type of "loader" must inherit from pac.Loader');
+    }
+
+    this.loader = instance;
+  },
+
   start: function(){
     Game.__super__.start.apply(this, arguments);
   },

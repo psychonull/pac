@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 var DummyInvalid = pac.Base.extend({});
 var DummyRenderer = pac.Renderer.extend({});
-var DummyLoader = EngineComponent.extend({});
+var DummyLoader = pac.Loader.extend({});
 
 describe('#use', function(){
 
@@ -107,4 +107,15 @@ describe('#use', function(){
 
   });
 
+  describe('Loader', function(){
+
+    it('must attach a loader', function() {
+      var newGame = pac.create();
+      expect(newGame.loader).to.be.equal(null);
+
+      newGame.use('loader', DummyLoader);
+      expect(newGame.loader).to.be.instanceof(DummyLoader);
+    });
+
+  });
 });
