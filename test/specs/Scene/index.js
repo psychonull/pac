@@ -16,5 +16,6 @@ describe('Scene', function(){
   });
 
   require('./constructor');
+  require('./methods');
 
 });

@@ -9,7 +9,6 @@ module.exports = Emitter.extend({
 
   init: function(){
     this._scenes = [];
-
   },
 
   add: function(){
@@ -24,6 +23,10 @@ module.exports = Emitter.extend({
     }
     else {
       this._addOne(arg0);
+    }
+
+    if (!this.current && this._scenes.length > 0){
+      this.current = this._scenes[0];
     }
 
     return this;
@@ -59,6 +62,12 @@ module.exports = Emitter.extend({
     }
 
     this._scenes.push(new Scene(scene));
+  },
+
+  update: function(dt){
+    if (this.current){
+      this.current.update(dt);
+    }
   }
 
 

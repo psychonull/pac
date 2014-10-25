@@ -68,6 +68,7 @@ var Game = module.exports = Gameloop.extend({
   },
 
   update: function(dt){
+    this.scenes.update(dt);
     this.emit('update', dt);
   },
 

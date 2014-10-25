@@ -18,6 +18,8 @@ describe('Constructor', function(){
 
     expect(scene.name).to.be.equal(name);
     expect(scene.size).to.be.equal(size);
+    expect(scene.objects).to.be.an('array');
+    expect(scene.objects.length).to.be.equal(0);
 
   });
 
