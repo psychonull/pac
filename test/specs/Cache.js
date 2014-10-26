@@ -200,6 +200,20 @@ describe('Cache', function(){
       );
     });
 
+    describe('hasGroup()', function(){
+      it('Must return false if no group with that name', function(){
+        var cache = new Cache();
+        expect(cache.hasGroup('images')).to.be.false;
+      });
+      it('Must return true if group found',
+        function(){
+          var cache = new Cache();
+          var vid = cache.addGroup('videos');
+          expect(cache.hasGroup('videos')).to.be.true;
+        }
+      );
+    });
+
   });
 
 });

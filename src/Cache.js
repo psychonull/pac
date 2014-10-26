@@ -94,6 +94,10 @@ var Cache = Emitter.extend({
   getGroup: function(name){
     if (this.groups.length === 0) return null;
     return this.groups.get(name);
+  },
+
+  hasGroup: function(name){
+    return this.getGroup(name) !== null;
   }
 
 });
