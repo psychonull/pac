@@ -2,12 +2,12 @@
 var Emitter = require('./Emitter'),
   _ = require('./utils');
 
-module.exports = Emitter.extend({
+var Cache = Emitter.extend({
 
   length: 0,
   _validation: function(val) { return true; },
 
-  init: function(){
+  init: function(data, validationFn){
     this._data = {};
 
     var updateLength = function updateLength(){
@@ -16,6 +16,22 @@ module.exports = Emitter.extend({
 
     this.on('add', _.bind(updateLength, this));
     this.on('remove', _.bind(updateLength, this));
+
+    this.groups = { length: 0 };
+
+    if(validationFn){
+      this.setValidation(validationFn);
+    }
+
+    if(data){
+      this._initData(data);
+    }
+  },
+
+  _initData: function(data){
+    _.forIn(data, _.bind(function(value, key){
+      this.add(key, value);
+    }, this));
   },
 
   add: function(name, element){
@@ -60,7 +76,26 @@ module.exports = Emitter.extend({
   },
 
   setValidation: function(fn) {
+    if(typeof fn !== 'function'){
+      throw new Error('Invalid Argument: validationFn must be a function');
+    }
     this._validation = fn;
+  },
+
+  addGroup: function(name, data, validationFn){
+    var group = new Cache(data, validationFn);
+    if(this.groups.length === 0){
+      this.groups = new Cache();
+    }
+    this.groups.add(name, group);
+    return group;
+  },
+
+  getGroup: function(name){
+    if (this.groups.length === 0) return null;
+    return this.groups.get(name);
   }
 
 });
+
+module.exports = Cache;

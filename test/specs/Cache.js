@@ -16,6 +16,31 @@ describe('Cache', function(){
       var cache = new Cache();
       expect(cache.length).to.equal(0);
     });
+
+    it('Can be initialized with data', function(){
+      var cache = new Cache({ player: 'wowowow', pointer: 'wesa' });
+      expect(cache.length).to.equal(2);
+      expect(cache.get('player')).to.equal('wowowow');
+    });
+
+    it('Can be initialized with a validation', function(){
+      var cache = new Cache(null, function greaterThan0(val){
+        return val > 0;
+      });
+      expect(cache.length).to.equal(0);
+      expect(function(){
+        cache.add('test', -1);
+      }).to.throw(/validation error/i);
+    });
+
+    it('Must throw an error if data does not pass the validation', function(){
+      expect(function(){
+        var cache = new Cache({randomName: 100}, function only42(val){
+          return val === 42;
+        });
+      }).to.throw(/validation error/i);
+    });
+
   });
 
   describe('Methods', function(){
@@ -119,6 +144,60 @@ describe('Cache', function(){
           cache.add('another-test', {});
         }).to.throw(/only numbers accepted/i);
       });
+      it('must throw error if passing a non-function to setValidation()',
+        function(){
+          var cache = new Cache();
+          expect(function(){
+            cache.setValidation(1);
+          }).to.throw(/Invalid Argument/i);
+        }
+      );
+    });
+
+    describe('addGroup()', function(){
+      it('A group must be a nested cache instance', function(){
+        var cache = new Cache();
+        expect(cache.groups.length).to.equal(0);
+        cache.addGroup('test');
+        expect(cache.groups.length).to.equal(1);
+      });
+      it('Must throw an error when trying to add group with same name',
+        function(){
+          var cache = new Cache();
+          expect(cache.addGroup('sounds')).to.be.ok;
+          expect(function(){
+            cache.addGroup('sounds', {});
+          }).to.throw(/duplicate key/i);
+        }
+      );
+      it('Must init group with data and validationFn if passed', function(){
+        var cache = new Cache();
+        cache.addGroup('numbers', {one: 1}, function(val){
+          return typeof val === 'number';
+        });
+        var numbers = cache.getGroup('numbers');
+        expect(numbers.length).to.equal(1);
+        expect(function(){
+          numbers.add('one', 2);
+        }).to.throw(/duplicate key/i);
+        expect(function(){
+          numbers.add('two', '2');
+        }).to.throw(/validation error/i);
+      });
+    });
+
+    describe('getGroup()', function(){
+      it('Must return null if no group with that name', function(){
+        var cache = new Cache();
+        expect(cache.getGroup('images')).to.be.null;
+      });
+      it('return the group if found',
+        function(){
+          var cache = new Cache();
+          var vid = cache.addGroup('videos');
+          expect(cache.getGroup('videos')).to.equal(vid);
+        }
+      );
     });
 
   });
