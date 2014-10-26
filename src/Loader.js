@@ -1,6 +1,7 @@
 
 var EngineComponent = require('./EngineComponent');
-var Cache = require('./Cache');
+var Cache = require('./Cache'),
+  Texture = require('./Texture');
 
 module.exports = EngineComponent.extend({
 
@@ -17,4 +18,13 @@ module.exports = EngineComponent.extend({
   //https://github.com/andrewrk/chem/blob/master/lib/resources.js
   //http://docs.phaser.io/Loader.js.html
   //http://docs.phaser.io/Cache.js.html
+},
+{
+  Types: {
+    image: Texture
+  },
+
+  ResolveFileType: function(fileName) {
+    return 'image';
+  }
 });

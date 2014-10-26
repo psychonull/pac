@@ -10,5 +10,6 @@ describe('Loader', function(){
 
   require('./constructor');
   require('./methods');
+  require('./statics');
 
 });
