@@ -8,7 +8,8 @@ module.exports = EngineComponent.extend({
   backgroundColor: '#000000',
   container: null,
 
-  init: function(options){
+  init: function(game, options){
+    this.game = game;
     this.stage = new Stage();
 
     this.stage.on('add', this.onStageAdd.bind(this));

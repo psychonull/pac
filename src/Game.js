@@ -45,7 +45,7 @@ var Game = module.exports = Gameloop.extend({
   },
 
   _attachRenderer: function(Renderer, options){
-    var instance = new Renderer(options);
+    var instance = new Renderer(this, options);
 
     if (!(instance instanceof EngineComponents.Renderer)){
       throw new Error('Type of "renderer" must inherit from pac.Renderer');
