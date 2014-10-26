@@ -16,15 +16,22 @@ var TestRenderer = pac.Renderer.extend({
 
 });
 
+var fakeGame = {};
+
 describe('Constructor', function(){
 
+  it('must set the game instance', function(){
+    var renderer = new TestRenderer(fakeGame);
+    expect(renderer.game).to.equal(fakeGame);
+  });
+
   it('must have an stage upon initialization', function(){
-    var renderer = new TestRenderer();
+    var renderer = new TestRenderer(fakeGame);
     expect(renderer.stage).to.be.an.instanceof(pac.Stage);
   });
 
   it('must have defaults', function(){
-    var renderer = new TestRenderer();
+    var renderer = new TestRenderer(fakeGame);
     
     expect(renderer.size).to.be.an('object');
     expect(renderer.size.width).to.be.equal(800);
@@ -39,7 +46,7 @@ describe('Constructor', function(){
     var dummyContainer = document.createElement('div');
     dummyContainer.id = 'dummy-ctn';
 
-    var renderer = new TestRenderer({
+    var renderer = new TestRenderer(fakeGame, {
       size: { width: 500, height: 300 },
       backgroundColor: '#fff',
       container: dummyContainer
