@@ -6,6 +6,8 @@ var required = ['name', 'size'];
 
 module.exports = Emitter.extend({
 
+  idAttribute: 'name',
+
   name: null,
   size: null,
 

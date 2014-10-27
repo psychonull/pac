@@ -21,6 +21,10 @@ describe('Constructor', function(){
     expect(scene.objects).to.be.an('array');
     expect(scene.objects.length).to.be.equal(0);
 
+    expect(scene.cid).to.be.a('string');
+    expect(scene.cid.length).to.be.greaterThan(0);
+    expect(scene.idAttribute).to.be.equal('name');
+
   });
 
   it('must throw an error if no arguments', function(){

@@ -52,6 +52,12 @@ describe('Base', function(){
     expect(test._init).to.be.equal(true);
   });
 
+  it('should generate a uniqueId', function(){
+    var test = new TestBase();
+    expect(test.cid).to.be.a('string');
+    expect(test.cid.length).to.be.greaterThan(0);
+  });
+
 });
 
 describe('Emitter', function(){
@@ -59,6 +65,12 @@ describe('Emitter', function(){
   it('should call init constructor', function(){
     var test = new TestBaseEmitter();
     expect(test.initA).to.be.equal(true);
+  });
+
+  it('should generate a uniqueId', function(){
+    var test = new TestBaseEmitter();
+    expect(test.cid).to.be.a('string');
+    expect(test.cid.length).to.be.greaterThan(0);
   });
 
   it('should allow to add and fire events', function(){

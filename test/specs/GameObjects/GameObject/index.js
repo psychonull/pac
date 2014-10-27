@@ -18,6 +18,9 @@ describe('GameObject', function(){
   it('must expose update Method', function(){
     var obj = new pac.GameObject();
     expect(obj.update).to.be.a('function');
+
+    expect(obj.cid).to.be.a('string');
+    expect(obj.cid.length).to.be.greaterThan(0);
   });
 
 });
