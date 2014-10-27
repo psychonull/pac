@@ -6,6 +6,7 @@ var Cache = Emitter.extend({
 
   length: 0,
   _validation: function(val) { return true; },
+  childType: null,
 
   init: function(data, validationFn){
     this._data = {};
@@ -30,63 +31,102 @@ var Cache = Emitter.extend({
 
   _initData: function(data){
     _.forIn(data, _.bind(function(value, key){
-      this.add(key, value);
+      this._add(key, value);
     }, this));
   },
 
-  add: function(name, element){
-    if(this.get(name) !== null){
-      throw new Error('Cache duplicate key: ' + name);
+  add: function(){
+    var arg0 = arguments[0];
+
+    if (arguments.length === 1){
+
+      if(Array.isArray(arg0)){
+        arg0.forEach(function(ele){
+          this._add(ele.cid, ele);
+        }, this);
+
+        return this;
+      }
+
+      this._add(arg0.cid, arg0);
+      
+      return this;
     }
-    this.validate(element);
-    this._data[name] = element;
-    this.emit('add', name, element);
+
+    this._add(arg0, arguments[1]);
+
+    return this;
   },
 
-  get: function(name){
-    var val = this._data[name];
+  _add: function(key, value){
+
+    if (this.childType && !(value instanceof this.childType)){
+      throw new Error('Error on Add: invalid child type of: ' + key);
+    }
+
+    if(this.get(key) !== null){
+      throw new Error('Cache duplicate key: ' + key);
+    }
+
+    this.validate(value);
+    this._data[key] = value;
+
+    this.emit('add', key, value);
+  },
+
+  get: function(key){
+    var val = this._data[key];
+
     if(typeof val === 'undefined'){
       return null;
     }
     return val;
   },
 
-  remove: function(name){
-    var val = this.get(name);
+  remove: function(key){
+    var val = this.get(key);
+
     if (val !== null){
-      delete this._data[name];
+      delete this._data[key];
     }
-    this.emit('remove', name, val);
+    
+    this.emit('remove', key, val);
     return val;
   },
 
-  hasKey: function(name){
-    return this.get(name) !== null;
+  hasKey: function(key){
+    return this.get(key) !== null;
   },
 
   validate: function(value) {
     var result = this._validation.call(this, value);
+
     if(result === false){
       throw new Error('validation error');
     }
     else if(typeof result === 'string'){
       throw new Error('validation error: ' + result);
     }
+
     return result;
   },
 
   setValidation: function(fn) {
+
     if(typeof fn !== 'function'){
       throw new Error('Invalid Argument: validationFn must be a function');
     }
+
     this._validation = fn;
   },
 
   addGroup: function(name, data, validationFn){
     var group = new Cache(data, validationFn);
+
     if(this.groups.length === 0){
       this.groups = new Cache();
     }
+
     this.groups.add(name, group);
     return group;
   },

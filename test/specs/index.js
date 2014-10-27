@@ -37,6 +37,7 @@ describe('PAC', function(){
   require('./GameObjects/index.js');
   
   require('./Texture/index.js');
+
   require('./Cache');
 
 });
