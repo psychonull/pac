@@ -19,6 +19,11 @@ module.exports = Emitter.extend({
 
     if (typeof options === 'string'){
       this.url = options;
+    }
+  },
+
+  load: function(){
+    if (this.url){
       this.image.src = this.url;
     }
   },
