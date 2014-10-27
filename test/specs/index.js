@@ -30,6 +30,7 @@ describe('PAC', function(){
   require('./Scene/index.js');
   require('./Scenes/index.js');
 
+
   require('./EngineComponents/index.js');
 
   require('./Point.js');

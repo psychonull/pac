@@ -12,8 +12,12 @@ module.exports = EngineComponent.extend({
     this.game = game;
     this.stage = new Stage();
 
-    this.stage.on('add', this.onStageAdd.bind(this));
-    this.stage.on('clear', this.onStageClear.bind(this));
+    var self = this;
+    this.stage.on('add', function(key, value){
+      self.onStageAdd(value);
+    });
+
+    //this.stage.on('clear', this.onStageClear.bind(this));
 
     this.container = document.body;
 

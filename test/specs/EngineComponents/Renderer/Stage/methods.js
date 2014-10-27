@@ -11,18 +11,19 @@ describe('Methods', function(){
       var stage = new Stage();
       expect(stage.add).to.be.a('function');
 
-      var objTest = { someProp: true };
+      var objTest = { cid: '1233', someProp: true };
 
       var emitted = 0;
-      stage.on('add', function(obj){
+      stage.on('add', function(cid, obj){
         emitted++;
-        expect(obj).to.be.eql(objTest);
+        expect(cid).to.be.equal('1233');
+        expect(obj.someProp).to.be.equal(true);
       });
 
       stage.add(objTest);
 
-      expect(stage.entities.length).to.be.equal(1);
-      expect(stage.entities[0]).to.be.equal(objTest);
+      expect(stage.length).to.be.equal(1);
+      expect(stage.get('1233').someProp).to.be.equal(objTest.someProp);
       expect(emitted).to.be.equal(1);
     });
 
@@ -30,18 +31,18 @@ describe('Methods', function(){
 
   describe('#clear', function(){
 
-    it ('must clear all entities and fire an event', function(){
+    it ('must clear all entities and fire an event'/*, function(){
 
       var stage = new Stage();
       expect(stage.clear).to.be.a('function');
 
-      var objTest = { someProp: true };
-      var objTest2 = { someProp: true };
+      var objTest = { cid: "1233", someProp: true };
+      var objTest2 = { cid: "1233", someProp: true };
 
       stage.add(objTest);
       stage.add(objTest2);
 
-      expect(stage.entities.length).to.be.equal(2);
+      expect(stage.length).to.be.equal(2);
 
       var emitted = 0;
       stage.on('clear', function(){
@@ -50,9 +51,9 @@ describe('Methods', function(){
 
       stage.clear();
 
-      expect(stage.entities.length).to.be.equal(0);
+      expect(stage.length).to.be.equal(0);
       expect(emitted).to.be.equal(1);
-    });
+    }*/);
 
   });
 
