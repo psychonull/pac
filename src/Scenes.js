@@ -1,15 +1,11 @@
 
-var Emitter = require('./Emitter');
+var MapList = require('./MapList');
 var Scene = require('./Scene');
 
-module.exports = Emitter.extend({
+var Scenes = module.exports = MapList.extend({
 
   current: null,
-  _scenes: null,
-
-  init: function(){
-    this._scenes = [];
-  },
+  childType: Scene,
 
   add: function(){
     var arg0 = arguments[0];
@@ -17,51 +13,42 @@ module.exports = Emitter.extend({
     if(Array.isArray(arg0)){
 
       arg0.forEach(function(scene){
-        this._addOne(scene);
+        Scenes.__super__.add.call(this, scene.name, scene);
       }, this);
 
-    }
-    else {
-      this._addOne(arg0);
+      this._setDefault(arg0[0]);
+
+      return this;
     }
 
-    if (!this.current && this._scenes.length > 0){
-      this.current = this._scenes[0];
-    }
+    Scenes.__super__.add.call(this, arg0.name, arg0);
+
+    this._setDefault(arg0);
 
     return this;
   },
 
-  get: function(name){
-    for(var i = 0; i < this._scenes.length; i++){
-      if(this._scenes[i].name === name){
-        return this._scenes[i];
-      }
+  _setDefault: function(scene){
+
+    if (!this.current && this.length > 0){
+      this.current = scene;
     }
-    return null;
   },
 
   switch: function(name){
     var targetScene = this.get(name),
       previousScene = this.current;
+
     if(!targetScene){
       throw new Error('Scene not found: "' + name + '"');
     }
+
     if(previousScene){
       previousScene.emit('leave');
     }
+    
     targetScene.emit('enter');
     this.current =  targetScene;
-  },
-
-  _addOne: function(scene){
-
-    if (scene instanceof Scene){
-      this._scenes.push(scene);
-      return;
-    }
-
-    this._scenes.push(new Scene(scene));
   },
 
   update: function(dt){

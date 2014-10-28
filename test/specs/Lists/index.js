@@ -8,6 +8,11 @@ describe('Lists', function(){
     expect(pac.List).to.be.a('function');
   });
 
+  it('must expose MapList Class', function(){
+    expect(pac.MapList).to.be.a('function');
+  });
+
   require('./list.js');
+  require('./map.js');
 
 });

@@ -1,6 +1,7 @@
 
-var pac = require('../../../src/pac');
 var Scenes = require('../../../src/Scenes');
+var Scene = require('../../../src/Scene');
+
 var chai = require('chai');
 var expect = chai.expect;
 var sinon = require('sinon');
@@ -17,52 +18,24 @@ describe('#add', function(){
   it('must add an Scene by options', function(){
     var scenes = new Scenes();
 
-    scenes.add({
-      name: 'Scene1',
-      size: { width: 400, height: 500 }
-    });
-
-    expect(scenes._scenes.length).to.be.equal(1);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
-  });
-
-  it('must add an Scene by a pac.Scene instance', function(){
-    var scenes = new Scenes();
-
-    scenes.add(new pac.Scene({
+    scenes.add(new Scene({
       name: 'Scene1',
       size: { width: 400, height: 500 }
     }));
 
-    expect(scenes._scenes.length).to.be.equal(1);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
+    expect(scenes.length).to.be.equal(1);
+    expect(scenes.get('Scene1').name).to.be.equal('Scene1');
   });
 
-  it('must add Scenes by options array', function(){
-    var scenes = new Scenes();
-
-    scenes.add([{
-      name: 'Scene1',
-      size: { width: 400, height: 500 }
-    }, {
-      name: 'Scene2',
-      size: { width: 500, height: 600 }
-    }]);
-
-    expect(scenes._scenes.length).to.be.equal(2);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
-    expect(scenes._scenes[1].name).to.be.equal('Scene2');
-  });
-
-  it('must add Scenes by pac.Scene instance array', function(){
+  it('must add Scenes by Scene instance array', function(){
     var scenes = new Scenes();
 
     var toAdd = [
-      new pac.Scene({
+      new Scene({
         name: 'Scene1',
         size: { width: 400, height: 500 }
       }),
-      new pac.Scene({
+      new Scene({
         name: 'Scene2',
         size: { width: 400, height: 500 }
       })
@@ -70,60 +43,29 @@ describe('#add', function(){
 
     scenes.add(toAdd);
 
-    expect(scenes._scenes.length).to.be.equal(2);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
-    expect(scenes._scenes[1].name).to.be.equal('Scene2');
-  });
-
-  it('must throw an error if required prop is not provided', function(){
-    var scenes = new Scenes();
-
-    expect(function(){
-
-      scenes.add(new pac.Scene({
-        name: 'Scene1',
-      }));
-
-    }).to.throw('Cannot create scene Scene1: "size" is required');
-
-  });
-
-  it('must throw an error if required prop is not provided in an array',
-    function(){
-
-      var scenes = new Scenes();
-
-      expect(function(){
-
-        scenes.add([{
-          name: 'Scene1',
-          size: { width: 400, height: 500 }
-        }, {
-          name: 'Scene2',
-        }]);
-
-      }).to.throw('Cannot create scene Scene2: "size" is required');
-
+    expect(scenes.length).to.be.equal(2);
+    expect(scenes.get('Scene1').name).to.be.equal('Scene1');
+    expect(scenes.get('Scene2').name).to.be.equal('Scene2');
   });
 
   it('must set the first scene as current', function(){
     var scenes = new Scenes();
 
-    scenes.add(new pac.Scene({
+    scenes.add(new Scene({
       name: 'Scene1',
       size: { width: 400, height: 500 }
     }));
 
-    expect(scenes._scenes.length).to.be.equal(1);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
+    expect(scenes.length).to.be.equal(1);
+    expect(scenes.get('Scene1').name).to.be.equal('Scene1');
     expect(scenes.current.name).to.be.equal('Scene1');
 
     var toAdd = [
-      new pac.Scene({
+      new Scene({
         name: 'Scene2',
         size: { width: 400, height: 500 }
       }),
-      new pac.Scene({
+      new Scene({
         name: 'Scene3',
         size: { width: 400, height: 500 }
       })
@@ -131,10 +73,11 @@ describe('#add', function(){
 
     scenes.add(toAdd);
 
-    expect(scenes._scenes.length).to.be.equal(3);
-    expect(scenes._scenes[0].name).to.be.equal('Scene1');
-    expect(scenes._scenes[1].name).to.be.equal('Scene2');
-    expect(scenes._scenes[2].name).to.be.equal('Scene3');
+    expect(scenes.length).to.be.equal(3);
+
+    expect(scenes.get('Scene1').name).to.be.equal('Scene1');
+    expect(scenes.get('Scene2').name).to.be.equal('Scene2');
+    expect(scenes.get('Scene3').name).to.be.equal('Scene3');
     
     expect(scenes.current.name).to.be.equal('Scene1');
   });
@@ -144,14 +87,24 @@ describe('#add', function(){
 describe('#switch', function(){
   
   var scenes = new Scenes(),
-    sceneX = {name: 'x', emit: sinon.spy()},
-    sceneY = {name: 'y', emit: sinon.spy()};
+    sceneStart = new Scene({
+      name: 'start', 
+      size: { width: 400, height: 500 }
+    }),
+    sceneX = new Scene({
+      name: 'x', 
+      size: { width: 400, height: 500 }
+    }),
+    sceneY = new Scene({
+      name: 'y', 
+      size: { width: 400, height: 500 }
+    });
 
-  scenes._scenes = [sceneX, sceneY];
+  scenes.add([sceneStart, sceneX, sceneY]);
 
-  it('must exist load method', function(){
+  it('must exist switch method', function(){
     expect(scenes.switch).to.be.a('function');
-    expect(scenes.current).to.equal(null);
+    expect(scenes.current.name).to.equal(sceneStart.name);
   });
 
   it('must set it as current by name', function(){
@@ -160,27 +113,64 @@ describe('#switch', function(){
   });
 
   it('must throw an error if scene name does not exist', function(){
+
     expect(function(){
-
       scenes.switch('z');
-
     }).to.throw('Scene not found: "z"');
+
   });
 
   it('must emit "enter" in the new scene and "leave" in the previous',
     function(){
+
+      expect(scenes.current.name).to.equal('x');
+
+      var emitLeaveX = 0;
+      var emitLeaveY = 0;
+
+      var emitEnterX = 0;
+      var emitEnterY = 0;
+
+      sceneX.on('enter', function(){
+        emitEnterX++;
+      });
+
+      sceneX.on('leave', function(){
+        emitLeaveX++;
+      });
+
+      sceneY.on('enter', function(){
+        emitEnterY++;    
+      });
+
+      sceneY.on('leave', function(){
+        emitLeaveY++;    
+      });
+
       scenes.switch('y');
-      expect(sceneX.emit).to.have.been.calledWith('leave');
-      expect(sceneY.emit).to.have.been.calledWith('enter');
-    }
-  );
+
+      expect(emitEnterX).to.be.equal(0);
+      expect(emitLeaveX).to.be.equal(1);
+
+      expect(emitEnterY).to.be.equal(1);
+      expect(emitLeaveY).to.be.equal(0);
+  });
 
 });
 
 describe('#get', function(){
+
   var scenes = new Scenes(),
-    sceneX = {name: 'x'};
-  scenes._scenes = [sceneX];
+    sceneX = new Scene({
+      name: 'x', 
+      size: { width: 400, height: 500 }
+    }), 
+    sceneY = new Scene({
+      name: 'y', 
+      size: { width: 400, height: 500 }
+    });
+
+  scenes.add([sceneX, sceneY]);
 
   it('must return the scene by name', function(){
     expect(scenes.get('x')).to.equal(sceneX);
@@ -203,12 +193,12 @@ describe('#update', function(){
     
     var scenes = new Scenes();
 
-    var scene1 = new pac.Scene({
+    var scene1 = new Scene({
       name: 'Scene1',
       size: { width: 400, height: 500 }
     });
 
-    var scene2 = new pac.Scene({
+    var scene2 = new Scene({
       name: 'Scene2',
       size: { width: 400, height: 500 }
     });

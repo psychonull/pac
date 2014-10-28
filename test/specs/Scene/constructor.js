@@ -22,7 +22,6 @@ describe('Constructor', function(){
 
     expect(scene.cid).to.be.a('string');
     expect(scene.cid.length).to.be.greaterThan(0);
-    expect(scene.idAttribute).to.be.equal('name');
 
   });
 
