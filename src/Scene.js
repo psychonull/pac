@@ -1,6 +1,7 @@
 
 var Emitter = require('./Emitter');
 var GameObject = require('./GameObject');
+var GameObjectList = require('./GameObjectList');
 
 var required = ['name', 'size'];
 
@@ -31,39 +32,16 @@ module.exports = Emitter.extend({
 
     }, this);
 
-    this.objects = [];
+    this.objects = new GameObjectList();
   },
 
-  add: function(){
-    var arg0 = arguments[0];
-
-    if(Array.isArray(arg0)){
-
-      arg0.forEach(function(obj){
-        this._addOne(obj);
-      }, this);
-
-    }
-    else {
-      this._addOne(arg0);
-    }
-
-    return this;
-  },
-
-  _addOne: function(obj){
-
-    if (obj instanceof GameObject){
-      this.objects.push(obj);
-      return;
-    }
-
-    throw new Error('Only pac.GameObjects are allowed to add into an Scene');
+  addObject: function(toAdd){
+    this.objects.add(toAdd);
   },
 
   update: function(dt){
 
-    this.objects.forEach(function(gameObject){
+    this.objects.each(function(gameObject){
       gameObject.update(dt);
     });
     

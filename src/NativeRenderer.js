@@ -42,8 +42,7 @@ var NativeRenderer = module.exports = Renderer.extend({
   render: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    //TODO: Change this For Each, to a Cache ForEach
-    this.stage.entities.forEach(function(e){
+    this.stage.each(function(e){
       if (e.image){
         this.context.drawImage(e.image, 
           e.position.x, e.position.y, e.size.width, e.size.height);

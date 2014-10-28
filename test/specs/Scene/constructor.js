@@ -1,6 +1,6 @@
 
-var pac = require('../../../src/pac');
 var Scene = require('../../../src/Scene');
+var List = require('../../../src/List');
 
 var expect = require('chai').expect;
 
@@ -18,7 +18,6 @@ describe('Constructor', function(){
 
     expect(scene.name).to.be.equal(name);
     expect(scene.size).to.be.equal(size);
-    expect(scene.objects).to.be.an('array');
     expect(scene.objects.length).to.be.equal(0);
 
     expect(scene.cid).to.be.a('string');

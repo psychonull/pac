@@ -1,5 +1,6 @@
 
-var pac = require('../../../src/pac');
+var Point = require('../../../src/Point');
+var Drawable = require('../../../src/Drawable');
 var Scene = require('../../../src/Scene');
 
 var chai = require('chai');
@@ -9,7 +10,7 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-var Monkey = pac.Drawable.extend({
+var Monkey = Drawable.extend({
 
   name: '',
 
@@ -21,18 +22,18 @@ var Monkey = pac.Drawable.extend({
 
 });
 
-describe('#add', function(){
+describe('#addObject', function(){
 
-  it('must exist add method', function(){
+  it('must exist addObject method', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.add).to.be.a('function');
+    expect(scene.addObject).to.be.a('function');
   });
 
-  it('must allow to add a GameObject', function(){
+  it('must allow to addObject a GameObject', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
@@ -40,11 +41,10 @@ describe('#add', function(){
 
     var monkey = new Monkey();
 
-    scene.add(monkey);
+    scene.addObject(monkey);
 
-    expect(scene.objects).to.be.an('array');
     expect(scene.objects.length).to.be.equal(1);
-    expect(scene.objects[0]).to.be.instanceof(Monkey);
+    expect(scene.objects.get(monkey.cid)).to.be.instanceof(Monkey);
   });
 
   it('must throw an error if not inherit from GameObject', function(){
@@ -56,13 +56,13 @@ describe('#add', function(){
         size: { width: 200, height: 300 }
       });
 
-      scene.add(new pac.Point());
+      scene.addObject(new Point());
 
-    }).to.throw('Only pac.GameObjects are allowed to add into an Scene');
+    }).to.throw('invalid child type');
 
   });
 
-  it('must allow to add an array of pac.GameObjects', function(){
+  it('must allow to addObject an array of GameObjects', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
@@ -73,13 +73,12 @@ describe('#add', function(){
       new Monkey({ name: 'Pepito' })
     ];
 
-    scene.add(monkeys);
+    scene.addObject(monkeys);
 
-    expect(scene.objects).to.be.an('array');
     expect(scene.objects.length).to.be.equal(2);
 
-    expect(scene.objects[0].name).to.be.equal('Chubaka');
-    expect(scene.objects[1].name).to.be.equal('Pepito');
+    expect(scene.objects.at(0).name).to.be.equal('Chubaka');
+    expect(scene.objects.at(1).name).to.be.equal('Pepito');
   });
 
   it('must throw an error if not inherit from GameObject with an array', 
@@ -94,12 +93,12 @@ describe('#add', function(){
 
       var monkeys = [
         new Monkey({ name: 'Chubaka' }), 
-        new pac.Point()
+        new Point()
       ];
 
-      scene.add(monkeys);
+      scene.addObject(monkeys);
 
-    }).to.throw('Only pac.GameObjects are allowed to add into an Scene');
+    }).to.throw('invalid child type');
 
   });
 
@@ -128,7 +127,7 @@ describe('#update', function(){
     sinon.spy(monkey1, 'update');
     sinon.spy(monkey2, 'update');
 
-    scene.add([monkey1, monkey2]);
+    scene.addObject([monkey1, monkey2]);
 
     var dt = 0.16;
     scene.update(dt);

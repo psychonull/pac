@@ -27,6 +27,8 @@ module.exports = {
   Game: require('./Game'),
   create: require('./Game').create,
 
-  _: require('./utils')
+  _: require('./utils'),
+
+  List: require('./List')
 
 };

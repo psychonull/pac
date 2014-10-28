@@ -1,9 +1,9 @@
 
 var List = require('./List');
-var Drawable = require('./Drawable');
+var GameObject = require('./GameObject');
 
 module.exports = List.extend({
 
-  childType: Drawable,
+  childType: GameObject,
 
 });

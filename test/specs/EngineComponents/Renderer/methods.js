@@ -1,5 +1,6 @@
 
 var pac = require('../../../../src/pac');
+var Drawable = require('../../../../src/Drawable');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -16,6 +17,8 @@ var TestRenderer = pac.Renderer.extend({
 
 });
 
+var TestObject = Drawable.extend();
+
 describe('Methods', function(){
 
   it('must call onStageAdd method when a stage object is added', function(){
@@ -25,7 +28,7 @@ describe('Methods', function(){
     var renderer = new TestRenderer();
     expect(renderer.onStageAdd).to.be.a('function');
 
-    var testObj = { some: true };
+    var testObj = new TestObject();
     renderer.stage.add(testObj);
 
     expect(renderer.onStageAdd).to.have.been.calledOnce;
@@ -34,7 +37,7 @@ describe('Methods', function(){
     TestRenderer.prototype.onStageAdd.restore();
   });
 
-  it('must call onStageClear method when the stage is cleared'/*, function(){
+  it('must call onStageClear method when the stage is cleared', function(){
 
     sinon.spy(TestRenderer.prototype, 'onStageClear');
 
@@ -46,7 +49,7 @@ describe('Methods', function(){
     expect(renderer.onStageClear).to.have.been.calledOnce;
 
     TestRenderer.prototype.onStageClear.restore();
-  }*/);
+  });
 
   it('must expose a render method', function(){
     var renderer = new TestRenderer();

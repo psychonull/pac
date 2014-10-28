@@ -55,7 +55,7 @@ describe('Full Update', function(){
 
     sinon.spy(firstSc, 'update');
 
-    firstSc.add([ monkeyX, monkeyY ]);
+    firstSc.addObject([ monkeyX, monkeyY ]);
 
     game.scenes.add(firstSc);
 
