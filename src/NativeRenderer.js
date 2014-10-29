@@ -22,17 +22,12 @@ var NativeRenderer = module.exports = Renderer.extend({
   },
 
   onStageAdd: function(obj){
-    (function(o){
 
-      var res = new Image();
-      
-      res.onload = function(){
-        o.image = res;
-      };
+    var textures = this.game.cache.images;
+    
+    var image = textures.get(obj.texture).image;
+    obj.image = image;
 
-      res.src = o.resource;
-
-    })(obj);
   },
 
   onStageClear: function(){

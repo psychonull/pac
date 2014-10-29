@@ -21,13 +21,13 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   onStageAdd: function(obj){
 
-    /*
-    var baseTexture = new PIXI.BaseTexture(obj.texture.image);
+    var textures = this.game.cache.images;
+
+    var image = textures.get(obj.texture).image;
+    var baseTexture = new PIXI.BaseTexture(image);
     var texture = new PIXI.Texture(baseTexture);
-     */
 
     /*
-
       // use the entire texture, no crop
       var texture = new PIXI.Texture(baseTexture);
       var sprite = new PIXI.Sprite(texture);
@@ -47,9 +47,6 @@ var PixiRenderer = module.exports = Renderer.extend({
       // change current frame later
       texture.setFrame(obj.frame);
     */
-    
-    // create a texture from an image path
-    var texture = PIXI.Texture.fromImage(obj.resource);
 
     // create a new Sprite using the texture
     var sprite = new PIXI.Sprite(texture);

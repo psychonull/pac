@@ -6,6 +6,7 @@ var Sprite = module.exports = Drawable.extend({
 
   position: null,
   size: null,
+  texture: null,
 
   init: function(options){
     Sprite.__super__.init.apply(this, arguments);
@@ -15,6 +16,7 @@ var Sprite = module.exports = Drawable.extend({
     }
 
     this.size = (options && options.size) || null;
+    this.texture = (options && options.texture) || null;
   },
 
   update: function() { }
