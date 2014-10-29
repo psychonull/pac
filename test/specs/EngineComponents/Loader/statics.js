@@ -12,15 +12,27 @@ chai.use(sinonChai);
 describe('Statics', function(){
 
   describe('Types', function(){
+
     it('must include type mappings', function(){
-      expect(Loader.Types.image).to.equal(Texture);
+      expect(Loader.ResourceTypes.images).to.equal(Texture);
     });
+
   });
 
-  describe('ResolveFileType()', function(){
+  describe('#ResolveFileType', function(){
+
     it('must return a fileType based on a fileName', function(){
-      expect(Loader.ResolveFileType('hi.jpg')).to.equal('image');
-      expect(Loader.ResolveFileType('./assets/img/hi.png')).to.equal('image');
+      expect(Loader.ResolveFileType('hi.jpg')).to.equal('images');
+      expect(Loader.ResolveFileType('hi23nci9__.jpeg')).to.equal('images');
+      expect(Loader.ResolveFileType('./assets/img/hi.png')).to.equal('images');
+    });
+
+    it('must throw an error if the filetype is unknown', function(){
+
+      expect(function(){
+        Loader.ResolveFileType('hi.jpgxxxxx');
+      }).to.throw(/file type not supported/ig);
+
     });
   });
 

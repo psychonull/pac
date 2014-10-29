@@ -1,7 +1,7 @@
 
-var Base = require('./Base');
+var Emitter = require('./Emitter');
 
-module.exports = Base.extend({
+module.exports = Emitter.extend({
 
   init: function(){ }
 
