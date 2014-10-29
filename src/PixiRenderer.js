@@ -50,20 +50,10 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     // create a new Sprite using the texture
     var sprite = new PIXI.Sprite(texture);
- 
-    // center the sprites anchor point
-    sprite.anchor.x = 0;
-    sprite.anchor.y = 0;
- 
-    // move the sprite t the center of the screen
-    sprite.position.x = obj.position.x;
-    sprite.position.y = obj.position.y;
-
-    sprite.width = obj.size.width;
-    sprite.height = obj.size.height;
+    this._setSpriteProperties(obj, sprite);
+    sprite.cid = obj.cid;
  
     this.pixiStage.addChild(sprite);
-    
   },
 
   onStageClear: function(){
@@ -78,7 +68,31 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   render: function () {
+    this._updateProperties();
     this.pixiRenderer.render(this.pixiStage);
+  },
+
+  _setSpriteProperties: function(obj, sprite){
+    sprite.anchor.x = 0;
+    sprite.anchor.y = 0;
+ 
+    sprite.position.x = obj.position.x;
+    sprite.position.y = obj.position.y;
+
+    sprite.width = obj.size.width;
+    sprite.height = obj.size.height;
+  },
+
+  _updateProperties: function(){
+    
+    for (var i = this.pixiStage.children.length - 1; i >= 0; i--) {
+      var pixiSp = this.pixiStage.children[i];
+      var obj = this.stage.get(pixiSp.cid);
+
+      if (obj){
+        this._setSpriteProperties(obj, pixiSp);
+      }
+    }
   }
 
 });
