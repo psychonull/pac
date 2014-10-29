@@ -35,6 +35,10 @@ module.exports = Emitter.extend({
     this.objects = new GameObjectList();
   },
 
+  onEnter: function(sceneFrom){},
+
+  onLeave: function(){},
+
   addObject: function(toAdd){
     this.objects.add(toAdd);
   },

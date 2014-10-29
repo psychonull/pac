@@ -24,6 +24,11 @@ var Game = module.exports = Gameloop.extend({
 
     // Public members
     this.scenes = new Scenes();
+    this.scenes.on('leave', this.onLeaveScene.bind(this));
+    this.scenes.on('enter', this.onEnterScene.bind(this));
+
+    // Private members
+    this.assetsLoaded = false;
   },
 
   use: function(type, Component, options){
@@ -65,6 +70,7 @@ var Game = module.exports = Gameloop.extend({
   },
 
   start: function(){
+    this.onEnterScene(this.scenes.current);
     Game.__super__.start.apply(this, arguments);
   },
 
@@ -89,6 +95,14 @@ var Game = module.exports = Gameloop.extend({
     this.renderer.render();
     this.emit('draw');
   },
+
+  onLeaveScene: function(scene){
+    this.renderer.stage.clear();
+  },
+
+  onEnterScene: function(scene){
+    this.renderer.stage.add(scene.objects);
+  }
 
 }, {
 

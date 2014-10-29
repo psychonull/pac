@@ -93,11 +93,15 @@ describe('#switch', function(){
     }),
     sceneX = new Scene({
       name: 'x', 
-      size: { width: 400, height: 500 }
+      size: { width: 400, height: 500 },
+      onEnter: function(){},
+      onLeave: function(){}
     }),
     sceneY = new Scene({
       name: 'y', 
-      size: { width: 400, height: 500 }
+      size: { width: 400, height: 500 },
+      onEnter: function(){},
+      onLeave: function(){}
     });
 
   scenes.add([sceneStart, sceneX, sceneY]);
@@ -125,35 +129,40 @@ describe('#switch', function(){
 
       expect(scenes.current.name).to.equal('x');
 
-      var emitLeaveX = 0;
-      var emitLeaveY = 0;
+      sinon.spy(sceneX, 'onEnter');
+      sinon.spy(sceneX, 'onLeave');
 
-      var emitEnterX = 0;
-      var emitEnterY = 0;
+      sinon.spy(sceneY, 'onEnter');
+      sinon.spy(sceneY, 'onLeave');
 
-      sceneX.on('enter', function(){
-        emitEnterX++;
+      var emitScenesLeave = 0;
+      var emitScenesEnter = 0;
+      
+      scenes.on('leave', function(scene){
+        emitScenesLeave++;
+        expect(scene.name).to.be.equal('x');
       });
 
-      sceneX.on('leave', function(){
-        emitLeaveX++;
-      });
-
-      sceneY.on('enter', function(){
-        emitEnterY++;    
-      });
-
-      sceneY.on('leave', function(){
-        emitLeaveY++;    
+      scenes.on('enter', function(scene){
+        emitScenesEnter++;
+        expect(scene.name).to.be.equal('y');
       });
 
       scenes.switch('y');
 
-      expect(emitEnterX).to.be.equal(0);
-      expect(emitLeaveX).to.be.equal(1);
+      expect(sceneX.onEnter).to.not.have.been.called;
+      expect(sceneX.onLeave).to.have.been.called;
 
-      expect(emitEnterY).to.be.equal(1);
-      expect(emitLeaveY).to.be.equal(0);
+      expect(sceneY.onEnter).to.have.been.calledWith(sceneX);
+      expect(sceneY.onLeave).to.not.have.been.called;
+
+      expect(emitScenesEnter).to.be.equal(1);
+      expect(emitScenesLeave).to.be.equal(1);
+
+      sceneX.onEnter.restore();
+      sceneX.onLeave.restore();
+      sceneY.onEnter.restore();
+      sceneY.onLeave.restore();
   });
 
 });

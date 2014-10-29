@@ -64,7 +64,14 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   onStageClear: function(){
-    
+
+    if (this.pixiStage){
+      
+      for (var i = this.pixiStage.children.length - 1; i >= 0; i--) {
+        this.pixiStage.removeChild(this.pixiStage.children[i]);
+      }
+    }
+
   },
 
   render: function () {

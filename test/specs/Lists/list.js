@@ -117,6 +117,22 @@ describe('List', function(){
 
       });
 
+      it('must allow to add from another List', function(){
+        var listFrom = new TestList([ new TestItem(), new TestItem() ]);
+        var list = new TestList();
+
+        var emitted = 0;
+        list.on('add', function(){
+          emitted++;
+        });
+
+        list.add(listFrom);
+
+        expect(list.length).to.be.equal(2);
+        expect(list._items.length).to.be.equal(2);
+        expect(emitted).to.be.equal(2);
+      });
+
       it('must do nothing if the item already exists', function(){
         var list = new TestList();
         var item = new TestItem();

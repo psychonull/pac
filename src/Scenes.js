@@ -44,11 +44,14 @@ var Scenes = module.exports = MapList.extend({
     }
 
     if(previousScene){
-      previousScene.emit('leave');
+      previousScene.onLeave();
+      this.emit('leave', previousScene);
     }
     
-    targetScene.emit('enter');
-    this.current =  targetScene;
+    targetScene.onEnter(previousScene);
+    this.emit('enter', targetScene);
+
+    this.current = targetScene;
   },
 
   update: function(dt){

@@ -18,8 +18,15 @@ var game;
 describe('GameLoop', function(){
 
   before(function(){
+    
     game = pac.create();
     game.use('renderer', MockRenderer);
+    
+    game.scenes.add(new pac.Scene({
+      name: 'test',
+      size: { width: 100, height: 100 }
+    }));
+
   });
 
   it('must be able to start', function(done) {
@@ -117,6 +124,11 @@ describe('GameLoop', function(){
     sinon.spy(MockRenderer.prototype, 'render');
 
     testGame.use('renderer', MockRenderer);
+
+    testGame.scenes.add(new pac.Scene({
+      name: 'test',
+      size: { width: 100, height: 100 }
+    }));
 
     var updateTime = 0;
     var drawTime = 0;

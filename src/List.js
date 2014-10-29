@@ -2,7 +2,7 @@
 var Emitter = require('./Emitter'),
   _ = require('./utils');
 
-module.exports = Emitter.extend({
+var List = module.exports = Emitter.extend({
 
   childType: null,
   length: 0,
@@ -35,6 +35,11 @@ module.exports = Emitter.extend({
     if(Array.isArray(arg0)){
       arg0.forEach(this._set.bind(this));
       return this;
+    }
+
+    if (arg0 instanceof List){
+      arg0.each(this._set.bind(this));
+      return this; 
     }
 
     this._set(arg0);
