@@ -58,6 +58,9 @@ var PixiRenderer = module.exports = Renderer.extend({
     // move the sprite t the center of the screen
     sprite.position.x = obj.position.x;
     sprite.position.y = obj.position.y;
+
+    sprite.width = obj.size.width;
+    sprite.height = obj.size.height;
  
     this.pixiStage.addChild(sprite);
     
