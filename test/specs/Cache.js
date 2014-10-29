@@ -330,6 +330,16 @@ describe('Cache', function(){
       );
     });
 
+    describe('#values', function(){
+
+      it('Must return an array of values', function(){
+        cache.add('a', 1);
+        cache.add('b', 2);
+        expect(cache.values()).to.eql([1,2]);
+      });
+
+    });
+
   });
 
 });

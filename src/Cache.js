@@ -149,6 +149,10 @@ var Cache = Emitter.extend({
 
   hasGroup: function(name){
     return this.getGroup(name) !== null;
+  },
+
+  values: function(){
+    return _.values(this._data);
   }
 
 });
