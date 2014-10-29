@@ -14,6 +14,10 @@ var Loader = EngineComponent.extend({
 
   // events: start, progress, complete
   // events(planned): start:group, progress:group, complete:group
+
+  _resourcesToLoad: 0,
+  _resourcesLoaded: 0,
+
   init: function(game, resources){
     this.game = game;
     if(!this.game.cache){
@@ -23,14 +27,19 @@ var Loader = EngineComponent.extend({
 
     this._initResourceCollections();
     this.addResources(resources);
+
+    this.on('complete', this.overwriteGameCache);
   },
 
   _initResourceCollections: function(){
-    _.chain(this.constructor.ResourceTypes).keys().forEach(
-      _.bind(function(resType){
+    _.forEach(this.getResourceTypes(), _.bind(function(resType){
         this[resType] = new Cache();
       }, this)
     );
+  },
+
+  getResourceTypes: function(){
+    return _.keys(this.constructor.ResourceTypes);
   },
 
   addResource: function(name, filepath){
@@ -50,8 +59,45 @@ var Loader = EngineComponent.extend({
     }, this));
   },
 
+  getResources: function(){
+    var types = this.getResourceTypes();
+    var that = this;
+    return _(types).map(function(type){
+        return that[type].values();
+      })
+      .flatten()
+      .value();
+  },
+
   load: function(){
     this.emit('start');
+
+    var that = this;
+    var resources = this.getResources();
+    this._resourcesToLoad = resources.length;
+
+    _.forEach(resources, function(resource){
+      resource.on('load', function(){
+        that._resourcesLoaded++;
+        var progress = that._resourcesLoaded / that._resourcesToLoad;
+        if(progress >= 1){
+          that.emit('complete');
+        }
+        else{
+          that.emit('progress', progress);
+        }
+      });
+      resource.load();
+    });
+  },
+
+  overwriteGameCache: function(){
+    _.forEach(this.getResourceTypes(), _.bind(function(type){
+      var loadedForType = _.omit(this[type].get(), function(val){
+        return val.loaded !== true;
+      });
+      this.game.cache[type] = new Cache(loadedForType);
+    }, this));
   }
 },
 {

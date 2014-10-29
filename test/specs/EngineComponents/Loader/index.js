@@ -9,7 +9,9 @@ describe('Loader', function(){
   });
 
   require('./constructor');
-  require('./methods');
+  describe('Methods', function(){
+    require('./methods');
+  });
   require('./statics');
 
 });

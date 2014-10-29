@@ -59,14 +59,23 @@ describe('Constructor', function(){
     Loader.prototype.addResources.restore();
   });
 
-  it('can identify filetype from file extension');
+  it('must set to call overwriteGameCache() on complete', function(){
+    var onSpy = sinon.spy(Loader.prototype, 'on');
 
-  it('must map filetype to Class (eg. image -> Texture)');
+    var loader = new Loader({});
 
-  it('must map filetype to Class (eg. image -> Texture)');
+    expect(onSpy).to.have.been.calledWith(
+      'complete',
+      Loader.prototype.overwriteGameCache
+    );
+
+    Loader.prototype.on.restore();
+  });
 
   it('can receive a dictionary of key:obj and set it to files');
 
-  it('can receive a dictionary of key:group:obj and setup the groups');
+  it('can receive a dictionary of group:[{key:obj}] and setup the groups');
+
+  it('can receive another param with options such as baseUrl?');
 
 });

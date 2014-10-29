@@ -2,6 +2,7 @@
 var pac = require('../../../../src/pac');
 var Loader = require('../../../../src/Loader');
 var Texture = require('../../../../src/Texture');
+var Cache = require('../../../../src/Cache');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -9,6 +10,22 @@ var expect = chai.expect;
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
+
+describe('#getResourceTypes', function(){
+
+  it('should return the keys of Loader.ResourceTypes', function(){
+
+    var MyLoader = Loader.extend({}, {
+      ResourceTypes: { unicorns: String, dogs: String }
+    });
+
+    var loader = new MyLoader({});
+
+    expect(loader.getResourceTypes()).to.eql(['unicorns', 'dogs']);
+
+  });
+
+});
 
 describe('#addResource', function(){
 
@@ -100,6 +117,10 @@ describe('#addResource', function(){
     }
   );
 
+  it('must support an options object as second param');
+
+  it('options must allow to override filetype detection');
+
 });
 
 describe('#addResources', function(){
@@ -125,6 +146,35 @@ describe('#addResources', function(){
 
 });
 
+describe('#getResources', function(){
+
+  it('Should return an empty array if no resources', function(){
+    var loader = new Loader({});
+    expect(loader.getResources()).to.have.length(0);
+  });
+
+  it('Should return an array of resources of every kind', function(){
+    var MyLoader = Loader.extend({}, {
+      ResourceTypes: { cats: Object, dogs: Object }
+    });
+    var loader = new MyLoader({});
+
+    // hook straight into cats.add just for mocking purposes
+    loader.cats.add('catOne', 1);
+    loader.cats.add('catTwo', 2);
+    loader.dogs.add('dog', 'dog');
+    loader.dogs.add('dogTwo', 'wow wow!');
+
+    expect(loader.getResources()).to.have.length(4);
+    expect(loader.getResources()).to.include(1);
+    expect(loader.getResources()).to.include(2);
+    expect(loader.getResources()).to.include('dog');
+    expect(loader.getResources()).to.include('wow wow!');
+
+  });
+
+});
+
 describe('#load', function(){
 
   it('must emit the start event', function(done){
@@ -135,7 +185,166 @@ describe('#load', function(){
     loader.load();
   });
 
-  it('must start loading the assets');
+  var makeResource = function(onFn){
+    var x = {
+      load: function(){},
+      on: onFn || function(event, cb){
+        //setTimeout(cb, 5);
+      }
+    };
+    sinon.spy(x, 'load');
+    sinon.spy(x, 'on');
+    return x;
+  };
+
+  it('must call load() on every resource returned by getResources()',
+    function(){
+
+      var resources = [makeResource(), makeResource()];
+      var loader = new Loader({});
+      sinon.stub(loader, 'getResources').returns(resources);
+
+      loader.load();
+
+      expect(loader.getResources).to.have.been.called.once;
+      expect(resources[0].load).to.have.been.called.once;
+      expect(resources[1].load).to.have.been.called.once;
+    }
+  );
+
+  it('must subscribe to the "load" event on every resource', function(){
+    var resources = [makeResource(), makeResource()];
+    var loader = new Loader({});
+    sinon.stub(loader, 'getResources').returns(resources);
+
+    loader.load();
+
+    expect(loader.getResources).to.have.been.called.once;
+    expect(resources[0].on).to.have.been.calledWith('load');
+    expect(resources[1].on).to.have.been.calledWith('load');
+  });
+
+  it('must emit a progress event when one asset is loaded', function(done){
+    var onFn = function(event, cb){
+      // simulate 15ms load (?)
+      setTimeout(cb, 15);
+    };
+    var resources = [makeResource(onFn), makeResource()];
+    var loader = new Loader({});
+    sinon.stub(loader, 'getResources').returns(resources);
+
+    loader.on('progress', function(progress){
+      expect(progress).to.equal(0.5);
+      done();
+    });
+
+    loader.load();
+
+  });
+
+  it('must emit a complete event and not progress when all loaded',
+    function(done){
+      var onFn = function(event, cb){
+        // simulate 15ms load (?)
+        setTimeout(cb, 15);
+      };
+      var resources = [makeResource(onFn), makeResource(onFn)];
+      var loader = new Loader({});
+      sinon.stub(loader, 'getResources').returns(resources);
+      sinon.spy(loader, 'emit');
+
+      loader.on('complete', function(){
+        expect(loader.emit.firstCall).to.have.been.calledWith('start');
+        expect(loader.emit.secondCall).to.have.been.calledWith('progress', 0.5);
+        expect(loader.emit.thirdCall).to.have.been.calledWith('complete');
+        done();
+      });
+
+      loader.load();
+
+    }
+  );
+
+  it('must handle asset loading errors');
+
+  it('must set the game cache on completion [integration test]', function(done){
+    var FakeType = function(url){
+      this.url = url;
+      this.on = function(event, cb){
+        var that = this;
+        setTimeout(function(){
+          that.loaded = true;
+          cb();
+        }, 15);
+      };
+      this.load = function(){};
+    };
+
+    var MyLoader = Loader.extend({}, {
+      ResourceTypes: { needles: FakeType },
+      ResolveFileType: sinon.stub().returns('needles')
+    });
+    var fakeGame = {};
+    var filesToLoad = {
+      one: 'firstFakeNeedle.need',
+      two: 'secondFakeNeedle.need'
+    };
+    var loader = new MyLoader(fakeGame, filesToLoad);
+
+    loader.on('complete', function(){
+      expect(fakeGame.cache.needles.length).to.equal(2);
+      done();
+    });
+
+    loader.load();
+
+  });
+
   it('can receive a group name and start loading that group only');
+
+});
+
+describe('#overwriteGameCache', function(){
+
+  it('must overwrite every cache.resourceType collection', function(){
+    var MyLoader = Loader.extend({}, {
+      ResourceTypes: { cats: Object }
+    });
+    var fakeGame = {
+      cache: {
+        cats: new Cache({ miau: 1 })
+      }
+    };
+    var loader = new MyLoader(fakeGame);
+
+    expect(fakeGame.cache.cats.length).to.equal(1);
+
+    loader.overwriteGameCache();
+
+    expect(fakeGame.cache.cats.length).to.equal(0);
+
+  });
+
+  it('must put only loaded resources into the game.cache', function(){
+    var MyLoader = Loader.extend({}, {
+      ResourceTypes: { needles: String, pins: String }
+    });
+    var fakeGame = {};
+    var loader = new MyLoader(fakeGame);
+
+    // hook straight into needles and pins .add just for mocking purposes
+    loader.needles.add('viva', { loaded: true });
+    loader.needles.add('noviva', { loaded: false });
+    loader.pins.add('viva', { loaded: true });
+
+    loader.overwriteGameCache();
+
+    expect(fakeGame.cache.needles.length).to.equal(1);
+    expect(fakeGame.cache.needles.get('viva')).to.exist;
+    expect(fakeGame.cache.needles.get('noviva')).to.be.null;
+    expect(fakeGame.cache.pins.length).to.equal(1);
+    expect(fakeGame.cache.needles.get('viva')).to.exist;
+
+  });
 
 });
