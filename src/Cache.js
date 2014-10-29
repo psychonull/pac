@@ -8,7 +8,7 @@ var Cache = Emitter.extend({
   _validation: function(val) { return true; },
   childType: null,
 
-  init: function(data, validationFn){
+  init: function(data, options){
     this._data = {};
 
     var updateLength = function updateLength(){
@@ -18,10 +18,16 @@ var Cache = Emitter.extend({
     this.on('add', _.bind(updateLength, this));
     this.on('remove', _.bind(updateLength, this));
 
-    this.groups = { length: 0 };
+    this._groups = { length: 0 };
 
-    if(validationFn){
-      this.setValidation(validationFn);
+    if(options && options.validation){
+      this.setValidation(options.validation);
+    }
+
+    if(options && options.groups){
+      _.forEach(options.groups, _.bind(function(groupName){
+        this.addGroup(groupName);
+      }, this));
     }
 
     if(data){
@@ -49,7 +55,7 @@ var Cache = Emitter.extend({
       }
 
       this._add(arg0.cid, arg0);
-      
+
       return this;
     }
 
@@ -75,6 +81,9 @@ var Cache = Emitter.extend({
   },
 
   get: function(key){
+    if(typeof key === 'undefined'){
+      return this._data;
+    }
     var val = this._data[key];
 
     if(typeof val === 'undefined'){
@@ -89,7 +98,7 @@ var Cache = Emitter.extend({
     if (val !== null){
       delete this._data[key];
     }
-    
+
     this.emit('remove', key, val);
     return val;
   },
@@ -120,20 +129,22 @@ var Cache = Emitter.extend({
     this._validation = fn;
   },
 
-  addGroup: function(name, data, validationFn){
-    var group = new Cache(data, validationFn);
+  addGroup: function(name, data, options){
+    var group = new Cache(data, options);
 
-    if(this.groups.length === 0){
-      this.groups = new Cache();
+    if(this._groups.length === 0){
+      this._groups = new Cache();
     }
 
-    this.groups.add(name, group);
+    this._groups.add(name, group);
     return group;
   },
 
   getGroup: function(name){
-    if (this.groups.length === 0) return null;
-    return this.groups.get(name);
+    if (this._groups.length === 0){
+      this._groups = new Cache();
+    }
+    return this._groups.get(name);
   },
 
   hasGroup: function(name){
