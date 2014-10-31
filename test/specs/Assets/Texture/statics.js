@@ -1,9 +1,9 @@
 
-var Texture = require('../../../src/Texture');
+var Texture = require('../../../../src/Texture');
 var expect = require('chai').expect;
 
 describe('Statics', function(){
-  
+
   describe('#fromURL', function(){
     it('must return a new Texture from a URL');
   });

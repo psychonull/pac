@@ -1,41 +1,30 @@
 
-var Emitter = require('./Emitter');
+var Asset = require('./Asset');
 
-module.exports = Emitter.extend({
+module.exports = Asset.extend({
 
-  url: null,
-  loaded: false,
   image: null,
 
   init: function(options){
-    if (!options){
+
+    this.constructor.__super__.init.call(this, options);
+
+    if(!this.url){
       throw new Error('Expected an URL, image object or a base64');
     }
 
     this.image = new Image();
     this.image.onload = this.onload.bind(this);
     this.image.onerror = this.onerror.bind(this);
-    this.lodaded = false;
 
-    if (typeof options === 'string'){
-      this.url = options;
-    }
   },
 
   load: function(){
-    if (this.url){
-      this.image.src = this.url;
-    }
+    this.image.src = this.url;
   },
 
-  onload: function(){
-    this.loaded = true;
-    this.emit('load');
-  },
-
-  onerror: function(){
-    this.loaded = false;
-    this.emit('error');
+  raw: function(){
+    return this.loaded ? this.image : null;
   }
 
 });

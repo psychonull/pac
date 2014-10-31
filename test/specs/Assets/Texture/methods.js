@@ -1,9 +1,9 @@
 
-var Texture = require('../../../src/Texture');
+var Texture = require('../../../../src/Texture');
 var expect = require('chai').expect;
 
 describe('Methods', function(){
-  
+
   describe('#load', function(){
 
     it('must expose a load method', function(){
@@ -14,7 +14,7 @@ describe('Methods', function(){
     it('must load the image and fire an event load', function(done){
       var url = 'psycho.png';
       var texture = new Texture(url);
-  
+
       var loadEmitted = 0;
       var errorEmitted = 0;
 
@@ -26,7 +26,7 @@ describe('Methods', function(){
         expect(errorEmitted).to.be.equal(0);
         done();
       });
-      
+
       texture.on('error', function(){
         errorEmitted++;
       });
@@ -61,6 +61,24 @@ describe('Methods', function(){
       expect(texture.image).to.be.instanceof(Image);
       expect(texture.url).to.be.equal(url);
 
+      texture.load();
+    });
+
+  });
+
+  describe('#raw', function(){
+
+    it('must return null if the image is not loaded', function(){
+      var texture = new Texture('psycho.png');
+      expect(texture.raw()).to.be.null;
+    });
+
+    it('must return the image if loaded', function(done){
+      var texture = new Texture('psycho.png');
+      texture.on('load', function(){
+        expect(texture.raw()).to.be.equal(texture.image);
+        done();
+      });
       texture.load();
     });
 
