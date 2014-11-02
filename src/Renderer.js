@@ -23,7 +23,8 @@ var Renderer = module.exports = EngineComponent.extend({
       this.container = options.container || this.container;
     }
 
-    Renderer.__super__.constructor.apply(this, arguments);
+    //Renderer.__super__.constructor.apply(this, arguments);
+    EngineComponent.apply(this, arguments);
   },
 
   init: function(game, options) { },

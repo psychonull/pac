@@ -17,7 +17,8 @@ var Sprite = module.exports = Drawable.extend({
 
     this.size = (options && options.size) || this.size;
 
-    Sprite.__super__.constructor.apply(this, arguments);
+    //Sprite.__super__.constructor.apply(this, arguments);
+    Drawable.apply(this, arguments);
   },
 
   init: function(){ },

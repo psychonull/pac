@@ -10,7 +10,8 @@ var Drawable = module.exports = GameObject.extend({
     this.position = (opts && opts.position) || this.position || new Point();
     this.position = new Point(this.position);
 
-    Drawable.__super__.constructor.apply(this, arguments);
+    //Drawable.__super__.constructor.apply(this, arguments);
+    GameObject.apply(this, arguments);
   },
 
   init: function(){ },

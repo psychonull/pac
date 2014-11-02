@@ -26,7 +26,8 @@ var Scene = module.exports = Emitter.extend({
 
     this.objects = new GameObjectList();
 
-    Scene.__super__.constructor.apply(this, arguments);
+    //Scene.__super__.constructor.apply(this, arguments);
+    Emitter.apply(this, arguments);
   },
 
   init: function(){},

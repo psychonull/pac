@@ -53,6 +53,8 @@ describe('Constructor', function(){
     expect(test.size.width).to.be.equal(50);
     expect(test.size.height).to.be.equal(50);
 
+    var initCalled = false;
+
     var MySprite2 = MySprite.extend({
       size: {
         width: 200,
@@ -61,6 +63,7 @@ describe('Constructor', function(){
       init: function(options){
         expect(options.myOpt).to.be.true;
         expect(this.position.x).to.be.equal(100);
+        initCalled = true;
       }
     });
 
@@ -70,6 +73,7 @@ describe('Constructor', function(){
 
     expect(test.size.width).to.be.equal(200);
     expect(test.texture).to.be.equal('test');
+    expect(initCalled).to.be.true;
 
   });
 
