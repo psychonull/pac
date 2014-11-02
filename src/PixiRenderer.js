@@ -8,8 +8,6 @@ var PixiRenderer = module.exports = Renderer.extend({
   backgroundColor: '#000000',
 
   init: function(){
-    PixiRenderer.__super__.init.apply(this, arguments);
-
     var bg = this.backgroundColor.replace('#', '0x');
     this.pixiStage = new PIXI.Stage(bg);
 

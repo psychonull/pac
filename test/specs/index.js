@@ -34,7 +34,6 @@ describe('PAC', function(){
   require('./EngineComponents/index.js');
 
   require('./Point.js');
-
   require('./GameObjects/index.js');
 
   require('./Cache');

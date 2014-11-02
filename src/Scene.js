@@ -5,35 +5,31 @@ var GameObjectList = require('./GameObjectList');
 
 var required = ['name', 'size'];
 
-module.exports = Emitter.extend({
-
-  idAttribute: 'name',
+var Scene = module.exports = Emitter.extend({
 
   name: null,
   size: null,
-
   objects: null,
 
-  init: function(options){
-
-    if (!options){
-      throw new Error('Cannot create an empty Scene: required ' +
-        required.join(', '));
-    }
+  constructor: function(options){
+    this.name = (options && options.name) || this.name;
+    this.size = (options && options.size) || this.size;
 
     required.forEach(function(req){
 
-      if (!options.hasOwnProperty(req)) {
+      if (!this[req]) {
         throw new Error('Cannot create scene ' + (this.name || '') +
           ': "' + req + '" is required');
       }
 
-      this[req] = options[req];
-
     }, this);
 
     this.objects = new GameObjectList();
+
+    Scene.__super__.constructor.apply(this, arguments);
   },
+
+  init: function(){},
 
   onEnter: function(sceneFrom){},
 

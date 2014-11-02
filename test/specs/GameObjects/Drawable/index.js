@@ -23,6 +23,7 @@ describe('Drawable', function(){
   it('must create a Drawable', function(){
     var obj = new pac.Drawable();
     
+    expect(obj.cid).to.be.an('string');
     expect(obj.position.x).to.be.equal(0);
     expect(obj.position.y).to.be.equal(0);
   });
@@ -34,6 +35,32 @@ describe('Drawable', function(){
     
     expect(obj.position.x).to.be.equal(100);
     expect(obj.position.y).to.be.equal(100);
+  });
+
+  it('must allow to inherit setting defaults', function(){
+    var calledInit = false;
+
+    var MyDrawable = pac.Drawable.extend({
+      
+      position: { x: 200, y: 200 },
+
+      init: function(options){
+        expect(this.position.x).to.be.equal(300);
+        expect(options.test).to.be.true;
+        calledInit = true;
+      }
+    });
+
+    var obj = new MyDrawable({
+      test: true,
+      position: { x: 300, y: 200 }
+    });
+    
+    expect(calledInit).to.be.true;
+
+    expect(obj.cid).to.be.an('string');
+    expect(obj.position.x).to.be.equal(300);
+    expect(obj.position.y).to.be.equal(200);
   });
 
 });

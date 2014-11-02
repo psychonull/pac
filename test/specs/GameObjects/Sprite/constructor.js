@@ -32,6 +32,47 @@ describe('Constructor', function(){
     expect(sprite.size.height).to.be.equal(50);
   });
 
+  it ('must allow to create Prefabs from Sprite', function(){
+
+    var MySprite = Sprite.extend({
+      texture: 'test',
+      position: { x: 100, y: 100 },
+      size: {
+        width: 50,
+        height: 50
+      }
+    });
+
+    var test = new MySprite();
+
+    expect(test.texture).to.be.equal('test');
+
+    expect(test.position.x).to.be.equal(100);
+    expect(test.position.y).to.be.equal(100);
+
+    expect(test.size.width).to.be.equal(50);
+    expect(test.size.height).to.be.equal(50);
+
+    var MySprite2 = MySprite.extend({
+      size: {
+        width: 200,
+        height: 100
+      },
+      init: function(options){
+        expect(options.myOpt).to.be.true;
+        expect(this.position.x).to.be.equal(100);
+      }
+    });
+
+    test = new MySprite2({
+      myOpt: true
+    });
+
+    expect(test.size.width).to.be.equal(200);
+    expect(test.texture).to.be.equal('test');
+
+  });
+
   it ('must throw an error if no texture is specify', function(){
 
     expect(function(){

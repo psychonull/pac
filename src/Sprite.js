@@ -8,16 +8,19 @@ var Sprite = module.exports = Drawable.extend({
   size: null,
   texture: null,
 
-  init: function(options){
-    Sprite.__super__.init.apply(this, arguments);
-
-    if (!options || (options && !options.texture)){
+  constructor: function(options){
+    this.texture = (options && options.texture) || this.texture;
+    
+    if (!this.texture){
       throw new Error('Expected [texture] name of Sprite');
     }
 
-    this.size = (options && options.size) || null;
-    this.texture = (options && options.texture) || null;
+    this.size = (options && options.size) || this.size;
+
+    Sprite.__super__.constructor.apply(this, arguments);
   },
+
+  init: function(){ },
 
   update: function() { }
 

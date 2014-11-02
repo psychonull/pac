@@ -1,20 +1,12 @@
 
 var Base = require('./Base');
 var EventEmitter = require('events').EventEmitter;
-var _ = require('./utils');
 
 var Emitter = module.exports = Base.extend({
 
-  cid: null,
-
   constructor: function(){
     EventEmitter.call(this);
-
-    this.cid = _.uniqueId();
-
-    if (this.init){
-      this.init.apply(this, arguments);
-    }
+    Emitter.__super__.constructor.apply(this, arguments);
   },
 
   init: function(){ }

@@ -6,10 +6,6 @@ var expect = chai.expect;
 
 var TestRenderer = pac.Renderer.extend({
 
-  init: function(){
-    TestRenderer.__super__.init.apply(this, arguments);
-  },
-  
   onStageAdd: function(){ },
   onStageClear: function(){ },
   render: function(){ },

@@ -7,8 +7,6 @@ var NativeRenderer = module.exports = Renderer.extend({
   backgroundColor: '#000000',
 
   init: function(){
-    NativeRenderer.__super__.init.apply(this, arguments);
-
     var canvas = document.createElement('canvas');
     
     canvas.style.backgroundColor = this.backgroundColor;

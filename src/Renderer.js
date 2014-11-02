@@ -2,13 +2,13 @@
 var EngineComponent = require('./EngineComponent');
 var Stage = require('./Stage');
 
-module.exports = EngineComponent.extend({
+var Renderer = module.exports = EngineComponent.extend({
 
   size: { width: 800, height: 600 },
   backgroundColor: '#000000',
   container: null,
 
-  init: function(game, options){
+  constructor: function(game, options){
     this.game = game;
     this.stage = new Stage();
 
@@ -22,7 +22,11 @@ module.exports = EngineComponent.extend({
       this.backgroundColor = options.backgroundColor || this.backgroundColor;
       this.container = options.container || this.container;
     }
+
+    Renderer.__super__.constructor.apply(this, arguments);
   },
+
+  init: function(game, options) { },
 
   onStageAdd: function(obj){
     throw new Error('Must override renderer.onStageAdd()');

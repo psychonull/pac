@@ -19,17 +19,20 @@ describe('Constructor', function(){
     expect(scene.name).to.be.equal(name);
     expect(scene.size).to.be.equal(size);
     expect(scene.objects.length).to.be.equal(0);
-
-    expect(scene.cid).to.be.a('string');
-    expect(scene.cid.length).to.be.greaterThan(0);
-
   });
 
-  it('must throw an error if no arguments', function(){
+  it('must allow to inherit from a scene', function(){
 
-    expect(function(){
-      var scene = new Scene();
-    }).to.throw('Cannot create an empty Scene: required name, size');
+    var FunScene = Scene.extend({
+      name: 'FunScene',
+      size: { width: 500, height: 600 }
+    });
+
+    var scene = new FunScene();
+
+    expect(scene.name).to.be.equal('FunScene');
+    expect(scene.size.width).to.be.equal(500);
+    expect(scene.objects.length).to.be.equal(0);
 
   });
 
