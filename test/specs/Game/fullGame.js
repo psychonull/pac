@@ -30,6 +30,18 @@ var MonkeyY = pac.Drawable.extend({
 
 });
 
+/* test Actions Update */
+
+var MonkeyAction = pac.Action.extend({
+  
+  update: function(dt){
+    this.actionList.owner.position.x = 1000 + dt;
+  }
+
+});
+
+var MonkeyActioner = pac.Drawable.extend();
+
 /*
   Test an update gameloop event from game to an scene object.
 */
@@ -47,8 +59,19 @@ describe('Full Update', function(){
     var monkeyX = new MonkeyX();
     var monkeyY = new MonkeyY();
 
+    /* test Actions Update */
+    var monkeyAct = new MonkeyAction();
+    var monkeyActioner = new MonkeyActioner({
+      actions: [ monkeyAct ]
+    });
+
     sinon.spy(monkeyX, 'update');
     sinon.spy(monkeyY, 'update');
+
+    /* test Actions Update */
+    sinon.spy(monkeyActioner, 'update');
+    sinon.spy(monkeyAct, 'update');
+    sinon.spy(monkeyActioner, 'updateActions');
 
     var firstSc = new pac.Scene({
       name: 'first',
@@ -57,7 +80,7 @@ describe('Full Update', function(){
 
     sinon.spy(firstSc, 'update');
 
-    firstSc.addObject([ monkeyX, monkeyY ]);
+    firstSc.addObject([ monkeyX, monkeyY, monkeyActioner ]);
 
     game.scenes.add(firstSc);
 
@@ -70,12 +93,18 @@ describe('Full Update', function(){
       expect(firstSc.update).to.have.been.called;
       expect(monkeyX.update).to.have.been.called;
       expect(monkeyY.update).to.have.been.called;
+      expect(monkeyActioner.update).to.have.been.called;
+
+      expect(monkeyActioner.updateActions).to.have.been.called;
+      expect(monkeyAct.update).to.have.been.called;
 
       expect(monkeyX.position.x).to.be.greaterThan(0);
       expect(monkeyX.position.y).to.be.equal(0);
 
       expect(monkeyY.position.x).to.be.equal(0);
       expect(monkeyY.position.y).to.be.greaterThan(0);
+
+      expect(monkeyActioner.position.x).to.be.greaterThan(1000);
 
       firstSc.update.restore();
       monkeyX.update.restore();
