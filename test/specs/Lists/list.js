@@ -294,6 +294,106 @@ describe('List', function(){
 
     });
 
+    describe('#indexOf', function(){
+
+      it('must return the index of an item by cid or instance', function(){
+        var list = new TestList();
+        
+        var searchItem = new TestItem();
+        var searchId = searchItem.cid;
+
+        var arr = [new TestItem() , new TestItem(), searchItem, new TestItem()];
+
+        list.add(arr);
+
+        var idxByCID = list.indexOf(searchId);
+        expect(idxByCID).to.be.equal(2);
+
+        var idxByInstance = list.indexOf(searchItem);
+        expect(idxByInstance).to.be.equal(2);
+      });
+
+      it('must return -1 if item is not found', function(){
+        var notInList = new TestItem();
+
+        var list = new TestList([
+          new TestItem() , new TestItem(), new TestItem()
+        ]);
+
+        var idx = list.indexOf(notInList);
+        expect(idx).to.be.equal(-1);
+
+        idx = list.indexOf('zzzz');
+        expect(idx).to.be.equal(-1);
+      });
+
+    });
+
+    describe('#insertAt', function(){
+
+      it('must insert an item at a given index and fire add event', function(){
+        var list = new TestList([
+          new TestItem() , new TestItem(), new TestItem()
+        ]);
+
+        var insertItem = new TestItem();
+        var insertedCID = insertItem.cid;
+
+        var emitted = 0;
+        list.on('add', function(item){
+          emitted++;
+          expect(item.cid).to.be.equal(insertedCID);
+        });
+        
+        var listLen = list.length;
+
+        list.insertAt(2, insertItem);
+
+        expect(list.length).to.be.equal(listLen+1);
+
+        var idxInserted = list.indexOf(insertItem);
+        expect(idxInserted).to.be.equal(2);
+
+        expect(emitted).to.be.equal(1);
+      });
+
+      it('must throw an error if type is not allowed', function(){
+
+        var list = new TestList([
+          new TestItem() , new TestItem(), new TestItem()
+        ]);
+
+        expect(function(){
+          list.insertAt(2, new GameObject());
+        }).to.throw(/invalid child type/);
+
+      });
+
+      it('must if index is not provided', function(){
+        var list = new TestList([
+          new TestItem() , new TestItem(), new TestItem()
+        ]);
+
+        expect(function(){
+          list.insertAt(new TestItem());
+        }).to.throw(/expected an index/);
+
+      });
+
+      it('must throw an error if item already exists', function(){
+        var duplicated = new TestItem();
+
+        var list = new TestList([
+          new TestItem() , duplicated, new TestItem()
+        ]);
+
+        expect(function(){
+          list.insertAt(0, duplicated);
+        }).to.throw(/item already exists/);
+      });
+
+    });
+
   });
 
 });

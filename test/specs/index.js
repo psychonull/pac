@@ -42,4 +42,7 @@ describe('PAC', function(){
   require('./Lists');
 
   require('./Assets/index.js');
+
+  require('./ActionLists');
+
 });

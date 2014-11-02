@@ -25,6 +25,23 @@ var List = module.exports = Emitter.extend({
     return this._items[index];
   },
 
+  indexOf: function(){
+    var arg0 = arguments[0], 
+      cid = arg0;
+
+    if (typeof arg0 === 'object'){
+      cid = arg0.cid;
+    }
+
+    for(var i=0; i<this._items.length; i++){
+      if (this._items[i].cid === cid){
+        return i;
+      }
+    }
+
+    return -1;
+  },
+
   get: function(cid){
     return _.find(this._items, { 'cid': cid });
   },
@@ -46,14 +63,42 @@ var List = module.exports = Emitter.extend({
     return this;
   },
 
-  _set: function(item){
+  insertAt: function(index, item){
 
+    if (isNaN(index)){
+      throw new Error('expected an index');
+    }
+
+    this._validate(item);
+
+    if (this._exists(item)){
+      throw new Error('item already exists');
+    }
+
+    this._items.splice(index, 0, item);
+    this.length++;
+
+    this.emit('add', item);
+  },
+
+  _validate: function(item){
     if (this.childType && !(item instanceof this.childType)){
       throw new Error('invalid child type');
     }
+  },
 
+  _exists: function(item){
     if (this.get(item.cid)){
-      //already exists
+      return true;
+    }
+    return false;
+  },
+
+  _set: function(item){
+
+    this._validate(item);
+
+    if (this._exists(item)){
       return;
     }
 

@@ -30,6 +30,9 @@ module.exports = {
   _: require('./utils'),
 
   List: require('./List'),
-  MapList: require('./MapList')
+  MapList: require('./MapList'),
+
+  ActionList: require('./ActionList'),
+  Action: require('./Action')
 
 };
