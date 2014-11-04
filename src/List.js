@@ -85,6 +85,10 @@ var List = module.exports = Emitter.extend({
     if (this.childType && !(item instanceof this.childType)){
       throw new Error('invalid child type');
     }
+    
+    if(!item.hasOwnProperty('cid')){
+      item.cid = _.uniqueId();
+    }
   },
 
   _exists: function(item){

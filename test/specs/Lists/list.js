@@ -36,6 +36,20 @@ describe('List', function(){
       expect(list._items.length).to.be.equal(2);
     });
 
+    it('must allow to create from an array of generic jsons', function(){
+      var arr = [ { test: 1 }, { test: 2 }, { test: 3 } ];
+
+      var list = new List(arr);
+
+      expect(list.length).to.be.equal(3);
+      expect(list._items.length).to.be.equal(3);
+
+      list.each(function(item){
+        expect(item.hasOwnProperty('cid')).to.be.true;
+        expect(item.cid).to.be.a('string');
+      });
+    });
+
     it('must throw an error first argument is not an array', function(){
       
       expect(function(){

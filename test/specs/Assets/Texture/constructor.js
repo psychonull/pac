@@ -1,6 +1,6 @@
 
-var pac = require('../../../../src/pac');
 var Texture = require('../../../../src/Texture');
+var List = require('../../../../src/List');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -28,6 +28,7 @@ describe('Constructor', function(){
 
     expect(texture.loaded).to.be.equal(false);
     expect(texture.image).to.be.instanceof(Image);
+    expect(texture.frames).to.be.equal(null);
   });
 
   it('must throw an error if no url passed', function(){
@@ -36,6 +37,25 @@ describe('Constructor', function(){
       var texture = new Texture();
     }).to.throw('Expected an URL, image object or a base64');
 
+  });
+
+  it('must allow to create a Texture with frames', function(){
+    var url = 'psycho.png';
+    
+    var texture = new Texture({
+      url: url,
+      frames: [
+        { x: 0, y: 0, width: 100, height: 100 },
+        { x: 100, y: 0, width: 100, height: 100 },
+        { x: 200, y: 0, width: 100, height: 100 }
+      ]
+    });
+
+    expect(texture.loaded).to.be.equal(false);
+    expect(texture.image).to.be.instanceof(Image);
+    
+    expect(texture.frames).to.be.instanceof(List);
+    expect(texture.frames.length).to.be.equal(3);
   });
 
   it('must create a Texture from an String base64');

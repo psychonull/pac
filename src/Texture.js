@@ -1,9 +1,11 @@
 
 var Asset = require('./Asset');
+var List = require('./List');
 
 module.exports = Asset.extend({
 
   image: null,
+  frames: null,
 
   init: function(options){
 
@@ -16,6 +18,12 @@ module.exports = Asset.extend({
     this.image = new Image();
     this.image.onload = this.onload.bind(this);
     this.image.onerror = this.onerror.bind(this);
+
+    this.frames = (options && options.frames) || this.frames;
+
+    if (this.frames){
+      this.frames = new List(this.frames);
+    }
 
   },
 

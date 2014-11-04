@@ -6,6 +6,6 @@ describe('Assets', function(){
 
   require('./Asset.js');
   
-  require('./Texture/index.js');
+  require('./Texture');
 
 });

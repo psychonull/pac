@@ -33,6 +33,9 @@ module.exports = {
   MapList: require('./MapList'),
 
   ActionList: require('./ActionList'),
-  Action: require('./Action')
+  Action: require('./Action'),
+
+  AnimationList: require('./AnimationList'),
+  Animation: require('./Animation')
 
 };
