@@ -23,8 +23,9 @@ var NativeRenderer = module.exports = Renderer.extend({
 
     var textures = this.game.cache.images;
     
-    var image = textures.get(obj.texture).image;
-    obj.image = image;
+    var texture = textures.get(obj.texture);
+    obj.image = texture.image;
+    obj.frames = texture.frames;
 
   },
 
@@ -35,11 +36,26 @@ var NativeRenderer = module.exports = Renderer.extend({
   render: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.stage.each(function(e){
-      if (e.image){
-        this.context.drawImage(e.image, 
-          e.position.x, e.position.y, e.size.width, e.size.height);
+    this.stage.each(function(o){
+
+      if (o.frames){
+        var anim = o.animations && o.animations.current;
+        var frame = anim && anim.frame;
+
+        if (frame >= 0){
+          var frm = o.frames.at(frame);
+          
+          this.context.drawImage(o.image, 
+            frm.x, frm.y, frm.width, frm.height,
+            o.position.x, o.position.y, o.size.width, o.size.height);
+        }
       }
+      else {
+
+        this.context.drawImage(o.image, 
+          o.position.x, o.position.y, o.size.width, o.size.height);
+      }
+
     }, this);
   }
 
