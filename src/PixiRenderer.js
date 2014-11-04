@@ -25,27 +25,6 @@ var PixiRenderer = module.exports = Renderer.extend({
     var baseTexture = new PIXI.BaseTexture(image);
     var texture = new PIXI.Texture(baseTexture);
 
-    /*
-      // use the entire texture, no crop
-      var texture = new PIXI.Texture(baseTexture);
-      var sprite = new PIXI.Sprite(texture);
-
-      // Sprite with size
-      var texture = new PIXI.Texture(baseTexture);
-      var sprite = new PIXI.TilingSprite(texture, 
-        obj.size.width, obj.size.height);
-      
-      obj.frame = { x, y, width, height };
-
-      // Use a texture frame
-      var texture = new PIXI.Texture ( baseTexture , obj.frame,  [crop] )
-      var sprite = new PIXI.TilingSprite(texture, 
-        obj.size.width, obj.size.height);
-  
-      // change current frame later
-      texture.setFrame(obj.frame);
-    */
-
     // create a new Sprite using the texture
     var sprite = new PIXI.Sprite(texture);
     this._setSpriteProperties(obj, sprite);
@@ -71,6 +50,20 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   _setSpriteProperties: function(obj, sprite){
+
+    var textures = this.game.cache.images;
+    var txtFrames = textures.get(obj.texture).frames;
+
+    if (txtFrames){
+      var anim = obj.animations && obj.animations.current;
+      var frame = anim && anim.frame;
+
+      if (frame >= 0){
+        var objFrame = txtFrames.at(frame);
+        sprite.texture.setFrame(objFrame);
+      }
+    }
+
     sprite.anchor.x = 0;
     sprite.anchor.y = 0;
  
