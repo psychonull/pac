@@ -43,10 +43,15 @@ var Scene = module.exports = Emitter.extend({
   update: function(dt){
 
     this.objects.each(function(gameObject){
+      
       gameObject.updateActions(dt);
       gameObject.update(dt);
+      
+      if (gameObject.updateAnimations){
+        gameObject.updateAnimations(dt);
+      }
+
     });
-    
   }
 
 });

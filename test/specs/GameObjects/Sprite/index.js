@@ -17,5 +17,5 @@ describe('Sprite', function(){
 
   require('./constructor.js');
   require('./methods.js');
-
+  
 });

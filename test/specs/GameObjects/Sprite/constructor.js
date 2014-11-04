@@ -1,5 +1,9 @@
 
 var Sprite = require('../../../../src/Sprite');
+
+var AnimationList = require('../../../../src/AnimationList');
+var Animation = require('../../../../src/Animation');
+
 var expect = require('chai').expect;
 
 describe('Constructor', function(){
@@ -82,6 +86,32 @@ describe('Constructor', function(){
     expect(function(){
       var sprite = new Sprite();
     }).to.throw('Expected [texture] name of Sprite');
+
+  });
+
+  describe('Animations', function(){
+
+    it('must allow to set and initialize Animations', function(){
+
+      var list = new AnimationList({
+        'idle': new Animation({ frames: [ 0, 1 ] }),
+        'run': new Animation({ frames: [ 2, 3 ] })
+      }, { default: 'idle' });
+
+      var sprite = new Sprite({
+        texture: 'test',
+        position: new pac.Point(100, 100),
+        size: {
+          width: 50,
+          height: 50
+        },
+        animations: list
+      });
+
+      expect(sprite.animations).to.be.an.instanceof(AnimationList);
+      expect(sprite.animations.length).to.be.equal(2);
+      expect(sprite.animations.owner).to.be.equal(sprite);
+    });
 
   });
 

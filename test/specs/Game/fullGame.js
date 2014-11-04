@@ -30,6 +30,10 @@ var MonkeyY = pac.Drawable.extend({
 
 });
 
+var MonkeySprite = pac.Sprite.extend({
+  texture: 'monkey'
+});
+
 /* test Actions Update */
 
 var MonkeyAction = pac.Action.extend({
@@ -58,6 +62,7 @@ describe('Full Update', function(){
 
     var monkeyX = new MonkeyX();
     var monkeyY = new MonkeyY();
+    var monkeySP = new MonkeySprite();
 
     /* test Actions Update */
     var monkeyAct = new MonkeyAction();
@@ -73,6 +78,10 @@ describe('Full Update', function(){
     sinon.spy(monkeyAct, 'update');
     sinon.spy(monkeyActioner, 'updateActions');
 
+    /* test animations */
+    sinon.spy(monkeySP, 'updateAnimations');
+    sinon.spy(monkeySP, 'update');
+
     var firstSc = new pac.Scene({
       name: 'first',
       size: { width: 200, height: 300 }
@@ -80,7 +89,7 @@ describe('Full Update', function(){
 
     sinon.spy(firstSc, 'update');
 
-    firstSc.addObject([ monkeyX, monkeyY, monkeyActioner ]);
+    firstSc.addObject([ monkeyX, monkeyY, monkeyActioner, monkeySP ]);
 
     game.scenes.add(firstSc);
 
@@ -94,9 +103,15 @@ describe('Full Update', function(){
       expect(monkeyX.update).to.have.been.called;
       expect(monkeyY.update).to.have.been.called;
       expect(monkeyActioner.update).to.have.been.called;
+      expect(monkeyActioner.update).to.have.been.called;
 
+      /* check updateActions */
       expect(monkeyActioner.updateActions).to.have.been.called;
       expect(monkeyAct.update).to.have.been.called;
+
+      /* check updateAnimations */
+      expect(monkeySP.updateAnimations).to.have.been.called;
+      expect(monkeySP.update).to.have.been.called;
 
       expect(monkeyX.position.x).to.be.greaterThan(0);
       expect(monkeyX.position.y).to.be.equal(0);

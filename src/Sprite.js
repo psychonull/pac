@@ -8,6 +8,8 @@ var Sprite = module.exports = Drawable.extend({
   size: null,
   texture: null,
 
+  animations: null,
+
   constructor: function(options){
     this.texture = (options && options.texture) || this.texture;
     
@@ -17,13 +19,24 @@ var Sprite = module.exports = Drawable.extend({
 
     this.size = (options && options.size) || this.size;
 
+    if (options && options.animations){
+      this.animations = options.animations;
+      this.animations.owner = this;
+    }
+
     //Sprite.__super__.constructor.apply(this, arguments);
     Drawable.apply(this, arguments);
   },
 
   init: function(){ },
 
-  update: function() { }
+  update: function(dt) { },
+
+  updateAnimations: function(dt) {
+    if (this.animations){
+      this.animations.update(dt);
+    }
+  }
 
 });
 

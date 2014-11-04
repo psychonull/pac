@@ -5,7 +5,7 @@ var Animation = require('../../../../src/Animation');
 
 var expect = require('chai').expect;
 
-describe('AnimationList', function(){
+describe('Animations', function(){
 
   it('must be inherit from a MapList and have Animation as childs', function(){
     expect(AnimationList.prototype).to.be.an.instanceof(MapList);
