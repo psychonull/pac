@@ -1,6 +1,6 @@
 
 module.exports = {
-  
+
   ClassExtend: require('./ClassExtend'),
 
   Base: require('./Base'),
@@ -23,6 +23,7 @@ module.exports = {
   Sprite: require('./Sprite'),
 
   Texture: require('./Texture'),
+  JsonFile: require('./JsonFile'),
 
   Game: require('./Game'),
   create: require('./Game').create,
