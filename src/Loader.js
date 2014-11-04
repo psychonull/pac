@@ -2,6 +2,7 @@
 var EngineComponent = require('./EngineComponent');
 var Cache = require('./Cache'),
   Texture = require('./Texture'),
+  JsonFile = require('./JsonFile'),
   _ = require('./utils');
 
   // some inspiration:
@@ -103,13 +104,17 @@ var Loader = EngineComponent.extend({
 {
   // resourceType -> resourceConstructor
   ResourceTypes: {
-    images: Texture
+    images: Texture,
+    json: JsonFile
   },
 
   // filename -> resourceType
   ResolveFileType: function(fileName) {
     if (new RegExp(/^.+(\.png|\.jpg|\.jpeg)$/i).test(fileName)){
       return 'images';
+    }
+    if (new RegExp(/^.+(\.json)$/i).test(fileName)){
+      return 'json';
     }
     throw new Error('File type not supported for ' + fileName);
   }
