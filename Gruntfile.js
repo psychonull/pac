@@ -2,6 +2,15 @@
 
 module.exports = function (grunt) {
 
+  var getGrepOption = function(){
+    var grep = grunt.option('grep');
+    if(grep){
+      console.log('using mocha grep: ' + grep);
+      return '?grep=' + grep;
+    }
+    return '';
+  };
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
@@ -105,10 +114,21 @@ module.exports = function (grunt) {
     },
 
     mocha_phantomjs: {
-      options: {
-        'reporter': 'spec'
-      },
-      all: ["<%= paths.test %>index.html"]
+      all: {
+        options: {
+          'reporter': 'spec',
+          urls: ["http://localhost:8000/test/index.html" + getGrepOption()]
+        }
+      }
+    },
+
+    connect: {
+      server: {
+        options: {
+          port: 8000,
+          base: '.',
+        }
+      }
     }
 
   });
@@ -121,6 +141,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-mocha-phantomjs");
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask("build", [
     "clean:before",
@@ -132,6 +153,7 @@ module.exports = function (grunt) {
   grunt.registerTask("test", [
     "build",
     "browserify:tests",
+    "connect",
     "mocha_phantomjs"
   ]);
 
