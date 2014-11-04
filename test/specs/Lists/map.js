@@ -76,7 +76,7 @@ describe('MapList', function(){
         var item = new TestItem();
 
         var emitted = 0;
-        list.on('add', function(key, value){
+        list.on('add', function(value, key){
           emitted++;
           expect(key).to.be.equal('name1');
         });

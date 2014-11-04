@@ -14,10 +14,7 @@ var AnimationList = module.exports = MapList.extend({
     AnimationList.__super__.init.apply(this, arguments);
 
     this.on('add', this._initAnimation.bind(this));
-
-    this.each(function (value, key){
-      this._initAnimation(key, value);
-    }, this);
+    this.each(this._initAnimation.bind(this));
 
     this.default = (options && options.default) || this.default;
     this.autoplay = (options && options.autoplay) || this.autoplay;
@@ -33,7 +30,7 @@ var AnimationList = module.exports = MapList.extend({
     }
   },
 
-  _initAnimation: function(name, animation){
+  _initAnimation: function(animation, name){
     animation._name = name;
 
     // on any animation end -> run default (loops dont fire end event)

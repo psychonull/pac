@@ -21,14 +21,17 @@ describe('Methods', function(){
 
       var animations = {
         'idle': idle,
-        'run': run,
         'jump': jump,
       };
 
       var list = new AnimationList(animations, {
         default: 'idle'
       });
+
+      list.add('run', run);
       
+      expect(list.length).to.be.equal(3);
+
       expect(list.play).to.be.a('function');
 
       list.play();

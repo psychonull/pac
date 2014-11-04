@@ -19,9 +19,7 @@ module.exports = Emitter.extend({
     this.on('clear', _.bind(updateLength, this));
 
     if(data){
-      _.forIn(data, _.bind(function(value, key){
-        this._set(key, value);
-      }, this));
+      _.forIn(data, _.bind(this._set, this));
     }
   },
 
@@ -36,13 +34,11 @@ module.exports = Emitter.extend({
 
   //TODO: support an object as more than one key/value pair (like constructor)
   add: function(key, value){
-    
-    this._set(key, value);
-
+    this._set(value, key);
     return this;
   },
 
-  _set: function(key, value){
+  _set: function(value, key){
 
     if (this.childType && !(value instanceof this.childType)){
       throw new Error('Error on Add: invalid child type of: ' + key);
@@ -54,7 +50,7 @@ module.exports = Emitter.extend({
 
     this._data[key] = value;
 
-    this.emit('add', key, value);
+    this.emit('add', value, key);
   },
 
   remove: function(key){
