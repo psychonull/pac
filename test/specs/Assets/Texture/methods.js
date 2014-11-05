@@ -1,5 +1,7 @@
 
 var Texture = require('../../../../src/Texture');
+var List = require('../../../../src/List');
+var MapList = require('../../../../src/MapList');
 var expect = require('chai').expect;
 
 describe('Methods', function(){
@@ -62,6 +64,62 @@ describe('Methods', function(){
       expect(texture.url).to.be.equal(url);
 
       texture.load();
+    });
+
+  });
+
+  describe('#setFrames', function(){
+
+    it('must set a List of frames array passed', function(){
+      var url = 'psycho.png';
+      var texture = new Texture(url);
+      var frame0 = {
+        x: 0,
+        y: 0,
+        width: 10,
+        height: 10
+      },
+        frame1 = {
+          x: 10,
+          y: 0,
+          width: 10,
+          height: 10
+        };
+
+      texture.setFrames([frame0, frame1]);
+
+      expect(texture.frames).to.be.an.instanceof(List);
+      expect(texture.frames.length).to.equal(2);
+      expect(texture.frames.get(0)).to.equal(frame0);
+      expect(texture.frames.get(1)).to.equal(frame1);
+    });
+
+    it('must set a MapList of frames, object passed', function(){
+      var url = 'psycho.png';
+      var texture = new Texture(url);
+      var frameGood = {
+        x: 0,
+        y: 0,
+        width: 10,
+        height: 10
+      },
+      frameBad = {
+        x: 10,
+        y: 0,
+        width: 10,
+        height: 10
+      },
+      frames = {
+        good: frameGood,
+        bad: frameBad
+      };
+
+      texture.setFrames(frames);
+
+      expect(texture.frames).to.be.an.instanceof(MapList);
+      expect(texture.frames.length).to.equal(2);
+      expect(texture.frames.get('good')).to.equal(frameGood);
+      expect(texture.frames.get('bad')).to.equal(frameBad);
     });
 
   });

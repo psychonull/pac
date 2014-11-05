@@ -1,6 +1,8 @@
 
 var Asset = require('./Asset');
 var List = require('./List');
+var MapList = require('./MapList');
+var _ = require('./utils');
 
 module.exports = Asset.extend({
 
@@ -19,12 +21,18 @@ module.exports = Asset.extend({
     this.image.onload = this.onload.bind(this);
     this.image.onerror = this.onerror.bind(this);
 
-    this.frames = (options && options.frames) || this.frames;
-
-    if (this.frames){
-      this.frames = new List(this.frames);
+    if (options && options.frames){
+      this.setFrames(options.frames);
     }
+  },
 
+  setFrames: function(frames){
+    if(_.isArray(frames)){
+      this.frames = new List(frames);
+    }
+    else {
+      this.frames = new MapList(frames);
+    }
   },
 
   load: function(){
