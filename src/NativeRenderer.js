@@ -17,9 +17,18 @@ var NativeRenderer = module.exports = Renderer.extend({
     this.context = canvas.getContext('2d');
 
     this.container.appendChild(this.canvas);
+
+    if (!this.layers){
+      this.layers = [];
+    }
+
+    //TODO: check if 'default' is already there
+
+    // set 'default' as last layer.
+    this.layers.push('default');
   },
 
-  onStageAdd: function(obj){
+  onStageAdd: function(obj, layer){
 
     var textures = this.game.cache.images;
     
@@ -29,34 +38,42 @@ var NativeRenderer = module.exports = Renderer.extend({
 
   },
 
-  onStageClear: function(){
-    
+  onStageClear: function(layer){
+    // Nothing to do for Naive implementation
   },
 
   render: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.stage.each(function(o){
+    // run from this.layers array (it is the layers sort)
+    this.layers.forEach(function(name){
 
-      if (o.frames){
-        var anim = o.animations && o.animations.current;
-        var frame = anim && anim.frame;
+      var layer = this.stage.get(name);
 
-        if (frame >= 0){
-          var frm = o.frames.at(frame);
-          
+      layer.each(function(o){
+
+        if (o.frames){
+          var anim = o.animations && o.animations.current;
+          var frame = anim && anim.frame;
+
+          if (frame >= 0){
+            var frm = o.frames.at(frame);
+            
+            this.context.drawImage(o.image, 
+              frm.x, frm.y, frm.width, frm.height,
+              o.position.x, o.position.y, o.size.width, o.size.height);
+          }
+        }
+        else {
+
           this.context.drawImage(o.image, 
-            frm.x, frm.y, frm.width, frm.height,
             o.position.x, o.position.y, o.size.width, o.size.height);
         }
-      }
-      else {
 
-        this.context.drawImage(o.image, 
-          o.position.x, o.position.y, o.size.width, o.size.height);
-      }
+      }, this);
 
     }, this);
+
   }
 
 });
