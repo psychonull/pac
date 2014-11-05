@@ -15,9 +15,45 @@ var PixiRenderer = module.exports = Renderer.extend({
       this.size.width, this.size.height);
 
     this.container.appendChild(this.pixiRenderer.view);
+
+    // TODO: Add background Texture first of layers build
+
+    this._buildLayers();
   },
 
-  onStageAdd: function(obj){
+  _buildLayers: function(){
+
+    // build PIXI layers in the order of this.layers
+
+    this.pixiLayers = {};
+
+    if (this.layers){
+
+      this.layers.forEach(function(name){
+
+        if (name !== 'default') { // skip default if is there
+
+          var pixiLayer = new PIXI.DisplayObjectContainer();
+          this.pixiStage.addChild(pixiLayer);
+
+          pixiLayer.layer = name;
+          this.pixiLayers[name] = pixiLayer;
+        }
+
+      }, this);
+    }
+
+    // Add 'default' Layer always last since is always at front of all
+
+    var pixiLayerDefault = new PIXI.DisplayObjectContainer();
+    this.pixiStage.addChild(pixiLayerDefault);
+
+    pixiLayerDefault.layer = 'default';
+    this.pixiLayers['default'] = pixiLayerDefault;
+
+  },
+
+  onStageAdd: function(obj, layer){
 
     var textures = this.game.cache.images;
 
@@ -30,15 +66,16 @@ var PixiRenderer = module.exports = Renderer.extend({
     this._setSpriteProperties(obj, sprite);
     sprite.cid = obj.cid;
  
-    this.pixiStage.addChild(sprite);
+    this.pixiLayers[layer].addChild(sprite);
   },
 
-  onStageClear: function(){
+  onStageClear: function(layer){
 
-    if (this.pixiStage){
-      
-      for (var i = this.pixiStage.children.length - 1; i >= 0; i--) {
-        this.pixiStage.removeChild(this.pixiStage.children[i]);
+    if (this.pixiStage && this.pixiLayers[layer]){
+      var pixiLayer = this.pixiLayers[layer];
+
+      for (var i = pixiLayer.children.length - 1; i >= 0; i--) {
+        pixiLayer.removeChild(pixiLayer.children[i]);
       }
     }
 
@@ -76,12 +113,22 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   _updateProperties: function(){
     
-    for (var i = this.pixiStage.children.length - 1; i >= 0; i--) {
-      var pixiSp = this.pixiStage.children[i];
-      var obj = this.stage.get(pixiSp.cid);
+    for (var layer in this.pixiLayers) {
 
-      if (obj){
-        this._setSpriteProperties(obj, pixiSp);
+      if (this.pixiLayers.hasOwnProperty(layer)){
+
+        var stageLayer = this.stage.get(layer);
+        var pixiLayer = this.pixiLayers[layer];
+
+        for (var i = pixiLayer.children.length - 1; i >= 0; i--) {
+          var pixiSp = pixiLayer.children[i];
+          var obj = stageLayer.get(pixiSp.cid);
+
+          if (obj){
+            this._setSpriteProperties(obj, pixiSp);
+          }
+        }
+
       }
     }
   }
