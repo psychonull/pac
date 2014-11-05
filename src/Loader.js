@@ -44,7 +44,20 @@ var Loader = EngineComponent.extend({
   },
 
   addResource: function(name, filepath){
-    var type = this.constructor.ResolveFileType(filepath);
+    var type, path;
+    if(typeof filepath === 'string'){
+      type = this.constructor.ResolveFileType(filepath);
+      path = filepath;
+    }
+    else if(typeof filepath === 'object'){
+      var options = filepath;
+      type = options.type;
+      path = options.path;
+    }
+    return this._addResource(name, path, type);
+  },
+
+  _addResource: function(name, filepath, type){
     var Constructor = this.constructor.ResourceTypes[type];
     if(!Constructor){
       throw new Error('No type mapping for: ' + type);
