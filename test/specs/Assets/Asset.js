@@ -31,6 +31,12 @@ describe('Asset', function(){
       var assetWithoutUrl = new Asset();
 
       expect(assetWithoutUrl.url).to.be.null;
+
+      var assetWithPath = new Asset({
+        path: url
+      });
+
+      expect(assetWithPath.url).to.be.equal(url);
     });
 
   });

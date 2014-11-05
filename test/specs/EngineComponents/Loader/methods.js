@@ -131,14 +131,14 @@ describe('#addResource', function(){
       var unicornsAdd = sinon.spy(loader.unicorns, 'add');
       var imagesAdd = sinon.spy(loader.images, 'add');
       var filepath = './assets/unicorns/stay.free';
-
-      var result = loader.addResource('stay', {
+      var loadOptions = {
         path: filepath,
         type: 'unicorns'
-      });
+      };
+      var result = loader.addResource('stay', loadOptions);
 
       expect(MyLoader.ResolveFileType).to.not.have.been.called;
-      expect(FakeTextureLike).to.have.been.calledWith(filepath);
+      expect(FakeTextureLike).to.have.been.calledWith(loadOptions);
 
       expect(result).to.be.an.instanceof(FakeTextureLike);
       expect(unicornsAdd).to.have.been.calledWith('stay', result);
@@ -157,6 +157,26 @@ describe('#addResource', function(){
         });
       }).to.throw(/No type mapping for: fantasyType/);
 
+    });
+
+    it('must still allow filetype detection if no type is provided', function(){
+      var FakeTextureLike = sinon.spy();
+      var MyLoader = Loader.extend({}, {
+        ResourceTypes: { unicorns: FakeTextureLike },
+        ResolveFileType: sinon.stub().returns('unicorns')
+      });
+
+      var loader = new MyLoader({});
+      var unicornsAdd = sinon.spy(loader.unicorns, 'add');
+      var filepath = { path: './assets/unicorns/stay.free' };
+
+      var result = loader.addResource('stay', filepath);
+
+      expect(MyLoader.ResolveFileType).to.have.been.calledWith(filepath.path);
+      expect(FakeTextureLike).to.have.been.calledWith(filepath);
+
+      expect(result).to.be.an.instanceof(FakeTextureLike);
+      expect(unicornsAdd).to.have.been.calledWith('stay', result);
     });
 
   });

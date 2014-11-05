@@ -12,7 +12,7 @@ module.exports = Emitter.extend({
       this.url = options;
     }
     else if(typeof options === 'object'){
-      this.url = options.url;
+      this.url = options.url || options.path;
     }
   },
 

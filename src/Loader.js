@@ -51,8 +51,13 @@ var Loader = EngineComponent.extend({
     }
     else if(typeof filepath === 'object'){
       var options = filepath;
-      type = options.type;
-      path = options.path;
+      if(options.type){
+        type = options.type;
+      }
+      else {
+        type = this.constructor.ResolveFileType(options.path);
+      }
+      path = options;
     }
     return this._addResource(name, path, type);
   },
