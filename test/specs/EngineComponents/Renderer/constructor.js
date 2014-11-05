@@ -1,6 +1,8 @@
 
 var pac = require('../../../../src/pac');
 
+var Layer = require('../../../../src/Layer');
+
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -24,6 +26,7 @@ describe('Constructor', function(){
   it('must have an stage upon initialization', function(){
     var renderer = new TestRenderer(fakeGame);
     expect(renderer.stage).to.be.an.instanceof(pac.Stage);
+    expect(renderer.stage.length).to.be.equal(1); // default layer
   });
 
   it('must have defaults', function(){
@@ -56,6 +59,19 @@ describe('Constructor', function(){
     expect(renderer.container).to.be.equal(dummyContainer);
     expect(renderer.container.id).to.be.equal(dummyContainer.id);
     expect(renderer.container.tagName.toLowerCase()).to.be.equal('div');
+  });
+
+  it('must allow to set layers as an option', function(){
+
+    var renderer = new TestRenderer(fakeGame, {
+      layers: [ 'layer1', 'layer2', 'layer3' ]      
+    });
+    
+    expect(renderer.stage.length).to.be.equal(4); //plus 'default' layer
+
+    expect(renderer.stage.get('layer1')).to.be.instanceof(Layer);
+    expect(renderer.stage.get('layer2')).to.be.instanceof(Layer);
+    expect(renderer.stage.get('layer3')).to.be.instanceof(Layer);
   });
 
 });

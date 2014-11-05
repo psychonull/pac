@@ -28,7 +28,6 @@ describe('PAC', function(){
   require('./Game/index.js');
 
   require('./Scene/index.js');
-
   require('./Scenes/index.js');
 
   require('./EngineComponents/index.js');
@@ -39,7 +38,6 @@ describe('PAC', function(){
   require('./Cache');
 
   require('./Lists');
-
   require('./Assets');
   require('./ActionLists');
 

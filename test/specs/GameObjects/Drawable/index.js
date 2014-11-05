@@ -37,6 +37,28 @@ describe('Drawable', function(){
     expect(obj.position.y).to.be.equal(100);
   });
 
+  it('must allow to create a Drawable with a Layer', function(){
+
+    var obj = new pac.Drawable({
+      layer: 'background'
+    });
+    
+    expect(obj.layer).to.be.equal('background');
+
+    var TestObj = pac.Drawable.extend({
+      layer: 'front'
+    });
+
+    var obj2 = new TestObj();
+    expect(obj2.layer).to.be.equal('front');
+
+    var obj3 = new TestObj({
+      layer: 'middle'
+    });
+
+    expect(obj3.layer).to.be.equal('middle');
+  });
+
   it('must allow to inherit setting defaults', function(){
     var calledInit = false;
 

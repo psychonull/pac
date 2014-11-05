@@ -97,11 +97,11 @@ var Game = module.exports = Gameloop.extend({
   },
 
   onLeaveScene: function(scene){
-    this.renderer.stage.clear();
+    this.renderer.stage.clearLayer();
   },
 
   onEnterScene: function(scene){
-    this.renderer.stage.add(scene.objects);
+    this.renderer.stage.addObjects(scene.objects);
   }
 
 }, {

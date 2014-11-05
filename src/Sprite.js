@@ -24,7 +24,6 @@ var Sprite = module.exports = Drawable.extend({
       this.animations.owner = this;
     }
 
-    //Sprite.__super__.constructor.apply(this, arguments);
     Drawable.apply(this, arguments);
   },
 

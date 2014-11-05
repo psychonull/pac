@@ -29,10 +29,10 @@ describe('Methods', function(){
     expect(renderer.onStageAdd).to.be.a('function');
 
     var testObj = new TestObject();
-    renderer.stage.add(testObj);
+    renderer.stage.addObjects(testObj);
 
     expect(renderer.onStageAdd).to.have.been.calledOnce;
-    expect(renderer.onStageAdd).to.have.been.calledWith(testObj);
+    expect(renderer.onStageAdd).to.have.been.calledWith(testObj, 'default');
 
     TestRenderer.prototype.onStageAdd.restore();
   });
@@ -44,9 +44,12 @@ describe('Methods', function(){
     var renderer = new TestRenderer();
     expect(renderer.onStageClear).to.be.a('function');
 
-    renderer.stage.clear();
+    renderer.stage.addObjects(new TestObject());
+
+    renderer.stage.clearLayer();
 
     expect(renderer.onStageClear).to.have.been.calledOnce;
+    expect(renderer.onStageClear).to.have.been.calledWith('default');
 
     TestRenderer.prototype.onStageClear.restore();
   });

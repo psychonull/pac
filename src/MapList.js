@@ -72,6 +72,10 @@ module.exports = Emitter.extend({
   each: function(cb, ctx){
     _.forIn(this._data, cb, ctx);
     return this;
-  }
+  },
+
+  hasKey: function(key){
+    return this.get(key) !== null;
+  },
 
 });

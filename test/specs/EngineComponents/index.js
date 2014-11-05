@@ -9,6 +9,6 @@ describe('Engine Components', function(){
   });
 
   require('./Renderer/index.js');
-  require('./Loader/index.js');
+  //require('./Loader/index.js');
 
 });
