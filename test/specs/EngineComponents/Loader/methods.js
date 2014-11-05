@@ -117,9 +117,49 @@ describe('#addResource', function(){
     }
   );
 
-  it('must support an options object as second param');
+  describe('with options as second param', function(){
 
-  it('options must allow to override filetype detection');
+    it('options must allow to override filetype detection', function(){
+      var FakeTextureLike = sinon.spy();
+      var MyLoader = Loader.extend({}, {
+        ResourceTypes: { unicorns: FakeTextureLike, images: Texture }
+      });
+
+      sinon.spy(MyLoader, 'ResolveFileType');
+
+      var loader = new MyLoader({});
+      var unicornsAdd = sinon.spy(loader.unicorns, 'add');
+      var imagesAdd = sinon.spy(loader.images, 'add');
+      var filepath = './assets/unicorns/stay.free';
+
+      var result = loader.addResource('stay', {
+        path: filepath,
+        type: 'unicorns'
+      });
+
+      expect(MyLoader.ResolveFileType).to.not.have.been.called;
+      expect(FakeTextureLike).to.have.been.calledWith(filepath);
+
+      expect(result).to.be.an.instanceof(FakeTextureLike);
+      expect(unicornsAdd).to.have.been.calledWith('stay', result);
+      expect(imagesAdd).to.not.have.been.called;
+    });
+
+    it('must throw error when filetype mapping not found', function(){
+
+      var loader = new Loader({});
+      var filepath = './assets/unicorns/stay.free';
+
+      expect(function(){
+        var result = loader.addResource('stay', {
+          path: filepath,
+          type: 'fantasyType'
+        });
+      }).to.throw(/No type mapping for: fantasyType/);
+
+    });
+
+  });
 
 });
 
