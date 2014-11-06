@@ -2,12 +2,15 @@
 var Asset = require('./Asset');
 var List = require('./List');
 var MapList = require('./MapList');
+var JsonFile = require('./JsonFile');
 var _ = require('./utils');
 
 module.exports = Asset.extend({
 
   image: null,
   frames: null,
+  atlas: null,
+  _imageLoaded: false,
 
   init: function(options){
 
@@ -32,6 +35,32 @@ module.exports = Asset.extend({
     }
     else {
       this.frames = new MapList(frames);
+    }
+  },
+
+  setAtlas: function(jsonFile){
+    if(!(jsonFile instanceof JsonFile)){
+      throw new Error('Invalid atlas type: ' + jsonFile.constructor.name);
+    }
+    this.atlas = jsonFile;
+    if(this.atlas.loaded){
+      this.setFrames(this.atlas.raw().frames);
+      this.loaded = this._imageLoaded;
+    }
+    else {
+      this.loaded = false;
+      this.atlas.on('load', _.bind(function(){
+        this.setFrames(this.atlas.raw().frames);
+        this.loaded = this._imageLoaded;
+      }, this));
+    }
+  },
+
+  onload: function(){
+    this.constructor.__super__.onload.call(this);
+    this._imageLoaded = true;
+    if(this.atlas && !this.atlas.loaded){
+      this.loaded = false;
     }
   },
 
