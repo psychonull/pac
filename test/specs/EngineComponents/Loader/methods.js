@@ -179,6 +179,36 @@ describe('#addResource', function(){
       expect(unicornsAdd).to.have.been.calledWith('stay', result);
     });
 
+    it('must add the atlas to the repo if provided for type=images', function(){
+      var FakeTextureLike = sinon.spy();
+      var FakeJsonLike = sinon.spy();
+      var MyLoader = Loader.extend({}, {
+        ResourceTypes: { images: FakeTextureLike, json: FakeJsonLike }
+      });
+      sinon.spy(MyLoader, 'ResolveFileType');
+
+      var loader = new MyLoader({});
+      var jsonAdd = sinon.spy(loader.json, 'add');
+      var imagesAdd = sinon.spy(loader.images, 'add');
+
+      var opts = {
+        path: './assets/unicorns/stay.free.jpg',
+        atlas: './assets/unicorns/stay.free.json'
+      };
+
+      var result = loader.addResource('stay', opts);
+
+      expect(MyLoader.ResolveFileType).to.have.been.calledWith(opts.atlas);
+      expect(MyLoader.ResolveFileType).to.have.been.calledWith(opts.path);
+
+      opts.atlas = new FakeJsonLike();
+      expect(FakeTextureLike).to.have.been.calledWith(opts);
+
+      expect(result).to.be.an.instanceof(FakeTextureLike);
+      expect(imagesAdd).to.have.been.calledWith('stay', result);
+      expect(jsonAdd).to.have.been.calledWith('stay');
+    });
+
   });
 
 });

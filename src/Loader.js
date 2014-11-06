@@ -57,7 +57,12 @@ var Loader = EngineComponent.extend({
       else {
         type = this.constructor.ResolveFileType(options.path);
       }
-      path = options;
+      path = _.cloneDeep(options);
+      //HACK: add atlas if passed with image
+      if (type === 'images' && options.atlas){
+        var atlas = this.addResource(name, options.atlas);
+        path.atlas = atlas;
+      }
     }
     return this._addResource(name, path, type);
   },
