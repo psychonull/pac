@@ -71,7 +71,7 @@ var NativeRenderer = module.exports = Renderer.extend({
 
       layer.each(function(o){
 
-        if (o.frame && o.frames){
+        if (o.frame !== null && o.frames){
           var frm = o.frames.get(o.frame);
           
           this.context.drawImage(o.image, 

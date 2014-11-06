@@ -111,7 +111,7 @@ var PixiRenderer = module.exports = Renderer.extend({
     var textures = this.game.cache.images;
     var txtFrames = textures.get(obj.texture).frames;
 
-    if (obj.frame && txtFrames){
+    if (obj.frame !== null && txtFrames){
       var objFrame = txtFrames.get(obj.frame);
       sprite.texture.setFrame(objFrame);
     }
