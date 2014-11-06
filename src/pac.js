@@ -37,6 +37,9 @@ module.exports = {
   Action: require('./Action'),
 
   AnimationList: require('./AnimationList'),
-  Animation: require('./Animation')
+  Animation: require('./Animation'),
+
+  Input: require('./Input'),
+  MouseInput: require('./MouseInput')
 
 };
