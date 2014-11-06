@@ -64,7 +64,7 @@ describe('List', function(){
     });
 
     it('must throw an error first argument is not an array', function(){
-      
+
       expect(function(){
         var list = new TestList({});
       }).to.throw('invalid argument, expected an array');
@@ -125,7 +125,7 @@ describe('List', function(){
 
       it('must fire an add event with the item added', function(){
         var list = new TestList();
-        
+
         var item = new TestItem();
 
         var emitted = 0;
@@ -140,7 +140,7 @@ describe('List', function(){
 
       it('must throw an error if Item is not allowed type', function(){
         var list = new TestList();
-        
+
         expect(function(){
           list.add(new GameObject());
         }).to.throw('invalid child type');
@@ -242,6 +242,16 @@ describe('List', function(){
         expect(found).to.be.undefined;
       });
 
+      it('must be an at() alias if a number is passed', function(){
+        var list = new TestList();
+        var searchItem = new TestItem();
+
+        list.add([ new TestItem(), new TestItem(), searchItem, new TestItem()]);
+
+        var found = list.get(2);
+        expect(found).to.be.equal(searchItem);
+      });
+
     });
 
     describe('#at', function(){
@@ -280,7 +290,7 @@ describe('List', function(){
         });
 
         list.remove(cid);
-        
+
         expect(list.length).to.be.equal(len-1);
         expect(emitted).to.be.equal(1);
 
@@ -291,7 +301,7 @@ describe('List', function(){
         list.remove(cid);
 
         expect(list.length).to.be.equal(currLen);
-        expect(emitted).to.be.equal(1);        
+        expect(emitted).to.be.equal(1);
       });
 
       it('must allow to remove an Item by instance', function(){
@@ -309,7 +319,7 @@ describe('List', function(){
         });
 
         list.remove(removeItem);
-        
+
         expect(list.length).to.be.equal(len-1);
         expect(emitted).to.be.equal(1);
       });
@@ -334,7 +344,7 @@ describe('List', function(){
 
         expect(list.length).to.be.equal(0);
         expect(list._items.length).to.be.equal(0);
-        expect(emitted).to.be.equal(1);   
+        expect(emitted).to.be.equal(1);
       });
 
     });
@@ -351,11 +361,11 @@ describe('List', function(){
         var accum = 0;
 
         list.each(function(item, i){
-          
+
           expect(i).to.be.equal(accum++);
           expect(item.cid).to.be.equal(arr[count].cid);
           count++;
-          
+
           expect(this.name).to.be.equal('context');
 
         }, { name: 'context' });
@@ -369,7 +379,7 @@ describe('List', function(){
 
       it('must return the index of an item by cid or instance', function(){
         var list = new TestList();
-        
+
         var searchItem = new TestItem();
         var searchId = searchItem.cid;
 
@@ -415,7 +425,7 @@ describe('List', function(){
           emitted++;
           expect(item.cid).to.be.equal(insertedCID);
         });
-        
+
         var listLen = list.length;
 
         list.insertAt(2, insertItem);

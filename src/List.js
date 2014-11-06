@@ -30,7 +30,7 @@ var List = module.exports = Emitter.extend({
   },
 
   indexOf: function(){
-    var arg0 = arguments[0], 
+    var arg0 = arguments[0],
       cid = arg0;
 
     if (typeof arg0 === 'object'){
@@ -47,6 +47,9 @@ var List = module.exports = Emitter.extend({
   },
 
   get: function(cid){
+    if(typeof cid === 'number'){
+      return this.at(cid);
+    }
     return _.find(this._items, { 'cid': cid });
   },
 
@@ -60,7 +63,7 @@ var List = module.exports = Emitter.extend({
 
     if (arg0 instanceof List){
       arg0.each(this._set.bind(this));
-      return this; 
+      return this;
     }
 
     this._set(arg0);
@@ -89,7 +92,7 @@ var List = module.exports = Emitter.extend({
     if (this.childType && !(item instanceof this.childType)){
       throw new Error('invalid child type');
     }
-    
+
     if(!item.hasOwnProperty('cid')){
       item.cid = _.uniqueId();
     }
@@ -139,15 +142,15 @@ var List = module.exports = Emitter.extend({
   },
 
   remove: function(){
-    var arg0 = arguments[0], 
+    var arg0 = arguments[0],
       cid = arg0;
 
     if (typeof arg0 === 'object'){
       cid = arg0.cid;
     }
 
-    var removed = _.remove(this._items, function(item) { 
-      return item.cid === cid; 
+    var removed = _.remove(this._items, function(item) {
+      return item.cid === cid;
     });
 
     if (removed.length > 0){

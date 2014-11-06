@@ -1,4 +1,5 @@
 
+var _ = require('../../../../src/utils');
 var Texture = require('../../../../src/Texture');
 var List = require('../../../../src/List');
 
@@ -39,23 +40,22 @@ describe('Constructor', function(){
 
   });
 
-  it('must allow to create a Texture with frames', function(){
+  it('must call setFrames if frames option is passed', function(){
     var url = 'psycho.png';
-    
+    var fr = [
+      { x: 0, y: 0, width: 100, height: 100 },
+      { x: 100, y: 0, width: 100, height: 100},
+      { x: 200, y: 0, width: 100, height: 100 }
+    ];
+
+    sinon.stub(Texture.prototype, 'setFrames');
     var texture = new Texture({
       url: url,
-      frames: [
-        { x: 0, y: 0, width: 100, height: 100 },
-        { x: 100, y: 0, width: 100, height: 100 },
-        { x: 200, y: 0, width: 100, height: 100 }
-      ]
+      frames: fr
     });
 
-    expect(texture.loaded).to.be.equal(false);
-    expect(texture.image).to.be.instanceof(Image);
-    
-    expect(texture.frames).to.be.instanceof(List);
-    expect(texture.frames.length).to.be.equal(3);
+    expect(texture.setFrames).to.have.been.calledWith(fr);
+    Texture.prototype.setFrames.restore();
   });
 
   it('must create a Texture from an String base64');
