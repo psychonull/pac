@@ -72,6 +72,31 @@ describe('Methods', function(){
       texture.load();
     });
 
+    it('must fire the load event only if the atlas is also loaded',
+      function(done){
+        var atlas = new JsonFile('conga.json');
+        sinon.stub(atlas, 'raw').returns({frames: 'randomstuff'});
+
+        var texture = new Texture({url: 'psycho.png', atlas: atlas});
+        sinon.stub(texture, 'setFrames');
+
+        texture.on('load', function(){
+          expect(texture.atlas.loaded).to.be.equal(true);
+          expect(texture.loaded).to.be.equal(true);
+          expect(atlas.raw).to.have.been.called;
+          expect(texture.setFrames).to.have.been.calledWith('randomstuff');
+
+          done();
+        });
+
+        texture.load();
+
+        setTimeout(function(){
+          atlas.onload();
+        }, 50);
+      }
+    );
+
   });
 
   describe('#setFrames', function(){

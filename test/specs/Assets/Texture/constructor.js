@@ -58,6 +58,21 @@ describe('Constructor', function(){
     Texture.prototype.setFrames.restore();
   });
 
+  it('must call setAtlas if atlas option is passed', function(){
+    var url = 'psycho.png';
+    var fakeAtlas = {};
+
+    sinon.stub(Texture.prototype, 'setAtlas');
+
+    var texture = new Texture({
+      url: url,
+      atlas: fakeAtlas
+    });
+
+    expect(texture.setAtlas).to.have.been.calledWith(fakeAtlas);
+    Texture.prototype.setAtlas.restore();
+  });
+
   it('must create a Texture from an String base64');
   it('must throw a parse error if base64 is wrong on creating');
 

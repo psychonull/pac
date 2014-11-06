@@ -27,6 +27,10 @@ module.exports = Asset.extend({
     if (options && options.frames){
       this.setFrames(options.frames);
     }
+
+    if (options && options.atlas){
+      this.setAtlas(options.atlas);
+    }
   },
 
   setFrames: function(frames){
@@ -52,15 +56,17 @@ module.exports = Asset.extend({
       this.atlas.on('load', _.bind(function(){
         this.setFrames(this.atlas.raw().frames);
         this.loaded = this._imageLoaded;
+        if(this.loaded){
+          this.emit('load');
+        }
       }, this));
     }
   },
 
   onload: function(){
-    this.constructor.__super__.onload.call(this);
     this._imageLoaded = true;
-    if(this.atlas && !this.atlas.loaded){
-      this.loaded = false;
+    if(!this.atlas || (this.atlas && this.atlas.loaded)){
+      this.constructor.__super__.onload.call(this);
     }
   },
 
