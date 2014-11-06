@@ -26,6 +26,7 @@ describe('Drawable', function(){
     expect(obj.cid).to.be.an('string');
     expect(obj.position.x).to.be.equal(0);
     expect(obj.position.y).to.be.equal(0);
+    expect(obj.zIndex).to.be.equal(0);
   });
 
   it('must create a Drawable with defaults', function(){
@@ -37,26 +38,32 @@ describe('Drawable', function(){
     expect(obj.position.y).to.be.equal(100);
   });
 
-  it('must allow to create a Drawable with a Layer', function(){
+  it('must allow to create a Drawable with a Layer and zIndex', function(){
 
     var obj = new pac.Drawable({
-      layer: 'background'
+      layer: 'background',
+      zIndex: 2
     });
     
     expect(obj.layer).to.be.equal('background');
+    expect(obj.zIndex).to.be.equal(2);
 
     var TestObj = pac.Drawable.extend({
-      layer: 'front'
+      layer: 'front',
+      zIndex: 5
     });
 
     var obj2 = new TestObj();
     expect(obj2.layer).to.be.equal('front');
+    expect(obj2.zIndex).to.be.equal(5);
 
     var obj3 = new TestObj({
-      layer: 'middle'
+      layer: 'middle',
+      zIndex: 10
     });
 
     expect(obj3.layer).to.be.equal('middle');
+    expect(obj3.zIndex).to.be.equal(10);
   });
 
   it('must allow to inherit setting defaults', function(){

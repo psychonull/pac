@@ -53,23 +53,28 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   },
 
-  onStageAdd: function(obj, layer){
+  onLayerFill: function(layer){
 
-    var textures = this.game.cache.images;
+    this.stage.get(layer).each(function(obj, index){
 
-    var image = textures.get(obj.texture).image;
-    var baseTexture = new PIXI.BaseTexture(image);
-    var texture = new PIXI.Texture(baseTexture);
+      var textures = this.game.cache.images;
 
-    // create a new Sprite using the texture
-    var sprite = new PIXI.Sprite(texture);
-    this._setSpriteProperties(obj, sprite);
-    sprite.cid = obj.cid;
- 
-    this.pixiLayers[layer].addChild(sprite);
+      var image = textures.get(obj.texture).image;
+      var baseTexture = new PIXI.BaseTexture(image);
+      var texture = new PIXI.Texture(baseTexture);
+
+      // create a new Sprite using the texture
+      var sprite = new PIXI.Sprite(texture);
+      this._setSpriteProperties(obj, sprite);
+      sprite.cid = obj.cid;
+   
+      this.pixiLayers[layer].addChild(sprite);
+
+    },this);
+    
   },
 
-  onStageClear: function(layer){
+  onLayerClear: function(layer){
 
     if (this.pixiStage && this.pixiLayers[layer]){
       var pixiLayer = this.pixiLayers[layer];

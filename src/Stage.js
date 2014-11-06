@@ -25,11 +25,13 @@ var Stage = module.exports = MapList.extend({
   _initLayer: function(layer, name){
 
     var self = this;
-    
+
+    /*
     layer.on('add', function(obj){
       (function(_name){ self.emit('addToLayer', obj, _name); })(name);
     });
-
+    */
+    
     layer.on('clear', function(obj){
       (function(_name){ self.emit('layerClear', _name); })(name);
     });
@@ -48,6 +50,13 @@ var Stage = module.exports = MapList.extend({
     else {
       this.get(this.defaultName).add(obj); 
     }
+  },
+
+  ready: function(){
+
+    this.each(function(layer, name){
+      this.emit('layerFill', name);
+    }, this);
   },
 
   addObjects: function(){

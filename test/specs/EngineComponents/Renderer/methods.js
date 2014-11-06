@@ -11,8 +11,8 @@ chai.use(sinonChai);
 
 var TestRenderer = pac.Renderer.extend({
 
-  onStageAdd: function(){ },
-  onStageClear: function(){ },
+  onLayerFill: function(){ },
+  onLayerClear: function(){ },
   render: function() { }
 
 });
@@ -21,44 +21,47 @@ var TestObject = Drawable.extend();
 
 describe('Methods', function(){
 
-  it('must call onStageAdd method when a stage object is added', function(){
+  it('must call onLayerFill method when a stage object is added', function(){
 
-    sinon.spy(TestRenderer.prototype, 'onStageAdd');
+    sinon.spy(TestRenderer.prototype, 'onLayerFill');
 
     var renderer = new TestRenderer();
-    expect(renderer.onStageAdd).to.be.a('function');
+    expect(renderer.onLayerFill).to.be.a('function');
 
     var testObj = new TestObject();
     renderer.stage.addObjects(testObj);
 
-    expect(renderer.onStageAdd).to.have.been.calledOnce;
-    expect(renderer.onStageAdd).to.have.been.calledWith(testObj, 'default');
+    expect(renderer.onLayerFill).to.not.have.been.called;
 
-    TestRenderer.prototype.onStageAdd.restore();
+    renderer.stage.ready();
+
+    expect(renderer.onLayerFill).to.have.been.calledOnce;
+    expect(renderer.onLayerFill).to.have.been.calledWith('default');
+
+    TestRenderer.prototype.onLayerFill.restore();
   });
 
-  it('must call onStageClear method when the stage is cleared', function(){
+  it('must call onLayerClear method when the stage is cleared', function(){
 
-    sinon.spy(TestRenderer.prototype, 'onStageClear');
+    sinon.spy(TestRenderer.prototype, 'onLayerClear');
 
     var renderer = new TestRenderer();
-    expect(renderer.onStageClear).to.be.a('function');
+    expect(renderer.onLayerClear).to.be.a('function');
 
     renderer.stage.addObjects(new TestObject());
 
     renderer.stage.clearLayer();
 
-    expect(renderer.onStageClear).to.have.been.calledOnce;
-    expect(renderer.onStageClear).to.have.been.calledWith('default');
+    expect(renderer.onLayerClear).to.have.been.calledOnce;
+    expect(renderer.onLayerClear).to.have.been.calledWith('default');
 
-    TestRenderer.prototype.onStageClear.restore();
+    TestRenderer.prototype.onLayerClear.restore();
   });
 
   it('must expose a render method', function(){
     var renderer = new TestRenderer();
     expect(renderer.render).to.be.a('function');
   });
-
 
   it('must throw an error for required overrides', function(){
     var testInstance;
@@ -67,13 +70,13 @@ describe('Methods', function(){
 
     expect(function(){
       testInstance = new TestRenderer();
-      testInstance.onStageAdd();
-    }).to.throw('Must override renderer.onStageAdd()');
+      testInstance.onLayerFill();
+    }).to.throw('Must override renderer.onLayerFill()');
 
     expect(function(){
       testInstance = new TestRenderer();
-      testInstance.onStageClear();
-    }).to.throw('Must override renderer.onStageClear()');
+      testInstance.onLayerClear();
+    }).to.throw('Must override renderer.onLayerClear()');
 
     expect(function(){
       testInstance = new TestRenderer();

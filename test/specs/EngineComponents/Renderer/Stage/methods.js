@@ -25,13 +25,13 @@ describe('Methods', function(){
   
   describe('#addObjects', function(){
 
-    it ('must add an array of objects and fire events', function(){
+    it ('must add an array of objects', function(){
 
       expect(stage.add).to.be.a('function');
 
       var objTest = new TestObject();
       var objTestLayered = new TestObject({ layer: 'testLayer1' });
-
+/*
       var emitted = 0;
       stage.on('addToLayer', function(obj, layer){
         emitted++;
@@ -43,7 +43,7 @@ describe('Methods', function(){
           expect(layer).to.be.equal(obj.layer);
         }
       });
-
+*/
       stage.addObjects([ objTest, objTestLayered ]);
 
       var layer0 = stage.get('default');
@@ -58,7 +58,7 @@ describe('Methods', function(){
 
       expect(layer2.length).to.be.equal(0);
       
-      expect(emitted).to.be.equal(2);
+      //expect(emitted).to.be.equal(2);
 
       layer0.clear();
       layer1.clear();
@@ -77,12 +77,12 @@ describe('Methods', function(){
       var objTestLayered = new TestObject({ layer: 'testLayer1' });
 
       list.add([ objTest, testGM, objTestLayered ]);
-
+/*
       var emitted = 0;
       stage.on('addToLayer', function(obj, layer){
         emitted++;
       });
-
+*/
       stage.addObjects(list);
 
       var layer0 = stage.get('default');
@@ -97,7 +97,7 @@ describe('Methods', function(){
 
       expect(layer2.length).to.be.equal(0);
       
-      expect(emitted).to.be.equal(2);
+      //expect(emitted).to.be.equal(2);
 
       layer0.clear();
       layer1.clear();
@@ -164,6 +164,42 @@ describe('Methods', function(){
       expect(layer1.length).to.be.equal(0);
       expect(layer2.length).to.be.equal(0);
       expect(emitted).to.be.equal(2);
+
+    });
+
+  });
+
+  describe('#ready', function(){
+
+    it('must throw a "layerFill" event for each contained layer', function(){
+
+      stage.addObjects([ 
+        // default layer
+        new TestObject(), 
+        new TestObject(), 
+
+        // testLayer1
+        new TestObject({ layer: 'testLayer1' }),
+        new TestObject({ layer: 'testLayer1' }),
+
+        // testLayer2
+        new TestObject({ layer: 'testLayer2' }),
+        new TestObject({ layer: 'testLayer2' }),
+      ]);
+
+      var layers = ['default', 'testLayer1', 'testLayer2'];
+      var emitted = 0;
+      
+      stage.on('layerFill', function(layer){
+        var idx = layers.indexOf(layer);
+        expect(idx).to.be.above(-1);
+
+        layers.splice(idx, 1);
+        emitted++;
+      });
+
+      stage.ready();
+      expect(emitted).to.be.equal(3);
 
     });
 

@@ -5,5 +5,6 @@ var Drawable = require('./Drawable');
 module.exports = List.extend({
 
   childType: Drawable,
+  comparator: 'zIndex'
 
 });

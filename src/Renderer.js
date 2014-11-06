@@ -38,18 +38,18 @@ var Renderer = module.exports = EngineComponent.extend({
 
     this.stage = new Stage(layers);
 
-    this.stage.on('addToLayer', this.onStageAdd.bind(this));
-    this.stage.on('layerClear', this.onStageClear.bind(this));
+    this.stage.on('layerFill', this.onLayerFill.bind(this));
+    this.stage.on('layerClear', this.onLayerClear.bind(this));
   },
 
   init: function(game, options) { },
 
-  onStageAdd: function(obj, layer){
-    throw new Error('Must override renderer.onStageAdd()');
+  onLayerFill: function(layer){
+    throw new Error('Must override renderer.onLayerFill()');
   },
 
-  onStageClear: function(layer){
-    throw new Error('Must override renderer.onStageClear()');
+  onLayerClear: function(layer){
+    throw new Error('Must override renderer.onLayerClear()');
   },
 
   render: function () {

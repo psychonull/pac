@@ -9,8 +9,8 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 var MockRenderer = pac.Renderer.extend({
-  onStageAdd: function(obj){ },
-  onStageClear: function(){ },
+  onLayerFill: function(layer){ },
+  onLayerClear: function(layer){ },
   render: function(){ }
 });
 
@@ -137,14 +137,16 @@ describe('Full Draw', function(){
   
   it('must engage the Scene with the renderer', function(done) {
     
-    var spyStageAdd = sinon.spy(MockRenderer.prototype, 'onStageAdd');
-    sinon.spy(MockRenderer.prototype, 'onStageClear');
+    var spyLayerFill = sinon.spy(MockRenderer.prototype, 'onLayerFill');
+    sinon.spy(MockRenderer.prototype, 'onLayerClear');
 
     var game = pac.create({
       fps: 15
     });
 
-    game.use('renderer', MockRenderer);
+    game.use('renderer', MockRenderer, {
+      layers: [ 'monkeys', 'monkeys2' ]
+    });
 
     var firstSc = new pac.Scene({
       name: 'first',
@@ -156,12 +158,12 @@ describe('Full Draw', function(){
       size: { width: 200, height: 300 }
     });
 
-    var monkeyX = new MonkeyX();
-    var monkeyY = new MonkeyY();
+    var monkeyX = new MonkeyX({ layer: 'monkeys', zIndex: 2 });
+    var monkeyY = new MonkeyY({ layer: 'monkeys', zIndex: 1 });
     firstSc.addObject([ monkeyX, monkeyY ]);
 
-    var monkeyX2 = new MonkeyX();
-    var monkeyY2 = new MonkeyY();
+    var monkeyX2 = new MonkeyX({ layer: 'monkeys2', zIndex: 4 });
+    var monkeyY2 = new MonkeyY({ layer: 'monkeys2', zIndex: 3 });
     secondSc.addObject([ monkeyX2, monkeyY2 ]);
 
     game.scenes.add(firstSc);
@@ -169,26 +171,46 @@ describe('Full Draw', function(){
 
     game.start();
 
-    expect(game.renderer.onStageAdd).to.have.been.called;
-    expect(game.renderer.onStageAdd).to.have.been.calledWith(monkeyX);
-    expect(game.renderer.onStageAdd).to.have.been.calledWith(monkeyY);
+    expect(game.renderer.onLayerFill).to.have.been.calledThrice;
+    expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
+    expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
+    expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
+
+    var stage = game.renderer.stage;
+
+    expect(stage.get('default').length).to.be.equal(0);
+    
+    expect(stage.get('monkeys').length).to.be.equal(2);
+    expect(stage.get('monkeys').at(0).cid).to.be.equal(monkeyY.cid);
+    expect(stage.get('monkeys').at(1).cid).to.be.equal(monkeyX.cid);
+
+    expect(stage.get('monkeys2').length).to.be.equal(0);
 
     // let the game run for 50 ms
     setTimeout(function(){
 
-      spyStageAdd.reset();
+      spyLayerFill.reset();
+
       game.scenes.switch('second');
 
-      expect(game.renderer.onStageClear).to.have.been.called;
+      expect(game.renderer.onLayerClear).to.have.been.called;
 
-      expect(game.renderer.onStageAdd).to.have.been.called;
-      expect(game.renderer.onStageAdd).to.have.been.calledWith(monkeyX2);
-      expect(game.renderer.onStageAdd).to.have.been.calledWith(monkeyY2);
+      expect(game.renderer.onLayerFill).to.have.been.calledThrice;
+      expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
+      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
+      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
+
+      expect(stage.get('default').length).to.be.equal(0);
+      expect(stage.get('monkeys').length).to.be.equal(0);
+    
+      expect(stage.get('monkeys2').length).to.be.equal(2);
+      expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
+      expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
 
       game.end();
 
-      game.renderer.onStageAdd.restore();
-      game.renderer.onStageClear.restore();
+      game.renderer.onLayerFill.restore();
+      game.renderer.onLayerClear.restore();
 
       done();
 

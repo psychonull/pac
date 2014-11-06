@@ -102,6 +102,7 @@ var Game = module.exports = Gameloop.extend({
 
   onEnterScene: function(scene){
     this.renderer.stage.addObjects(scene.objects);
+    this.renderer.stage.ready();
   }
 
 }, {

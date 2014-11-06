@@ -6,11 +6,24 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var GameObject = require('../../../src/GameObject');
+var Drawable = require('../../../src/Drawable');
 
 var TestItem = GameObject.extend();
 
 var TestList = List.extend({
   childType: TestItem
+});
+
+var TestSort = Drawable.extend();
+
+var TestSortListASC = TestList.extend({
+  childType: Drawable,
+  comparator: 'zIndex'
+});
+
+var TestSortListDESC = TestList.extend({
+  childType: Drawable,
+  comparator: '-zIndex'
 });
 
 describe('List', function(){
@@ -69,6 +82,30 @@ describe('List', function(){
       expect(function(){
         var list = new TestList(arr2);
       }).to.not.throw('invalid child type');
+
+    });
+
+    it('must sort the list if it has a comparator', function(){
+
+      var obj1 = new TestSort({ zIndex: 1 });
+      var obj2 = new TestSort({ zIndex: 2 });
+      var obj3 = new TestSort({ zIndex: 3 });
+
+      var list = new TestSortListASC([obj2, obj3, obj1]);
+
+      expect(list.length).to.be.equal(3);
+
+      expect(list.at(0).cid).to.be.equal(obj1.cid);
+      expect(list.at(1).cid).to.be.equal(obj2.cid);
+      expect(list.at(2).cid).to.be.equal(obj3.cid);
+
+      list = new TestSortListDESC([obj2, obj3, obj1]);
+
+      expect(list.length).to.be.equal(3);
+
+      expect(list.at(0).cid).to.be.equal(obj3.cid);
+      expect(list.at(1).cid).to.be.equal(obj2.cid);
+      expect(list.at(2).cid).to.be.equal(obj1.cid);
 
     });
 
@@ -164,6 +201,26 @@ describe('List', function(){
         // second time for same item
         list.add(item);
         expect(list.length).to.be.equal(1);
+        expect(emitted).to.be.equal(1);
+      });
+
+      it('must keep the list sorted if has a comparator', function(){
+        
+        var obj1 = new TestSort({ zIndex: 1 });
+        var obj2 = new TestSort({ zIndex: 2 });
+        var obj4 = new TestSort({ zIndex: 4 });
+        var obj6 = new TestSort({ zIndex: 6 });
+
+        var list = new TestSortListASC([obj6, obj4, obj1]);
+
+        var emitted = 0;
+        list.on('add', function(obj){
+          emitted++;
+          expect(list.at(1).cid).to.be.equal(obj.cid);
+        });
+
+        list.add(obj2);
+        
         expect(emitted).to.be.equal(1);
       });
 

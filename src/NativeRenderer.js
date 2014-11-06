@@ -28,17 +28,21 @@ var NativeRenderer = module.exports = Renderer.extend({
     this.layers.push('default');
   },
 
-  onStageAdd: function(obj, layer){
+  onLayerFill: function(layer){
 
-    var textures = this.game.cache.images;
-    
-    var texture = textures.get(obj.texture);
-    obj.image = texture.image;
-    obj.frames = texture.frames;
+    this.stage.get(layer).each(function(obj, index){
+
+      var textures = this.game.cache.images;
+      
+      var texture = textures.get(obj.texture);
+      obj.image = texture.image;
+      obj.frames = texture.frames;
+
+    }, this);
 
   },
 
-  onStageClear: function(layer){
+  onLayerClear: function(layer){
     // Nothing to do for Naive implementation
   },
 

@@ -10,7 +10,11 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 var MockRenderer = pac.Renderer.extend({
+
+  onLayerFill: function(){ },
+  onLayerClear: function(){ },
   render: function(){}
+  
 });
 
 var game;

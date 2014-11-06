@@ -7,6 +7,8 @@ var List = module.exports = Emitter.extend({
   childType: null,
   length: 0,
 
+  comparator: null,
+
   init: function(items, options){
 
     if (items && !Array.isArray(items)){
@@ -15,6 +17,8 @@ var List = module.exports = Emitter.extend({
 
     this._items = [];
     this.length = 0;
+
+    this.comparator = (options && options.comparator) || this.comparator;
 
     if (items && items.length > 0){
       items.forEach(this._set.bind(this));
@@ -98,6 +102,26 @@ var List = module.exports = Emitter.extend({
     return false;
   },
 
+  _sort: function(){
+    var comp = this.comparator;
+
+    if (!comp || (comp && typeof comp !== 'string')){
+      return;
+    }
+    
+    var field = comp.replace('-', ''),
+      dir = (comp[0] === '-' ? -1 : 1);
+
+    this._items.sort(function (a, b) {
+      var fieldA = a[field], fieldB = b[field];
+      
+      if (fieldA < fieldB) return -dir;
+      if (fieldA > fieldB) return dir;
+      return 0;
+    });
+
+  },
+
   _set: function(item){
 
     this._validate(item);
@@ -108,6 +132,8 @@ var List = module.exports = Emitter.extend({
 
     this._items.push(item);
     this.length++;
+
+    this._sort();
 
     this.emit('add', item);
   },
