@@ -97,10 +97,15 @@ var Game = module.exports = Gameloop.extend({
   },
 
   onLeaveScene: function(scene){
+    this.renderer.clearBackTexture();
     this.renderer.stage.clearLayer();
   },
 
   onEnterScene: function(scene){
+    if (scene.texture){
+      this.renderer.setBackTexture(scene.texture);
+    }
+    
     this.renderer.stage.addObjects(scene.objects);
     this.renderer.stage.ready();
   }

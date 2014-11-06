@@ -16,9 +16,27 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     this.container.appendChild(this.pixiRenderer.view);
 
-    // TODO: Add background Texture first of layers build
+    //add background contariner first so it's at back of everything
+    this.pixiBack = new PIXI.DisplayObjectContainer();
 
     this._buildLayers();
+  },
+
+  setBackTexture: function(texture){
+    
+    var textures = this.game.cache.images;
+
+    var image = textures.get(texture).raw();
+    var baseTexture = new PIXI.BaseTexture(image);
+    var pixiTexture = new PIXI.Texture(baseTexture);
+
+    var sprite = new PIXI.Sprite(pixiTexture);
+    this.pixiBack.addChild(sprite);
+  },
+
+  clearBackTexture: function(){
+    // clear current sprite in the background
+    this.pixiBack.removeChildren();
   },
 
   _buildLayers: function(){
@@ -59,7 +77,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
       var textures = this.game.cache.images;
 
-      var image = textures.get(obj.texture).image;
+      var image = textures.get(obj.texture).raw();
       var baseTexture = new PIXI.BaseTexture(image);
       var texture = new PIXI.Texture(baseTexture);
 

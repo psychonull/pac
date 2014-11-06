@@ -44,6 +44,9 @@ var Renderer = module.exports = EngineComponent.extend({
 
   init: function(game, options) { },
 
+  setBackTexture: function(texture){ },
+  clearBackTexture: function(){ },
+
   onLayerFill: function(layer){
     throw new Error('Must override renderer.onLayerFill()');
   },

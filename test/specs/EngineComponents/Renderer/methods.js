@@ -63,6 +63,16 @@ describe('Methods', function(){
     expect(renderer.render).to.be.a('function');
   });
 
+  it('must expose a clearBackTexture', function(){
+    var renderer = new TestRenderer();
+    expect(renderer.clearBackTexture).to.be.a('function');
+  });
+
+  it('must expose a setBackTexture', function(){
+    var renderer = new TestRenderer();
+    expect(renderer.setBackTexture).to.be.a('function');
+  });
+
   it('must throw an error for required overrides', function(){
     var testInstance;
 

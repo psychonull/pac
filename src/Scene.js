@@ -9,11 +9,14 @@ var Scene = module.exports = Emitter.extend({
 
   name: null,
   size: null,
+  texture: null,
+
   objects: null,
 
   constructor: function(options){
     this.name = (options && options.name) || this.name;
     this.size = (options && options.size) || this.size;
+    this.texture = (options && options.texture) || this.texture;
 
     required.forEach(function(req){
 
@@ -26,7 +29,6 @@ var Scene = module.exports = Emitter.extend({
 
     this.objects = new GameObjectList();
 
-    //Scene.__super__.constructor.apply(this, arguments);
     Emitter.apply(this, arguments);
   },
 

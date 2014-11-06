@@ -26,6 +26,17 @@ var NativeRenderer = module.exports = Renderer.extend({
 
     // set 'default' as last layer.
     this.layers.push('default');
+
+    this.backImage = null;
+  },
+
+  setBackTexture: function(texture){
+    var textures = this.game.cache.images;
+    this.backImage = textures.get(texture).raw();
+  },
+
+  clearBackTexture: function(){
+    this.backImage = null;
   },
 
   onLayerFill: function(layer){
@@ -35,7 +46,7 @@ var NativeRenderer = module.exports = Renderer.extend({
       var textures = this.game.cache.images;
       
       var texture = textures.get(obj.texture);
-      obj.image = texture.image;
+      obj.image = texture.raw();
       obj.frames = texture.frames;
 
     }, this);
@@ -48,6 +59,10 @@ var NativeRenderer = module.exports = Renderer.extend({
 
   render: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (this.backImage){
+      this.context.drawImage(this.backImage, 0, 0);
+    }
 
     // run from this.layers array (it is the layers sort)
     this.layers.forEach(function(name){

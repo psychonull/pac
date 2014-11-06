@@ -137,6 +137,8 @@ describe('Full Draw', function(){
   
   it('must engage the Scene with the renderer', function(done) {
     
+    sinon.spy(MockRenderer.prototype, 'setBackTexture');
+    sinon.spy(MockRenderer.prototype, 'clearBackTexture');
     var spyLayerFill = sinon.spy(MockRenderer.prototype, 'onLayerFill');
     sinon.spy(MockRenderer.prototype, 'onLayerClear');
 
@@ -150,11 +152,13 @@ describe('Full Draw', function(){
 
     var firstSc = new pac.Scene({
       name: 'first',
+      texture: 'first_scene_texture',
       size: { width: 200, height: 300 }
     });
 
     var secondSc = new pac.Scene({
       name: 'second',
+      texture: 'second_scene_texture',
       size: { width: 200, height: 300 }
     });
 
@@ -170,6 +174,9 @@ describe('Full Draw', function(){
     game.scenes.add(secondSc);
 
     game.start();
+
+    expect(game.renderer.setBackTexture)
+      .to.have.been.calledWith(firstSc.texture);
 
     expect(game.renderer.onLayerFill).to.have.been.calledThrice;
     expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
@@ -193,7 +200,11 @@ describe('Full Draw', function(){
 
       game.scenes.switch('second');
 
+      expect(game.renderer.clearBackTexture).to.have.been.called;
       expect(game.renderer.onLayerClear).to.have.been.called;
+
+      expect(game.renderer.setBackTexture)
+        .to.have.been.calledWith(secondSc.texture);
 
       expect(game.renderer.onLayerFill).to.have.been.calledThrice;
       expect(game.renderer.onLayerFill).to.have.been.calledWith('default');

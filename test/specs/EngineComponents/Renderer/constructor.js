@@ -8,8 +8,8 @@ var expect = chai.expect;
 
 var TestRenderer = pac.Renderer.extend({
 
-  onStageAdd: function(){ },
-  onStageClear: function(){ },
+  onLayerFill: function(layer){ },
+  onLayerClear: function(layer){ },
   render: function(){ },
 
 });
