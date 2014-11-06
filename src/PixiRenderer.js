@@ -18,6 +18,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     //add background contariner first so it's at back of everything
     this.pixiBack = new PIXI.DisplayObjectContainer();
+    this.pixiStage.addChild(this.pixiBack);
 
     this._buildLayers();
   },
@@ -95,13 +96,9 @@ var PixiRenderer = module.exports = Renderer.extend({
   onLayerClear: function(layer){
 
     if (this.pixiStage && this.pixiLayers[layer]){
-      var pixiLayer = this.pixiLayers[layer];
-
-      for (var i = pixiLayer.children.length - 1; i >= 0; i--) {
-        pixiLayer.removeChild(pixiLayer.children[i]);
-      }
+      this.pixiLayers[layer].removeChildren();
     }
-
+    
   },
 
   render: function () {
