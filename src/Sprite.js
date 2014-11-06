@@ -8,6 +8,7 @@ var Sprite = module.exports = Drawable.extend({
   size: null,
   texture: null,
 
+  frame: null,
   animations: null,
 
   constructor: function(options){
@@ -18,6 +19,7 @@ var Sprite = module.exports = Drawable.extend({
     }
 
     this.size = (options && options.size) || this.size;
+    this.frame = (options && options.frame) || this.frame;
 
     if (options && options.animations){
       this.animations = options.animations;
@@ -34,6 +36,7 @@ var Sprite = module.exports = Drawable.extend({
   updateAnimations: function(dt) {
     if (this.animations){
       this.animations.update(dt);
+      this.frame = this.animations.current.frame;
     }
   }
 

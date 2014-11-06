@@ -17,6 +17,7 @@ describe('Constructor', function(){
     expect(sprite.position.y).to.be.equal(0);
 
     expect(sprite.size).to.be.equal(null);
+    expect(sprite.frame).to.be.equal(null);
   });
 
   it ('must create an Sprite', function(){
@@ -26,7 +27,8 @@ describe('Constructor', function(){
       size: {
         width: 50,
         height: 50
-      }
+      },
+      frame: 1
     });
 
     expect(sprite.position.x).to.be.equal(100);
@@ -34,6 +36,7 @@ describe('Constructor', function(){
 
     expect(sprite.size.width).to.be.equal(50);
     expect(sprite.size.height).to.be.equal(50);
+    expect(sprite.frame).to.be.equal(1);
   });
 
   it ('must allow to create Prefabs from Sprite', function(){
@@ -44,7 +47,8 @@ describe('Constructor', function(){
       size: {
         width: 50,
         height: 50
-      }
+      },
+      frame: 'idle_1'
     });
 
     var test = new MySprite();
@@ -56,6 +60,7 @@ describe('Constructor', function(){
 
     expect(test.size.width).to.be.equal(50);
     expect(test.size.height).to.be.equal(50);
+    expect(test.frame).to.be.equal('idle_1');
 
     var initCalled = false;
 

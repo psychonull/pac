@@ -46,10 +46,13 @@ describe('Methods', function(){
 
       sinon.spy(list, 'update');
 
+      expect(sprite.frame).to.be.equal(null);
+
       var dt = 0.16;
       sprite.updateAnimations(dt);
-
+      
       expect(list.update).to.have.been.calledWith(dt);
+      expect(sprite.frame).to.be.equal(list.current.frame);
 
       list.update.restore();
     });

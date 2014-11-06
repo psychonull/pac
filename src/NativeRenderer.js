@@ -71,17 +71,12 @@ var NativeRenderer = module.exports = Renderer.extend({
 
       layer.each(function(o){
 
-        if (o.frames){
-          var anim = o.animations && o.animations.current;
-          var frame = anim && anim.frame;
-
-          if (frame >= 0){
-            var frm = o.frames.at(frame);
-            
-            this.context.drawImage(o.image, 
-              frm.x, frm.y, frm.width, frm.height,
-              o.position.x, o.position.y, o.size.width, o.size.height);
-          }
+        if (o.frame && o.frames){
+          var frm = o.frames.get(o.frame);
+          
+          this.context.drawImage(o.image, 
+            frm.x, frm.y, frm.width, frm.height,
+            o.position.x, o.position.y, o.size.width, o.size.height);
         }
         else {
 
