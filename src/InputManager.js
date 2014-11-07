@@ -33,9 +33,11 @@ var InputManager = module.exports = MapList.extend({
       })
       .on(Input.events.DOWN, function(){
         self._down = true;
+        self._up = false;
       })
       .on(Input.events.UP, function(){
         self._up = true;
+        self._down = false;
       });
   },
 
