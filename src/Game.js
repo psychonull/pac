@@ -1,9 +1,10 @@
 
 var ClassExtend = require('./ClassExtend'),
   Gameloop = require('gameloop'),
-  Scenes = require('./Scenes');
+  Scenes = require('./Scenes'),
+  InputManager = require('./InputManager');
 
-var componentTypes = ['renderer', 'loader'];
+var componentTypes = ['renderer', 'loader', 'input'];
 
 var EngineComponents = {
   Renderer: require('./Renderer'),
@@ -21,6 +22,7 @@ var Game = module.exports = Gameloop.extend({
     // Engine Components
     this.renderer = null;
     this.loader = null;
+    this.inputs = null;
 
     // Public members
     this.scenes = new Scenes();
@@ -44,6 +46,7 @@ var Game = module.exports = Gameloop.extend({
     switch(type){
       case 'renderer': this._attachRenderer(Component, options); break;
       case 'loader': this._attachLoader(Component, options); break;
+      case 'input': this._attachInputs(Component, options); break;
     }
 
     return this;
@@ -69,6 +72,19 @@ var Game = module.exports = Gameloop.extend({
     this.loader = instance;
   },
 
+  _attachInputs: function(_inputs, options){
+
+    if (!this.renderer.viewport){
+      throw new Error('Renderer must define a [viewport] ' +
+        'property to attach events');
+    }
+
+    options = options || {};
+    options.container = this.renderer.viewport;
+
+    this.inputs = InputManager.create(_inputs, options);
+  },
+
   start: function(){
     this.onEnterScene(this.scenes.current);
     Game.__super__.start.apply(this, arguments);
@@ -87,6 +103,10 @@ var Game = module.exports = Gameloop.extend({
   },
 
   update: function(dt){
+    if (this.inputs){
+      this.inputs.update(dt);
+    }
+
     this.scenes.update(dt);
     this.emit('update', dt);
   },
@@ -105,7 +125,7 @@ var Game = module.exports = Gameloop.extend({
     if (scene.texture){
       this.renderer.setBackTexture(scene.texture);
     }
-    
+
     this.renderer.stage.addObjects(scene.objects);
     this.renderer.stage.ready();
   }

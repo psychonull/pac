@@ -15,6 +15,7 @@ var PixiRenderer = module.exports = Renderer.extend({
       this.size.width, this.size.height);
 
     this.container.appendChild(this.pixiRenderer.view);
+    this.viewport = this.pixiRenderer.view;
 
     //add background contariner first so it's at back of everything
     this.pixiBack = new PIXI.DisplayObjectContainer();
@@ -24,7 +25,7 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   setBackTexture: function(texture){
-    
+
     var textures = this.game.cache.images;
 
     var image = textures.get(texture).raw();
@@ -86,11 +87,11 @@ var PixiRenderer = module.exports = Renderer.extend({
       var sprite = new PIXI.Sprite(texture);
       this._setSpriteProperties(obj, sprite);
       sprite.cid = obj.cid;
-   
+
       this.pixiLayers[layer].addChild(sprite);
 
     },this);
-    
+
   },
 
   onLayerClear: function(layer){
@@ -98,7 +99,7 @@ var PixiRenderer = module.exports = Renderer.extend({
     if (this.pixiStage && this.pixiLayers[layer]){
       this.pixiLayers[layer].removeChildren();
     }
-    
+
   },
 
   render: function () {
@@ -118,7 +119,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     sprite.anchor.x = 0;
     sprite.anchor.y = 0;
- 
+
     sprite.position.x = obj.position.x;
     sprite.position.y = obj.position.y;
 
@@ -127,7 +128,7 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   _updateProperties: function(){
-    
+
     for (var layer in this.pixiLayers) {
 
       if (this.pixiLayers.hasOwnProperty(layer)){
