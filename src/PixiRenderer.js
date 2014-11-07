@@ -1,5 +1,7 @@
 
 var Renderer = require('./Renderer');
+var Sprite = require('./Sprite');
+var Text = require('./Text');
 var PIXI = require('pixi.js');
 
 var PixiRenderer = module.exports = Renderer.extend({
@@ -15,6 +17,7 @@ var PixiRenderer = module.exports = Renderer.extend({
       this.size.width, this.size.height);
 
     this.container.appendChild(this.pixiRenderer.view);
+    this.viewport = this.pixiRenderer.view;
 
     //add background contariner first so it's at back of everything
     this.pixiBack = new PIXI.DisplayObjectContainer();
@@ -24,7 +27,7 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   setBackTexture: function(texture){
-    
+
     var textures = this.game.cache.images;
 
     var image = textures.get(texture).raw();
@@ -77,20 +80,27 @@ var PixiRenderer = module.exports = Renderer.extend({
     this.stage.get(layer).each(function(obj, index){
 
       var textures = this.game.cache.images;
+      if(obj instanceof Sprite){
+        var image = textures.get(obj.texture).raw();
+        var baseTexture = new PIXI.BaseTexture(image);
+        var texture = new PIXI.Texture(baseTexture);
 
-      var image = textures.get(obj.texture).raw();
-      var baseTexture = new PIXI.BaseTexture(image);
-      var texture = new PIXI.Texture(baseTexture);
+        // create a new Sprite using the texture
+        var sprite = new PIXI.Sprite(texture);
+        this._setSpriteProperties(obj, sprite);
+        sprite.cid = obj.cid;
 
-      // create a new Sprite using the texture
-      var sprite = new PIXI.Sprite(texture);
-      this._setSpriteProperties(obj, sprite);
-      sprite.cid = obj.cid;
-   
-      this.pixiLayers[layer].addChild(sprite);
+        this.pixiLayers[layer].addChild(sprite);
+      }
+      else if (obj instanceof Text){
+        var text = new PIXI.Text(obj.value, obj);
+        this._setTextProperties(obj, text);
+        text.cid = obj.cid;
+        this.pixiLayers[layer].addChild(text);
+      }
 
     },this);
-    
+
   },
 
   onLayerClear: function(layer){
@@ -98,7 +108,7 @@ var PixiRenderer = module.exports = Renderer.extend({
     if (this.pixiStage && this.pixiLayers[layer]){
       this.pixiLayers[layer].removeChildren();
     }
-    
+
   },
 
   render: function () {
@@ -118,7 +128,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     sprite.anchor.x = 0;
     sprite.anchor.y = 0;
- 
+
     sprite.position.x = obj.position.x;
     sprite.position.y = obj.position.y;
 
@@ -126,8 +136,21 @@ var PixiRenderer = module.exports = Renderer.extend({
     sprite.height = obj.size.height;
   },
 
+  _setTextProperties: function(obj, text){
+    text.position.x = obj.position.x;
+    text.position.y = obj.position.y;
+    text.setStyle({
+      font: obj.font,
+      fill: obj.fill,
+      stroke: obj.stroke,
+      strokeThickness: obj.strokeThickness,
+      wordWrap: !!obj.wordWrap,
+      wordWrapWidth: obj.wordWrap
+    });
+  },
+
   _updateProperties: function(){
-    
+
     for (var layer in this.pixiLayers) {
 
       if (this.pixiLayers.hasOwnProperty(layer)){
@@ -138,14 +161,21 @@ var PixiRenderer = module.exports = Renderer.extend({
         for (var i = pixiLayer.children.length - 1; i >= 0; i--) {
           var pixiSp = pixiLayer.children[i];
           var obj = stageLayer.get(pixiSp.cid);
-
-          if (obj){
-            this._setSpriteProperties(obj, pixiSp);
-          }
+          this._setObjectProperties(obj, pixiSp);
         }
 
       }
     }
-  }
+  },
 
+  _setObjectProperties: function(obj, pixiObj){
+    if (obj){
+      if(obj instanceof Sprite){
+        this._setSpriteProperties(obj, pixiObj);
+      }
+      else if (obj instanceof Text){
+        this._setTextProperties(obj, pixiObj);
+      }
+    }
+  }
 });
