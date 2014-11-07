@@ -50,7 +50,7 @@ describe('#addObject', function(){
   it('must throw an error if not inherit from GameObject', function(){
 
     expect(function(){
-      
+
       var scene = new Scene({
         name: 'test',
         size: { width: 200, height: 300 }
@@ -69,7 +69,7 @@ describe('#addObject', function(){
     });
 
     var monkeys = [
-      new Monkey({ name: 'Chubaka' }), 
+      new Monkey({ name: 'Chubaka' }),
       new Monkey({ name: 'Pepito' })
     ];
 
@@ -81,18 +81,18 @@ describe('#addObject', function(){
     expect(scene.objects.at(1).name).to.be.equal('Pepito');
   });
 
-  it('must throw an error if not inherit from GameObject with an array', 
+  it('must throw an error if not inherit from GameObject with an array',
   function(){
 
     expect(function(){
-      
+
       var scene = new Scene({
         name: 'test',
         size: { width: 200, height: 300 }
       });
 
       var monkeys = [
-        new Monkey({ name: 'Chubaka' }), 
+        new Monkey({ name: 'Chubaka' }),
         new Point()
       ];
 

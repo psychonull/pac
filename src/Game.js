@@ -25,7 +25,7 @@ var Game = module.exports = Gameloop.extend({
     this.inputs = null;
 
     // Public members
-    this.scenes = new Scenes();
+    this.scenes = new Scenes({}, { game: this });
     this.scenes.on('leave', this.onLeaveScene.bind(this));
     this.scenes.on('enter', this.onEnterScene.bind(this));
 

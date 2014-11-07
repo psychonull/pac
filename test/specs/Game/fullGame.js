@@ -98,6 +98,8 @@ describe('Full Update', function(){
     firstSc.addObject([ monkeyX, monkeyY, monkeyActioner, monkeySP ]);
 
     game.scenes.add(firstSc);
+    expect(firstSc.game).to.be.ok;
+    expect(firstSc.game).to.be.equal(game);
 
     game.start();
 

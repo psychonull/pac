@@ -18,12 +18,14 @@ describe('Scenes', function(){
   });
 
   it('must have default Values', function(){
-    var scenes = new Scenes();
+    var fakeGame = { something: true };
+    var scenes = new Scenes(null, { game: fakeGame });
 
     expect(scenes.childType).to.be.equal(Scene);
 
     expect(scenes.current).to.be.equal(null);
     expect(scenes.length).to.be.equal(0);
+    expect(scenes.game).to.be.equal(fakeGame);
   });
 
   require('./methods');

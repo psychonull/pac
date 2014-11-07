@@ -18,8 +18,7 @@ var GameObject = module.exports = Emitter.extend({
 
       this.actions.owner = this;
     }
-  
-    //GameObject.__super__.constructor.apply(this, arguments);
+
     Emitter.apply(this, arguments);
   },
 

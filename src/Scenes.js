@@ -7,6 +7,19 @@ var Scenes = module.exports = MapList.extend({
   current: null,
   childType: Scene,
 
+  init: function(data, options){
+    Scenes.__super__.init.apply(this, arguments);
+
+    this.game = (options && options.game) || this.game;
+
+    this.on('add', this._initScene.bind(this));
+    this.each(this._initScene.bind(this));
+  },
+
+  _initScene: function(scene, name){
+    scene.game = this.game;
+  },
+
   add: function(){
     var arg0 = arguments[0];
 
@@ -17,19 +30,16 @@ var Scenes = module.exports = MapList.extend({
       }, this);
 
       this._setDefault(arg0[0]);
-
       return this;
     }
 
     Scenes.__super__.add.call(this, arg0.name, arg0);
 
     this._setDefault(arg0);
-
     return this;
   },
 
   _setDefault: function(scene){
-
     if (!this.current && this.length > 0){
       this.current = scene;
     }
@@ -47,7 +57,7 @@ var Scenes = module.exports = MapList.extend({
       previousScene.onLeave();
       this.emit('leave', previousScene);
     }
-    
+
     targetScene.onEnter(previousScene);
     this.emit('enter', targetScene);
 
