@@ -21,6 +21,7 @@ module.exports = {
 
   Drawable: require('./Drawable'),
   Sprite: require('./Sprite'),
+  Text: require('./Text'),
 
   Texture: require('./Texture'),
   JsonFile: require('./JsonFile'),
