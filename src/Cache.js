@@ -81,7 +81,7 @@ var Cache = Emitter.extend({
   },
 
   get: function(key){
-    if(typeof key === 'undefined'){
+    if(arguments.length === 0){
       return this._data;
     }
     var val = this._data[key];
@@ -143,6 +143,9 @@ var Cache = Emitter.extend({
   getGroup: function(name){
     if (this._groups.length === 0){
       this._groups = new Cache();
+    }
+    if (arguments.length === 0){
+      return this._groups.get();
     }
     return this._groups.get(name);
   },

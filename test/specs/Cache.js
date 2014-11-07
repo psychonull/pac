@@ -158,6 +158,7 @@ describe('Cache', function(){
         cache.add('test', 1);
 
         expect(cache.get()).to.deep.equal({test: 1});
+        expect(cache.get(undefined)).to.be.null;
       });
 
     });
