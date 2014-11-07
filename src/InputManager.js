@@ -45,6 +45,18 @@ var InputManager = module.exports = MapList.extend({
     if (this._up){
       this.cursor.isDown = false;
     }
+  },
+
+  enable: function(){
+    this.each(function(input){
+      input.enable();
+    });
+  },
+
+  disable: function(){
+    this.each(function(input){
+      input.disable();
+    });
   }
 
 }, {
