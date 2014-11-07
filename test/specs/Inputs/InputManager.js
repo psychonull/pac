@@ -97,6 +97,13 @@ describe('InputManager', function(){
 
       manager.update();
       expect(cursor.isDown).to.be.false;
+
+      mouse.emit(Input.events.DOWN);
+      expect(cursor.isDown).to.be.false;
+
+      manager.update();
+      expect(cursor.isDown).to.be.true;
+
     });
 
   });

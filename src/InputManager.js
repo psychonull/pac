@@ -44,6 +44,7 @@ var InputManager = module.exports = MapList.extend({
 
     if (this._up){
       this.cursor.isDown = false;
+      this._up = false;
     }
   },
 
