@@ -38,8 +38,8 @@ describe('PAC', function(){
 
   require('./Lists');
   require('./Assets');
-  require('./ActionLists');
-
   require('./Inputs');
+
+  require('./ActionLists');
 
 });

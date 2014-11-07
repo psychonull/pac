@@ -13,12 +13,12 @@ chai.use(sinonChai);
 var Monkey = Drawable.extend();
 
 var WalkRight = Action.extend({
-  
+
   onStart: function() { },
   onEnd: function() { },
 
   update: function(dt) {
-    this.actionList.owner.position.x -= dt;
+    this.actions.owner.position.x -= dt;
   }
 
 });
@@ -31,7 +31,7 @@ var Delay = Action.extend({
     this.times = options.times;
     this.count = 0;
   },
-  
+
   onStart: function() { },
   onEnd: function() { },
 
@@ -55,7 +55,7 @@ var WalkLeft = Action.extend({
   },
 
   update: function(dt) {
-    this.actionList.owner.position.x += dt;
+    this.actions.owner.position.x += dt;
     this.count++;
 
     if (this.count === 2){
@@ -118,7 +118,7 @@ describe('fullUpdate', function(){
     expect(walkLeft.isFinished).to.be.equal(true);
 
     expect(walkLeft.onEnd).to.have.been.calledOnce;
-    
+
     expect(list.length).to.be.equal(2);
 
     var lastMonkeyX = monkey.position.x;

@@ -42,7 +42,7 @@ var MonkeySprite = pac.Sprite.extend({
 var MonkeyAction = pac.Action.extend({
 
   update: function(dt){
-    this.actionList.owner.position.x = 1000 + dt;
+    this.actions.owner.position.x = 1000 + dt;
   }
 
 });

@@ -5,7 +5,7 @@ module.exports = Emitter.extend({
 
   isFinished: false,
   isBlocking: false,
-  actionList: null,
+  actions: null,
 
   init: function() { },
 
@@ -17,11 +17,11 @@ module.exports = Emitter.extend({
   },
 
   insertInFrontOfMe: function(action) {
-    this.actionList.insertBefore(action, this);
+    this.actions.insertBefore(action, this);
   },
 
   insertBehindMe: function(action) {
-    this.actionList.insertAfter(action, this);
+    this.actions.insertAfter(action, this);
   },
 
 });

@@ -15,7 +15,7 @@ var ActionList = module.exports = List.extend({
   },
 
   _attachListToAction: function(action){
-    action.actionList = this;
+    action.actions = this;
     action.started = false;
   },
 
@@ -29,7 +29,7 @@ var ActionList = module.exports = List.extend({
 
   insertBefore: function(action, before){
     var idx = this.indexOf(before);
-    
+
     if (idx > -1){
       this.insertAt(idx, action);
     }
@@ -58,7 +58,7 @@ var ActionList = module.exports = List.extend({
         action.onEnd();
         this.remove(action);
       }
-      
+
       if (action.isBlocking){
         return false; // break loop
       }

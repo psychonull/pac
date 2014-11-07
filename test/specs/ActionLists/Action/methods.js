@@ -45,7 +45,7 @@ describe('Methods', function(){
 
   describe('#insertInFrontOfMe', function(){
 
-    it('must call the actionList insertBefore with this action', function(){
+    it('must call the actions insertBefore with this action', function(){
 
       var thisAction = new Action();
       var list = new ActionList([ new Action(), thisAction, new Action() ]);
@@ -65,7 +65,7 @@ describe('Methods', function(){
 
   describe('#insertBehindMe', function(){
 
-    it('must call the actionList insertAfter with this action', function(){
+    it('must call the actions insertAfter with this action', function(){
 
       var thisAction = new Action();
       var list = new ActionList([ new Action(), thisAction, new Action() ]);

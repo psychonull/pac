@@ -29,7 +29,7 @@ describe('Constructor', function(){
     expect(list.length).to.be.equal(2);
 
     list.each(function(action){
-      expect(action.actionList).to.be.equal(list);
+      expect(action.actions).to.be.equal(list);
     });
   });
 
