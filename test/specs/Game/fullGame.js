@@ -101,6 +101,12 @@ describe('Full Update', function(){
     expect(firstSc.game).to.be.ok;
     expect(firstSc.game).to.be.equal(game);
 
+    expect(monkeyY.scene).to.be.ok;
+    expect(monkeyY.scene).to.be.equal(firstSc);
+
+    expect(monkeyY.game).to.be.ok;
+    expect(monkeyY.game).to.be.equal(game);
+
     game.start();
 
     // let the game run for 50 ms

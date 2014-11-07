@@ -17,7 +17,7 @@ var Scenes = module.exports = MapList.extend({
   },
 
   _initScene: function(scene, name){
-    scene.game = this.game;
+    scene.setGame(this.game);
   },
 
   add: function(){

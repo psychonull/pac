@@ -29,7 +29,24 @@ var Scene = module.exports = Emitter.extend({
 
     this.objects = new GameObjectList();
 
+    var self = this;
+    this.objects.on('add', function(obj){
+      obj.scene = self;
+
+      if (self.game){
+        obj.game = self.game;
+      }
+    });
+
     Emitter.apply(this, arguments);
+  },
+
+  setGame: function(game){
+    this.game = game;
+
+    this.objects.each(function(obj){
+      obj.game = game;
+    });
   },
 
   init: function(){},
@@ -45,10 +62,10 @@ var Scene = module.exports = Emitter.extend({
   update: function(dt){
 
     this.objects.each(function(gameObject){
-      
+
       gameObject.updateActions(dt);
       gameObject.update(dt);
-      
+
       if (gameObject.updateAnimations){
         gameObject.updateAnimations(dt);
       }

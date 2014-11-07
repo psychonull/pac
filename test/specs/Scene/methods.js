@@ -45,6 +45,12 @@ describe('#addObject', function(){
 
     expect(scene.objects.length).to.be.equal(1);
     expect(scene.objects.get(monkey.cid)).to.be.instanceof(Monkey);
+    expect(monkey.scene).to.be.equal(scene);
+    expect(monkey.game).to.be.equal(undefined);
+
+    var fakeGame = { hi: true };
+    scene.setGame(fakeGame);
+    expect(monkey.game).to.be.equal(fakeGame);
   });
 
   it('must throw an error if not inherit from GameObject', function(){
