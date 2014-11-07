@@ -2,7 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 describe('PAC', function(){
-/*
+
   describe('Pac initialization', function(){
     var pac = require('../../src');
 
@@ -39,7 +39,7 @@ describe('PAC', function(){
   require('./Lists');
   require('./Assets');
   require('./ActionLists');
-*/
+
   require('./Inputs');
 
 });
