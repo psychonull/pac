@@ -33,9 +33,11 @@ var InputManager = module.exports = MapList.extend({
       })
       .on(Input.events.DOWN, function(){
         self._down = true;
+        self._up = false;
       })
       .on(Input.events.UP, function(){
         self._up = true;
+        self._down = false;
       });
   },
 
@@ -44,7 +46,20 @@ var InputManager = module.exports = MapList.extend({
 
     if (this._up){
       this.cursor.isDown = false;
+      this._up = false;
     }
+  },
+
+  enable: function(){
+    this.each(function(input){
+      input.enable();
+    });
+  },
+
+  disable: function(){
+    this.each(function(input){
+      input.disable();
+    });
   }
 
 }, {

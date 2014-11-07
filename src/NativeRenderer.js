@@ -8,7 +8,7 @@ var NativeRenderer = module.exports = Renderer.extend({
 
   init: function(){
     var canvas = document.createElement('canvas');
-    
+
     canvas.style.backgroundColor = this.backgroundColor;
     canvas.width = this.size.width;
     canvas.height = this.size.height;
@@ -17,6 +17,7 @@ var NativeRenderer = module.exports = Renderer.extend({
     this.context = canvas.getContext('2d');
 
     this.container.appendChild(this.canvas);
+    this.viewport = this.canvas;
 
     if (!this.layers){
       this.layers = [];
@@ -44,7 +45,7 @@ var NativeRenderer = module.exports = Renderer.extend({
     this.stage.get(layer).each(function(obj, index){
 
       var textures = this.game.cache.images;
-      
+
       var texture = textures.get(obj.texture);
       obj.image = texture.raw();
       obj.frames = texture.frames;
@@ -73,14 +74,14 @@ var NativeRenderer = module.exports = Renderer.extend({
 
         if (o.frame !== null && o.frames){
           var frm = o.frames.get(o.frame);
-          
-          this.context.drawImage(o.image, 
+
+          this.context.drawImage(o.image,
             frm.x, frm.y, frm.width, frm.height,
             o.position.x, o.position.y, o.size.width, o.size.height);
         }
         else {
 
-          this.context.drawImage(o.image, 
+          this.context.drawImage(o.image,
             o.position.x, o.position.y, o.size.width, o.size.height);
         }
 

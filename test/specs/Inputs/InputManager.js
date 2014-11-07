@@ -11,6 +11,10 @@ var Point = require('../../../src/Point');
 var chai = require('chai');
 var expect = chai.expect;
 
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
+
 describe('InputManager', function(){
 
   it('must NOT expose Input Class', function(){
@@ -52,12 +56,11 @@ describe('InputManager', function(){
     it('must support KeyboardInput type');
 
     it('must set the state of inputs when they happen', function(){
-      var canvas = document.createElement('canvas');
 
       //TODO: add more inputs to test all together
 
       var manager = InputManager.create(MouseInput, {
-        container: canvas,
+        container: document.createElement('canvas'),
         enabled: true
       });
 
@@ -94,9 +97,39 @@ describe('InputManager', function(){
 
       manager.update();
       expect(cursor.isDown).to.be.false;
+
+      mouse.emit(Input.events.DOWN);
+      expect(cursor.isDown).to.be.false;
+
+      manager.update();
+      expect(cursor.isDown).to.be.true;
+
     });
 
   });
 
+  describe('Enable & Disable', function(){
+
+    it('must allow to enable and disable inputs', function(){
+
+      var manager = InputManager.create(MouseInput, {
+        container: document.createElement('canvas')
+      });
+
+      expect(manager.enable).to.be.a('function');
+      expect(manager.disable).to.be.a('function');
+
+      var mouse = manager.get('mouse');
+      sinon.spy(mouse, 'enable');
+      sinon.spy(mouse, 'disable');
+
+      manager.enable();
+      expect(mouse.enable).to.have.been.called;
+
+      manager.disable();
+      expect(mouse.disable).to.have.been.called;
+    });
+
+  });
 
 });

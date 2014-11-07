@@ -96,6 +96,7 @@ var PixiRenderer = module.exports = Renderer.extend({
         var text = new PIXI.Text(obj.value, obj);
         this._setTextProperties(obj, text);
         text.cid = obj.cid;
+        
         this.pixiLayers[layer].addChild(text);
       }
 

@@ -9,6 +9,9 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 var MockRenderer = pac.Renderer.extend({
+  init: function(){
+    this.viewport = document.createElement('canvas');
+  },
   onLayerFill: function(layer){ },
   onLayerClear: function(layer){ },
   render: function(){ }
@@ -37,7 +40,7 @@ var MonkeySprite = pac.Sprite.extend({
 /* test Actions Update */
 
 var MonkeyAction = pac.Action.extend({
-  
+
   update: function(dt){
     this.actionList.owner.position.x = 1000 + dt;
   }
@@ -59,6 +62,9 @@ describe('Full Update', function(){
     });
 
     game.use('renderer', MockRenderer);
+    game.use('input', pac.MouseInput);
+
+    sinon.spy(game.inputs, 'update');
 
     var monkeyX = new MonkeyX();
     var monkeyY = new MonkeyY();
@@ -96,8 +102,10 @@ describe('Full Update', function(){
     game.start();
 
     // let the game run for 50 ms
-    setTimeout(function(){      
+    setTimeout(function(){
       game.end();
+
+      expect(game.inputs.update).to.have.been.called;
 
       expect(firstSc.update).to.have.been.called;
       expect(monkeyX.update).to.have.been.called;
@@ -134,9 +142,9 @@ describe('Full Update', function(){
 });
 
 describe('Full Draw', function(){
-  
+
   it('must engage the Scene with the renderer', function(done) {
-    
+
     sinon.spy(MockRenderer.prototype, 'setBackTexture');
     sinon.spy(MockRenderer.prototype, 'clearBackTexture');
     var spyLayerFill = sinon.spy(MockRenderer.prototype, 'onLayerFill');
@@ -186,7 +194,7 @@ describe('Full Draw', function(){
     var stage = game.renderer.stage;
 
     expect(stage.get('default').length).to.be.equal(0);
-    
+
     expect(stage.get('monkeys').length).to.be.equal(2);
     expect(stage.get('monkeys').at(0).cid).to.be.equal(monkeyY.cid);
     expect(stage.get('monkeys').at(1).cid).to.be.equal(monkeyX.cid);
@@ -213,7 +221,7 @@ describe('Full Draw', function(){
 
       expect(stage.get('default').length).to.be.equal(0);
       expect(stage.get('monkeys').length).to.be.equal(0);
-    
+
       expect(stage.get('monkeys2').length).to.be.equal(2);
       expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
       expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);

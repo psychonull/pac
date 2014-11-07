@@ -1,6 +1,7 @@
 
 var pac = require('../../../src/pac');
 var EngineComponent = require('../../../src/EngineComponent');
+var InputManager = require('../../../src/InputManager');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -115,6 +116,56 @@ describe('#use', function(){
 
       newGame.use('loader', DummyLoader);
       expect(newGame.loader).to.be.instanceof(DummyLoader);
+    });
+
+  });
+
+  describe('InputManager', function(){
+
+    it('must attach an InputManager', function() {
+      var newGame = pac.create();
+      expect(newGame.inputs).to.be.equal(null);
+
+      newGame.use('renderer', pac.PixiRenderer);
+      newGame.use('input', pac.MouseInput);
+
+      expect(newGame.inputs).to.be.instanceof(InputManager);
+    });
+
+    it('must require a renderer viewport when an input is defined', function(){
+      var newGame = pac.create();
+      expect(newGame.inputs).to.be.equal(null);
+
+      newGame.use('renderer', DummyRenderer);
+
+      expect(function(){
+        newGame.use('input', pac.MouseInput);
+      }).to.throw('Renderer must define a [viewport] ' +
+        'property to attach events');
+    });
+
+    it('must have the canvas as container for PIXI', function() {
+      var pixiGame = pac.create();
+      expect(pixiGame.inputs).to.be.equal(null);
+
+      pixiGame.use('renderer', pac.PixiRenderer);
+      pixiGame.use('input', pac.MouseInput);
+
+      // check container
+      var inputCtn = pixiGame.inputs.get('mouse').container;
+      expect(inputCtn.tagName).to.be.equal('CANVAS');
+    });
+
+    it('must have the canvas as container for Native', function() {
+      var nativeGame = pac.create();
+      expect(nativeGame.inputs).to.be.equal(null);
+
+      nativeGame.use('renderer', pac.NativeRenderer);
+      nativeGame.use('input', pac.MouseInput);
+
+      // check container
+      var inputCtn = nativeGame.inputs.get('mouse').container;
+      expect(inputCtn.tagName).to.be.equal('CANVAS');
     });
 
   });
