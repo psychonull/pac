@@ -12,7 +12,13 @@ describe('Action Lists', function(){
     expect(pac.Action).to.be.a('function');
   });
 
-  require('./Action/index.js');
-  require('./ActionList/index.js');
+  it('must expose pre-defined actions', function(){
+    expect(pac.actions).to.be.an('object');
+  });
+
+  require('./Action');
+  require('./ActionList');
+
+  require('./Predefined');
 
 });

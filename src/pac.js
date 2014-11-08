@@ -37,6 +37,8 @@ module.exports = {
   ActionList: require('./ActionList'),
   Action: require('./Action'),
 
+  actions: require('./actions'),
+
   AnimationList: require('./AnimationList'),
   Animation: require('./Animation'),
 
