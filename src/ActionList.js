@@ -47,20 +47,23 @@ var ActionList = module.exports = List.extend({
 
     this.each(function(action, i){
 
-      if (!action.started){
-        action.onStart();
-        action.started = true;
-      }
+      if (action){
 
-      action.update(dt);
+        if (!action.started){
+          action.onStart();
+          action.started = true;
+        }
 
-      if(action.isFinished) {
-        action.onEnd();
-        this.remove(action);
-      }
+        action.update(dt);
 
-      if (action.isBlocking){
-        return false; // break loop
+        if(action.isFinished) {
+          action.onEnd();
+          this.remove(action);
+        }
+
+        if (action.isBlocking){
+          return false; // break loop
+        }
       }
 
     }, this);
