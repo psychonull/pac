@@ -25,13 +25,13 @@ describe('PAC', function(){
 
   require('./base');
 
-  require('./Game/index.js');
-  require('./Scene/index.js');
-  require('./Scenes/index.js');
+  require('./Game');
+  require('./Scene');
+  require('./Scenes');
 
-  require('./EngineComponents/index.js');
+  require('./EngineComponents');
   require('./Point.js');
-  require('./GameObjects/index.js');
+  require('./GameObjects');
 
   require('./Animations');
   require('./Cache');

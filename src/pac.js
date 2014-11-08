@@ -15,13 +15,16 @@ module.exports = {
   NativeRenderer: require('./NativeRenderer'),
   PixiRenderer: require('./PixiRenderer'),
 
-  GameObject: require('./GameObject'),
-
   Point: require('./Point'),
 
+  GameObject: require('./GameObject'),
   Drawable: require('./Drawable'),
   Sprite: require('./Sprite'),
   Text: require('./Text'),
+
+  Shape: require('./Shape'),
+  Rectangle: require('./Rectangle'),
+  Circle: require('./Circle'),
 
   Texture: require('./Texture'),
   JsonFile: require('./JsonFile'),
