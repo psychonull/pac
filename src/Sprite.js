@@ -1,6 +1,7 @@
 
 var Drawable = require('./Drawable');
 var Point = require('./Point');
+var Rectangle = require('./Rectangle');
 
 var Sprite = module.exports = Drawable.extend({
 
@@ -10,10 +11,11 @@ var Sprite = module.exports = Drawable.extend({
 
   frame: null,
   animations: null,
+  shape: null,
 
   constructor: function(options){
     this.texture = (options && options.texture) || this.texture;
-    
+
     if (!this.texture){
       throw new Error('Expected [texture] name of Sprite');
     }
@@ -21,12 +23,32 @@ var Sprite = module.exports = Drawable.extend({
     this.size = (options && options.size) || this.size;
     this.frame = (options && options.frame) || this.frame;
 
+    this._createHitBox(options);
+    this._initAnimations(options);
+
+    Drawable.apply(this, arguments);
+  },
+
+  _createHitBox: function(options){
+    this.shape = (options && options.shape) || this.shape;
+
+    if (this.shape === true){
+      if (!this.size){
+        throw new Error('Cannot create a shape for this Sprite without a size');
+      }
+
+      options.shape = new Rectangle({
+        position: new Point(),
+        size: this.size
+      });
+    }
+  },
+
+  _initAnimations: function(options){
     if (options && options.animations){
       this.animations = options.animations;
       this.animations.owner = this;
     }
-
-    Drawable.apply(this, arguments);
   },
 
   init: function(){ },

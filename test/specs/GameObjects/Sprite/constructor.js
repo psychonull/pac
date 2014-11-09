@@ -4,13 +4,15 @@ var Sprite = require('../../../../src/Sprite');
 var AnimationList = require('../../../../src/AnimationList');
 var Animation = require('../../../../src/Animation');
 
+var Rectangle = require('../../../../src/Rectangle');
+
 var expect = require('chai').expect;
 
 describe('Constructor', function(){
 
   it ('must create an Sprite with defaults', function(){
     var sprite = new Sprite({
-      texture: 'test' 
+      texture: 'test'
     });
 
     expect(sprite.position.x).to.be.equal(0);
@@ -85,6 +87,48 @@ describe('Constructor', function(){
     expect(initCalled).to.be.true;
 
   });
+
+  it ('must allow to create an Sprite with a shape', function(){
+    var sprite = new Sprite({
+      texture: 'test',
+      shape: new Rectangle(),
+    });
+
+    expect(sprite.shape.position.x).to.be.equal(0);
+    expect(sprite.shape.size.width).to.be.equal(50);
+  });
+
+  it ('must allow to create an Sprite with a default shape', function(){
+    var sprite = new Sprite({
+      texture: 'test',
+      shape: true,
+      size: {
+        width: 200,
+        height: 200
+      }
+    });
+
+    expect(sprite.shape).to.be.an.instanceof(Rectangle);
+
+    expect(sprite.shape.position.x).to.be.equal(0);
+    expect(sprite.shape.position.y).to.be.equal(0);
+
+    expect(sprite.shape.size.width).to.be.equal(200);
+    expect(sprite.shape.size.height).to.be.equal(200);
+  });
+
+  it ('must throw an error if no size and auto-hitbox requested', function(){
+
+    expect(function(){
+      var sprite = new Sprite({
+        texture: 'test',
+        shape: true
+      });
+    }).to.throw('Cannot create a shape for this Sprite without a size');
+
+  });
+
+  it ('must try to use the size of the texture if no size is specified');
 
   it ('must throw an error if no texture is specify', function(){
 

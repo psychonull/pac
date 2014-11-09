@@ -1,6 +1,7 @@
 
 var pac = require('../../../../src/pac');
 var GameObject = require('../../../../src/GameObject');
+var Rectangle = require('../../../../src/Rectangle');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -22,7 +23,7 @@ describe('Drawable', function(){
 
   it('must create a Drawable', function(){
     var obj = new pac.Drawable();
-    
+
     expect(obj.cid).to.be.an('string');
     expect(obj.position.x).to.be.equal(0);
     expect(obj.position.y).to.be.equal(0);
@@ -33,7 +34,7 @@ describe('Drawable', function(){
     var obj = new pac.Drawable({
       position: new pac.Point(100, 100)
     });
-    
+
     expect(obj.position.x).to.be.equal(100);
     expect(obj.position.y).to.be.equal(100);
   });
@@ -44,7 +45,7 @@ describe('Drawable', function(){
       layer: 'background',
       zIndex: 2
     });
-    
+
     expect(obj.layer).to.be.equal('background');
     expect(obj.zIndex).to.be.equal(2);
 
@@ -66,11 +67,26 @@ describe('Drawable', function(){
     expect(obj3.zIndex).to.be.equal(10);
   });
 
+  it('must allow to create a Drawable with a shape', function(){
+
+    var objDef = new pac.Drawable();
+
+    expect(objDef.shape).to.be.null;
+
+    var obj = new pac.Drawable({
+      shape: new Rectangle(),
+    });
+
+    expect(obj.shape.position.x).to.be.equal(0);
+    expect(obj.shape.size.width).to.be.equal(50);
+
+  });
+
   it('must allow to inherit setting defaults', function(){
     var calledInit = false;
 
     var MyDrawable = pac.Drawable.extend({
-      
+
       position: { x: 200, y: 200 },
 
       init: function(options){
@@ -84,7 +100,7 @@ describe('Drawable', function(){
       test: true,
       position: { x: 300, y: 200 }
     });
-    
+
     expect(calledInit).to.be.true;
 
     expect(obj.cid).to.be.an('string');

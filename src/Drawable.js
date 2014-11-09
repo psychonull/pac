@@ -5,9 +5,11 @@ var Point = require('./Point');
 var Drawable = module.exports = GameObject.extend({
 
   position: null,
-  
+
   layer: null,
   zIndex: 0,
+
+  shape: null,
 
   constructor: function(opts){
     this.position = (opts && opts.position) || this.position || new Point();
@@ -15,6 +17,8 @@ var Drawable = module.exports = GameObject.extend({
 
     this.layer = (opts && opts.layer) || this.layer;
     this.zIndex = (opts && opts.zIndex) || this.zIndex;
+
+    this.shape = (opts && opts.shape) || this.shape;
 
     GameObject.apply(this, arguments);
   },
