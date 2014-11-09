@@ -15,4 +15,8 @@ module.exports = Drawable.extend({
     Drawable.apply(this, arguments);
   },
 
+  isPointInside: function(point, offset){
+    throw new Error('Must Implement Shape.isPointInside()');
+  }
+
 });

@@ -18,16 +18,16 @@ describe('Circle', function(){
   describe('Constructor', function(){
 
     it ('must create with defaults', function(){
-      var rect = new Circle();
+      var circle = new Circle();
 
-      expect(rect.position.x).to.be.equal(0);
-      expect(rect.position.y).to.be.equal(0);
+      expect(circle.position.x).to.be.equal(0);
+      expect(circle.position.y).to.be.equal(0);
 
-      expect(rect.radius).to.be.equal(50);
+      expect(circle.radius).to.be.equal(50);
 
-      expect(rect.fill).to.equal(null);
-      expect(rect.stroke).to.equal(null);
-      expect(rect.lineWidth).to.equal(1);
+      expect(circle.fill).to.equal(null);
+      expect(circle.stroke).to.equal(null);
+      expect(circle.lineWidth).to.equal(1);
     });
 
     it('must create with settings', function(){
@@ -47,6 +47,33 @@ describe('Circle', function(){
       expect(rect.fill).to.equal('white');
       expect(rect.stroke).to.equal('yellow');
       expect(rect.lineWidth).to.equal(2);
+    });
+
+  });
+
+  describe('Methods', function(){
+
+    it ('#isPointInside', function(){
+      var circle = new Circle({
+        position: new Point(50, 50),
+        radius: 50
+      });
+
+      var inside = circle.isPointInside(new Point(70, 70));
+
+      var insideOffset =
+        circle.isPointInside(new Point(120, 120), new Point(50, 50));
+
+      var outside = circle.isPointInside(new Point(100, 100));
+
+      var outsideOffset =
+        circle.isPointInside(new Point(100, 100), new Point(150, 150));
+
+      expect(inside).to.be.true;
+      expect(insideOffset).to.be.true;
+
+      expect(outside).to.be.false;
+      expect(outsideOffset).to.be.false;
     });
 
   });

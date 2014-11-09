@@ -53,4 +53,31 @@ describe('Rectangle', function(){
 
   });
 
+  describe('Methods', function(){
+
+    it ('#isPointInside', function(){
+      var rect = new Rectangle({
+        position: new Point(50, 50),
+        size: { width: 100, height: 100 }
+      });
+
+      var inside = rect.isPointInside(new Point(60, 60));
+
+      var insideOffset =
+        rect.isPointInside(new Point(150, 150), new Point(50, 50));
+
+      var outside = rect.isPointInside(new Point(150, 150));
+
+      var outsideOffset =
+        rect.isPointInside(new Point(150, 150), new Point(200, 200));
+
+      expect(inside).to.be.true;
+      expect(insideOffset).to.be.true;
+
+      expect(outside).to.be.false;
+      expect(outsideOffset).to.be.false;
+    });
+
+  });
+
 });

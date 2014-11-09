@@ -10,4 +10,14 @@ module.exports = Shape.extend({
     Shape.apply(this, arguments);
   },
 
+  isPointInside: function(point, offset){
+    var pos = this.position;
+
+    if (offset){
+      pos = pos.add(offset);
+    }
+
+    return point.subtract(pos).length() <= this.radius;
+  }
+
 });

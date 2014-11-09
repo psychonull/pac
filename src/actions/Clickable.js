@@ -5,7 +5,12 @@ module.exports = Action.extend({
 
   init: function() { },
 
-  onStart: function() { },
+  onStart: function() {
+    if (!this.actions.owner.shape){
+      throw new Error('Clickable Action requires a [shape] on the Object');
+    }
+  },
+
   onEnd: function() { },
 
   update: function(dt) {
@@ -14,27 +19,12 @@ module.exports = Action.extend({
 
     obj.isClicked = false;
 
-    if (cursor.isDown){
+    if (cursor.isDown &&
+      obj.shape.isPointInside(cursor.position, obj.position)) {
 
-      var rect = {
-        x: obj.position.x,
-        y: obj.position.y,
-        width: obj.size.width,
-        height: obj.size.height
-      };
-
-      if(this.hasCollide(cursor.position, rect)){
         obj.isClicked = true;
         obj.emit('click');
-      }
     }
-  },
-
-  hasCollide: function(point, rect){
-    return (
-      point.x > rect.x && point.x < rect.x + rect.width &&
-      point.y > rect.y && point.y < rect.y + rect.height
-    );
   }
 
 });

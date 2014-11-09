@@ -7,6 +7,10 @@ module.exports = Action.extend({
 
   onStart: function() {
     this.isHover = false;
+
+    if (!this.actions.owner.shape){
+      throw new Error('Hoverable Action requires a [shape] on the Object');
+    }
   },
 
   onEnd: function() { },
@@ -17,16 +21,9 @@ module.exports = Action.extend({
 
     obj.isHover = this.isHover;
 
-    var rect = {
-      x: obj.position.x,
-      y: obj.position.y,
-      width: obj.size.width,
-      height: obj.size.height
-    };
-
     if (!this.isHover){
 
-      if(this.hasCollide(cursor.position, rect)){
+      if(obj.shape.isPointInside(cursor.position, obj.position)){
         this.isHover = true;
         obj.isHover = true;
         obj.emit('hover:in');
@@ -35,18 +32,11 @@ module.exports = Action.extend({
       return;
     }
 
-    if(!this.hasCollide(cursor.position, rect)){
+    if(!obj.shape.isPointInside(cursor.position, obj.position)){
       this.isHover = false;
       obj.isHover = false;
       obj.emit('hover:out');
     }
-  },
-
-  hasCollide: function(point, rect){
-    return (
-      point.x > rect.x && point.x < rect.x + rect.width &&
-      point.y > rect.y && point.y < rect.y + rect.height
-    );
   }
 
 });
