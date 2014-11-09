@@ -2,6 +2,11 @@
 var Renderer = require('./Renderer');
 var Sprite = require('./Sprite');
 var Text = require('./Text');
+
+var Shape = require('./Shape');
+var Rectangle = require('./Rectangle');
+var Circle = require('./Circle');
+
 var PIXI = require('pixi.js');
 
 var PixiRenderer = module.exports = Renderer.extend({
@@ -80,7 +85,9 @@ var PixiRenderer = module.exports = Renderer.extend({
     this.stage.get(layer).each(function(obj, index){
 
       var textures = this.game.cache.images;
+
       if(obj instanceof Sprite){
+
         var image = textures.get(obj.texture).raw();
         var baseTexture = new PIXI.BaseTexture(image);
         var texture = new PIXI.Texture(baseTexture);
@@ -93,11 +100,22 @@ var PixiRenderer = module.exports = Renderer.extend({
         this.pixiLayers[layer].addChild(sprite);
       }
       else if (obj instanceof Text){
+
         var text = new PIXI.Text(obj.value, obj);
         this._setTextProperties(obj, text);
         text.cid = obj.cid;
-        
+
         this.pixiLayers[layer].addChild(text);
+      }
+      else if (obj instanceof Shape){
+        var shape = this._createShape(obj, layer);
+
+        if (shape){
+          this._setObjectProperties(obj, shape);
+          shape.cid = obj.cid;
+
+          this.pixiLayers[layer].addChild(shape);
+        }
       }
 
     },this);
@@ -150,6 +168,25 @@ var PixiRenderer = module.exports = Renderer.extend({
     });
   },
 
+  _setRectangleProperties: function(obj, rect){
+    rect.position.x = obj.position.x;
+    rect.position.y = obj.position.y;
+
+    //rect.width = obj.size.width;
+    //rect.height = obj.size.height;
+
+    //TODO: fill & stroke
+  },
+
+  _setCircleProperties: function(obj, circle){
+    circle.position.x = obj.position.x;
+    circle.position.y = obj.position.y;
+
+    circle.radius = obj.radius;
+
+    //TODO: fill & stroke
+  },
+
   _updateProperties: function(){
 
     for (var layer in this.pixiLayers) {
@@ -177,6 +214,39 @@ var PixiRenderer = module.exports = Renderer.extend({
       else if (obj instanceof Text){
         this._setTextProperties(obj, pixiObj);
       }
+      else if (obj instanceof Rectangle){
+        this._setRectangleProperties(obj, pixiObj);
+      }
+      else if (obj instanceof Circle){
+        this._setCircleProperties(obj, pixiObj);
+      }
     }
+  },
+
+  _createShape: function(obj, layer){
+    var graphics = new PIXI.Graphics();
+
+    if (obj.fill){
+      graphics.beginFill(obj.fill.replace('#', '0x'));
+    }
+
+    if (obj.stroke){
+      graphics.lineStyle(obj.lineWidth, obj.stroke.replace('#', '0x'), 1);
+    }
+    else {
+      graphics.lineStyle(1, 0x000000, 0);
+    }
+
+    if (obj instanceof Rectangle){
+      return graphics.drawRect(
+        obj.position.x, obj.position.y, obj.size.width, obj.size.height);
+    }
+    else if (obj instanceof Circle){
+      return graphics.drawCircle(obj.position.x, obj.position.y, obj.radius);
+    }
+
+    // if the shape is not implemented for being drawn.
+    return null;
   }
+
 });
