@@ -2,6 +2,7 @@
 var EngineComponent = require('./EngineComponent');
 var Stage = require('./Stage');
 var Layer = require('./Layer');
+var _ = require('./utils');
 
 var Renderer = module.exports = EngineComponent.extend({
 
@@ -12,15 +13,17 @@ var Renderer = module.exports = EngineComponent.extend({
 
   constructor: function(game, options){
     this.game = game;
-    
+
+    if(this.game && this.game.loader){
+      this.game.loader.on('complete', this.onGameLoaderComplete.bind(this));
+    }
+
     this.container = document.body;
 
-    if (options){
-      this.size = options.size || this.size;
-      this.backgroundColor = options.backgroundColor || this.backgroundColor;
-      this.container = options.container || this.container;
-      this.layers = options.layers || this.layers;
-    }
+    _.extend(
+      this,
+      _.pick(options, ['size', 'backgroundColor', 'container', 'layers'])
+    );
 
     this._createStage();
 
@@ -57,6 +60,8 @@ var Renderer = module.exports = EngineComponent.extend({
 
   render: function () {
     throw new Error('Must override renderer.render()');
-  }
+  },
+
+  onGameLoaderComplete: function(){}
 
 });

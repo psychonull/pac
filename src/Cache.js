@@ -156,6 +156,11 @@ var Cache = Emitter.extend({
 
   values: function(){
     return _.values(this._data);
+  },
+
+  each: function(cb, ctx){
+    _.forIn(this._data, cb, ctx);
+    return this;
   }
 
 });

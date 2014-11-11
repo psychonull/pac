@@ -9,6 +9,8 @@ var Circle = require('./Circle');
 
 var PIXI = require('pixi.js');
 
+var _ = require('./utils');
+
 var PixiRenderer = module.exports = Renderer.extend({
 
   size: { width: 800, height: 600 },
@@ -100,8 +102,13 @@ var PixiRenderer = module.exports = Renderer.extend({
         this.pixiLayers[layer].addChild(sprite);
       }
       else if (obj instanceof Text){
-
-        var text = new PIXI.Text(obj.value, obj);
+        var text;
+        if (obj.isBitmapText){
+          text = new PIXI.BitmapText(obj.value, obj);
+        }
+        else {
+          text = new PIXI.Text(obj.value, obj);
+        }
         this._setTextProperties(obj, text);
         text.cid = obj.cid;
 
@@ -247,6 +254,41 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     // if the shape is not implemented for being drawn.
     return null;
+  },
+
+  onGameLoaderComplete: function(){
+
+    var convertFontDataToPIXI = function(data, key){
+      var xSpacing = 0, ySpacing = 0; // Hardcoded
+      var result = {};
+      result.font = data.info.face;
+      result.size = data.info.size;
+      result.lineHeight = data.common.lineHeight + ySpacing;
+      result.chars = {};
+      _.forEach(data.chars, function(char){
+        var charCode = char.id;
+        var textureRect = new PIXI.Rectangle(
+          char.x, char.y, char.width, char.height
+        );
+        result.chars[charCode] = {
+          xOffset: char.xoffset,
+          yOffset: char.yoffset,
+          xAdvance: char.xadvance + xSpacing,
+          kerning: {},
+          texture: PIXI.TextureCache[key] =
+            new PIXI.Texture(PIXI.BaseTextureCache[key], textureRect)
+        };
+      });
+      //TODO: Implement kernings?
+      return result;
+    };
+
+    this.game.cache.bitmapFont.each(function(font, key){
+      var raw = font.raw();
+      PIXI.BaseTextureCache[key] = new PIXI.BaseTexture(raw.texture);
+      PIXI.TextureCache[key] = new PIXI.Texture(PIXI.BaseTextureCache[key]);
+      PIXI.BitmapText.fonts[key] = convertFontDataToPIXI(raw.definition, key);
+    }, this);
   }
 
 });

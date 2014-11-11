@@ -11,6 +11,7 @@ var Text = module.exports = Drawable.extend({
   stroke: 'black',
   strokeThickness: 0,
   wordWrap: 0,
+  isBitmapText: false,
 
   constructor: function(arg0, arg1){
     var args = this._extractConstructorArgs(arguments);
@@ -19,7 +20,7 @@ var Text = module.exports = Drawable.extend({
 
     if(args.options){
       var optionsWhitelist = ['font', 'fill', 'stroke',
-        'strokeThickness', 'wordWrap'];
+        'strokeThickness', 'wordWrap', 'isBitmapText'];
       _.extend(this, _.pick(args.options, optionsWhitelist));
     }
 

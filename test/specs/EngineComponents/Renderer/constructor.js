@@ -6,6 +6,10 @@ var Layer = require('../../../../src/Layer');
 var chai = require('chai');
 var expect = chai.expect;
 
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
+
 var TestRenderer = pac.Renderer.extend({
 
   onLayerFill: function(layer){ },
@@ -31,7 +35,7 @@ describe('Constructor', function(){
 
   it('must have defaults', function(){
     var renderer = new TestRenderer(fakeGame);
-    
+
     expect(renderer.size).to.be.an('object');
     expect(renderer.size.width).to.be.equal(800);
     expect(renderer.size.height).to.be.equal(600);
@@ -50,7 +54,7 @@ describe('Constructor', function(){
       backgroundColor: '#fff',
       container: dummyContainer
     });
-    
+
     expect(renderer.size).to.be.an('object');
     expect(renderer.size.width).to.be.equal(500);
     expect(renderer.size.height).to.be.equal(300);
@@ -64,14 +68,30 @@ describe('Constructor', function(){
   it('must allow to set layers as an option', function(){
 
     var renderer = new TestRenderer(fakeGame, {
-      layers: [ 'layer1', 'layer2', 'layer3' ]      
+      layers: [ 'layer1', 'layer2', 'layer3' ]
     });
-    
+
     expect(renderer.stage.length).to.be.equal(4); //plus 'default' layer
 
     expect(renderer.stage.get('layer1')).to.be.instanceof(Layer);
     expect(renderer.stage.get('layer2')).to.be.instanceof(Layer);
     expect(renderer.stage.get('layer3')).to.be.instanceof(Layer);
   });
+
+  it('must subscribe to game loader complete if available', function(){
+    var fakeGameWithLoader = {
+      loader: {
+        on: sinon.stub()
+      }
+    };
+
+    var renderer = new TestRenderer(fakeGameWithLoader);
+
+    expect(fakeGameWithLoader.loader.on).to.have.been.calledWith(
+      'complete'
+    );
+  });
+
+
 
 });
