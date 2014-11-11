@@ -28,6 +28,7 @@ module.exports = {
 
   Texture: require('./Texture'),
   JsonFile: require('./JsonFile'),
+  BitmapFont: require('./BitmapFont'),
 
   Game: require('./Game'),
   create: require('./Game').create,

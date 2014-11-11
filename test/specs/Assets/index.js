@@ -9,5 +9,7 @@ describe('Assets', function(){
   require('./Texture');
 
   require('./JsonFile');
-  
+
+  require('./BitmapFont');
+
 });
