@@ -2,6 +2,7 @@
 var Loader = require('../../../../src/Loader');
 var Texture = require('../../../../src/Texture');
 var JsonFile = require('../../../../src/JsonFile');
+var BitmapFont = require('../../../../src/BitmapFont');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -17,6 +18,7 @@ describe('Statics', function(){
     it('must include type mappings', function(){
       expect(Loader.ResourceTypes.images).to.equal(Texture);
       expect(Loader.ResourceTypes.json).to.equal(JsonFile);
+      expect(Loader.ResourceTypes.bitmapFont).to.equal(BitmapFont);
     });
 
   });

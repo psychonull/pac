@@ -3,6 +3,7 @@ var EngineComponent = require('./EngineComponent');
 var Cache = require('./Cache'),
   Texture = require('./Texture'),
   JsonFile = require('./JsonFile'),
+  BitmapFont = require('./BitmapFont'),
   _ = require('./utils');
 
   // some inspiration:
@@ -12,9 +13,6 @@ var Cache = require('./Cache'),
   //http://docs.phaser.io/Cache.js.html
 
 var Loader = EngineComponent.extend({
-
-  // events: start, progress, complete
-  // events(planned): start:group, progress:group, complete:group
 
   _resourcesToLoad: 0,
   _resourcesLoaded: 0,
@@ -128,7 +126,8 @@ var Loader = EngineComponent.extend({
   // resourceType -> resourceConstructor
   ResourceTypes: {
     images: Texture,
-    json: JsonFile
+    json: JsonFile,
+    bitmapFont: BitmapFont
   },
 
   // filename -> resourceType
