@@ -20,16 +20,19 @@ describe('Input', function(){
     it('must init with defaults', function(){
       var input = new TestInput();
       expect(input.container).to.be.equal(window.document);
+      expect(input.scale).to.be.equal(1);
     });
 
     it('must allow to set a container', function(){
       var canvas = document.createElement('canvas');
 
       var input = new TestInput({
-        container: canvas
+        container: canvas,
+        scale: 2
       });
 
       expect(input.container).to.be.equal(canvas);
+      expect(input.scale).to.be.equal(2);
     });
 
     it('must have an enum of event names', function(){

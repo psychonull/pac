@@ -77,6 +77,8 @@ module.exports = Input.extend({
     x += parent.scrollLeft;
     y += parent.scrollTop;
 
+    x = Math.round(x / this.scale);
+    y = Math.round(y / this.scale);
     return new Point(x, y);
   }
 

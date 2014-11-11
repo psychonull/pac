@@ -10,6 +10,7 @@ var Renderer = module.exports = EngineComponent.extend({
   backgroundColor: '#000000',
   container: null,
   layers: null,
+  scale: 1,
 
   constructor: function(game, options){
     this.game = game;
@@ -22,7 +23,8 @@ var Renderer = module.exports = EngineComponent.extend({
 
     _.extend(
       this,
-      _.pick(options, ['size', 'backgroundColor', 'container', 'layers'])
+      _.pick(options,
+        ['size', 'backgroundColor', 'container', 'layers', 'scale'])
     );
 
     this._createStage();

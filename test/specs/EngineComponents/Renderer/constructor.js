@@ -41,6 +41,7 @@ describe('Constructor', function(){
     expect(renderer.size.height).to.be.equal(600);
     expect(renderer.backgroundColor).to.be.equal('#000000');
     expect(renderer.container).to.be.equal(document.body);
+    expect(renderer.scale).to.be.equal(1);
 
   });
 
@@ -52,7 +53,8 @@ describe('Constructor', function(){
     var renderer = new TestRenderer(fakeGame, {
       size: { width: 500, height: 300 },
       backgroundColor: '#fff',
-      container: dummyContainer
+      container: dummyContainer,
+      scale: 2
     });
 
     expect(renderer.size).to.be.an('object');
@@ -63,6 +65,7 @@ describe('Constructor', function(){
     expect(renderer.container).to.be.equal(dummyContainer);
     expect(renderer.container.id).to.be.equal(dummyContainer.id);
     expect(renderer.container.tagName.toLowerCase()).to.be.equal('div');
+    expect(renderer.scale).to.be.equal(2);
   });
 
   it('must allow to set layers as an option', function(){

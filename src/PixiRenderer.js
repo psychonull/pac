@@ -17,17 +17,24 @@ var PixiRenderer = module.exports = Renderer.extend({
   backgroundColor: '#000000',
 
   init: function(){
+    PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
     var bg = this.backgroundColor.replace('#', '0x');
     this.pixiStage = new PIXI.Stage(bg);
 
     this.pixiRenderer = PIXI.autoDetectRenderer(
       this.size.width, this.size.height);
 
+    this.pixiRenderer.resize(
+      this.size.width * this.scale,
+      this.size.height * this.scale
+    );
+
     this.container.appendChild(this.pixiRenderer.view);
     this.viewport = this.pixiRenderer.view;
 
     //add background contariner first so it's at back of everything
     this.pixiBack = new PIXI.DisplayObjectContainer();
+    this.pixiBack.scale.x = this.pixiBack.scale.y = this.scale;
     this.pixiStage.addChild(this.pixiBack);
 
     this._buildLayers();
@@ -64,7 +71,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
           var pixiLayer = new PIXI.DisplayObjectContainer();
           this.pixiStage.addChild(pixiLayer);
-
+          pixiLayer.scale.x = pixiLayer.scale.y = this.scale;
           pixiLayer.layer = name;
           this.pixiLayers[name] = pixiLayer;
         }
@@ -76,7 +83,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     var pixiLayerDefault = new PIXI.DisplayObjectContainer();
     this.pixiStage.addChild(pixiLayerDefault);
-
+    pixiLayerDefault.scale.x = pixiLayerDefault.scale.y = this.scale;
     pixiLayerDefault.layer = 'default';
     this.pixiLayers['default'] = pixiLayerDefault;
 

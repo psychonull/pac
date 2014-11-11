@@ -4,6 +4,7 @@ var Emitter = require('./Emitter');
 module.exports = Emitter.extend({
 
   container: null,
+  scale: 1,
 
   constructor: function(options){
     this.container = (window && window.document) || null;
@@ -12,6 +13,7 @@ module.exports = Emitter.extend({
     if (options){
       this.container = options.container || this.container;
       this.enabled = options.enabled || this.enabled;
+      this.scale = options.scale || this.scale;
     }
 
     Emitter.apply(this, arguments);

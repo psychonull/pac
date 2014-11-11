@@ -30,6 +30,7 @@ describe('MouseInput', function(){
 
       expect(input.container).to.be.equal(canvas);
       expect(input.enabled).to.be.equal(false);
+      expect(input.scale).to.be.equal(1);
 
       expect(input.events).to.be.ok;
       expect(input.events.mouseup).to.be.ok;
@@ -120,7 +121,33 @@ describe('MouseInput', function(){
       expect(emitted).to.be.equal(1);
     });
 
-  });
+    it('must scale coordinates to emit events', function(){
+      var canvas = document.createElement('canvas');
+      var input = new MouseInput({
+        container: canvas,
+        enabled: true,
+        scale: 2
+      });
+
+      var movePos = new Point(150, 250);
+
+      var emitted = 0;
+      input.on(Input.events.UP, function(position){
+        emitted++;
+
+        expect(position.x).to.be.equal(movePos.x / 2);
+        expect(position.y).to.be.equal(movePos.y / 2);
+      });
+
+      input._onmouseup({
+        pageX: movePos.x,
+        pageY: movePos.y
+      });
+
+      expect(emitted).to.be.equal(1);
+    });
+
+});
 
   describe('Enable and Disable', function(){
 
