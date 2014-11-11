@@ -115,7 +115,8 @@ var PixiRenderer = module.exports = Renderer.extend({
         this.pixiLayers[layer].addChild(text);
       }
       else if (obj instanceof Shape){
-        var shape = this._createShape(obj, layer);
+        var graphics = new PIXI.Graphics();
+        var shape = this._createShape(obj, graphics);
 
         if (shape){
           this._setObjectProperties(obj, shape);
@@ -175,25 +176,6 @@ var PixiRenderer = module.exports = Renderer.extend({
     });
   },
 
-  _setRectangleProperties: function(obj, rect){
-    rect.position.x = obj.position.x;
-    rect.position.y = obj.position.y;
-
-    //rect.width = obj.size.width;
-    //rect.height = obj.size.height;
-
-    //TODO: fill & stroke
-  },
-
-  _setCircleProperties: function(obj, circle){
-    circle.position.x = obj.position.x;
-    circle.position.y = obj.position.y;
-
-    circle.radius = obj.radius;
-
-    //TODO: fill & stroke
-  },
-
   _updateProperties: function(){
 
     for (var layer in this.pixiLayers) {
@@ -222,16 +204,19 @@ var PixiRenderer = module.exports = Renderer.extend({
         this._setTextProperties(obj, pixiObj);
       }
       else if (obj instanceof Rectangle){
-        this._setRectangleProperties(obj, pixiObj);
+        this._createShape(obj, pixiObj);
       }
       else if (obj instanceof Circle){
-        this._setCircleProperties(obj, pixiObj);
+        this._createShape(obj, pixiObj);
       }
     }
   },
 
-  _createShape: function(obj, layer){
-    var graphics = new PIXI.Graphics();
+  _createShape: function(obj, graphics){
+    graphics.clear();
+
+    graphics.position.x = obj.position.x;
+    graphics.position.y = obj.position.y;
 
     if (obj.fill){
       graphics.beginFill(obj.fill.replace('#', '0x'));
@@ -245,11 +230,10 @@ var PixiRenderer = module.exports = Renderer.extend({
     }
 
     if (obj instanceof Rectangle){
-      return graphics.drawRect(
-        obj.position.x, obj.position.y, obj.size.width, obj.size.height);
+      return graphics.drawRect(0,0, obj.size.width, obj.size.height);
     }
     else if (obj instanceof Circle){
-      return graphics.drawCircle(obj.position.x, obj.position.y, obj.radius);
+      return graphics.drawCircle(0, 0, obj.radius);
     }
 
     // if the shape is not implemented for being drawn.

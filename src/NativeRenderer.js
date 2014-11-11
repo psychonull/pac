@@ -3,6 +3,10 @@ var Renderer = require('./Renderer'),
   Sprite = require('./Sprite'),
   Text = require('./Text');
 
+var Shape = require('./Shape');
+var Rectangle = require('./Rectangle');
+var Circle = require('./Circle');
+
 var NativeRenderer = module.exports = Renderer.extend({
 
   size: { width: 800, height: 600 },
@@ -81,6 +85,9 @@ var NativeRenderer = module.exports = Renderer.extend({
         else if(o instanceof Text){
           this._renderText(o);
         }
+        else if(o instanceof Shape){
+          this._renderShape(o);
+        }
 
       }, this);
 
@@ -119,6 +126,33 @@ var NativeRenderer = module.exports = Renderer.extend({
       }
     }
     ctx.restore();
+  },
+
+  _renderShape: function(o){
+    var ctx = this.context;
+
+    ctx.beginPath();
+
+    if (o instanceof Rectangle){
+      ctx.rect(o.position.x, o.position.y, o.size.width, o.size.height);
+    }
+    else if (o instanceof Circle){
+      ctx.arc(o.position.x, o.position.y, o.radius, 0, 2 * Math.PI, false);
+    }
+    else {
+      return;
+    }
+
+    if (o.fill){
+      ctx.fillStyle = o.fill;
+      ctx.fill();
+    }
+
+    if (o.stroke){
+      ctx.lineWidth = o.lineWidth || 1;
+      ctx.strokeStyle = o.stroke;
+      ctx.stroke();
+    }
   },
 
   _wrapTextAndDraw: function(o){
