@@ -25,6 +25,7 @@ module.exports = {
   Shape: require('./Shape'),
   Rectangle: require('./Rectangle'),
   Circle: require('./Circle'),
+  Polygon: require('./Polygon'),
 
   Texture: require('./Texture'),
   JsonFile: require('./JsonFile'),

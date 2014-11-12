@@ -6,6 +6,7 @@ var Text = require('./Text');
 var Shape = require('./Shape');
 var Rectangle = require('./Rectangle');
 var Circle = require('./Circle');
+var Polygon = require('./Polygon');
 
 var PIXI = require('pixi.js');
 
@@ -210,12 +211,21 @@ var PixiRenderer = module.exports = Renderer.extend({
       else if (obj instanceof Text){
         this._setTextProperties(obj, pixiObj);
       }
+      /*
       else if (obj instanceof Rectangle){
         this._createShape(obj, pixiObj);
       }
       else if (obj instanceof Circle){
         this._createShape(obj, pixiObj);
       }
+      else if(obj instanceof Polygon){
+        this._createShape(obj, pixiObj);
+      }
+      */
+      else if(obj instanceof Shape){
+        this._createShape(obj, pixiObj);
+      }
+
     }
   },
 
@@ -241,6 +251,9 @@ var PixiRenderer = module.exports = Renderer.extend({
     }
     else if (obj instanceof Circle){
       return graphics.drawCircle(0, 0, obj.radius);
+    }
+    else if (obj instanceof Polygon){
+      return graphics.drawPolygon(obj.getPath());
     }
 
     // if the shape is not implemented for being drawn.

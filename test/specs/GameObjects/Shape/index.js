@@ -48,5 +48,6 @@ describe('Shape', function(){
 
   require('./Rectangle');
   require('./Circle');
+  require('./Polygon');
 
 });
