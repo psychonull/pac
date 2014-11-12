@@ -6,6 +6,8 @@ var Renderer = require('./Renderer'),
 var Shape = require('./Shape');
 var Rectangle = require('./Rectangle');
 var Circle = require('./Circle');
+var Polygon = require('./Polygon');
+var _ = require('./utils');
 
 var NativeRenderer = module.exports = Renderer.extend({
 
@@ -133,15 +135,7 @@ var NativeRenderer = module.exports = Renderer.extend({
 
     ctx.beginPath();
 
-    if (o instanceof Rectangle){
-      ctx.rect(o.position.x, o.position.y, o.size.width, o.size.height);
-    }
-    else if (o instanceof Circle){
-      ctx.arc(o.position.x, o.position.y, o.radius, 0, 2 * Math.PI, false);
-    }
-    else {
-      return;
-    }
+    this._drawShape(o, ctx);
 
     if (o.fill){
       ctx.fillStyle = o.fill;
@@ -153,6 +147,31 @@ var NativeRenderer = module.exports = Renderer.extend({
       ctx.strokeStyle = o.stroke;
       ctx.stroke();
     }
+  },
+
+  _drawShape: function(o, ctx){
+
+    if (o instanceof Rectangle){
+      ctx.rect(o.position.x, o.position.y, o.size.width, o.size.height);
+    }
+    else if (o instanceof Circle){
+      ctx.arc(o.position.x, o.position.y, o.radius, 0, 2 * Math.PI, false);
+    }
+    else if (o instanceof Polygon){
+      _.forEach(o.points, function(point, index){
+        if(index === 0){
+          ctx.moveTo(point.x, point.y);
+        }
+        else {
+          ctx.lineTo(point.x, point.y);
+        }
+      });
+      ctx.closePath();
+    }
+    else {
+      return;
+    }
+
   },
 
   _wrapTextAndDraw: function(o){

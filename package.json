@@ -10,7 +10,8 @@
     "test": "test"
   },
   "dependencies": {
-    "browser-request": "~0.3.2"
+    "browser-request": "~0.3.2",
+    "point-in-polygon": "0.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
