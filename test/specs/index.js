@@ -28,10 +28,8 @@ describe('PAC', function(){
   require('./Game');
   require('./Scene');
   require('./Scenes');
-
   require('./EngineComponents');
   require('./Point.js');
-
   require('./GameObjects');
   require('./Animations');
   require('./Cache');
@@ -41,5 +39,6 @@ describe('PAC', function(){
   require('./Inputs');
 
   require('./ActionLists');
+  require('./Prefabs');
 
 });

@@ -1,5 +1,6 @@
 
 var Point = require('../../../src/Point');
+var GameObject = require('../../../src/GameObject');
 var Drawable = require('../../../src/Drawable');
 var Scene = require('../../../src/Scene');
 
@@ -129,11 +130,21 @@ describe('#update', function(){
 
     var monkey1 = new Monkey({ name: 'Chubaka' });
     var monkey2 = new Monkey({ name: 'Pepito' });
+    var monkeyChild = new Monkey({ name: 'Little Chubaka' });
+    var gm = new GameObject();
 
+    monkey1.children.add(monkeyChild);
+    sinon.spy(monkeyChild, 'update');
+    sinon.spy(monkeyChild, 'updateHierarchy');
+
+    // scene objects
     sinon.spy(monkey1, 'update');
     sinon.spy(monkey2, 'update');
 
-    scene.addObject([monkey1, monkey2]);
+    sinon.spy(monkey1, 'updateHierarchy');
+    sinon.spy(monkey2, 'updateHierarchy');
+
+    scene.addObject([monkey1, monkey2, gm]);
 
     var dt = 0.16;
     scene.update(dt);
@@ -141,8 +152,14 @@ describe('#update', function(){
     expect(monkey1.update).to.have.been.calledOnce;
     expect(monkey2.update).to.have.been.calledOnce;
 
+    expect(monkey1.updateHierarchy).to.have.been.calledOnce;
+    expect(monkey2.updateHierarchy).to.have.been.calledOnce;
+
     expect(monkey1.update).to.have.been.calledWith(dt);
     expect(monkey2.update).to.have.been.calledWith(dt);
+
+    expect(monkeyChild.update).to.have.been.calledOnce;
+    expect(monkeyChild.updateHierarchy).to.have.been.calledOnce;
 
     monkey1.update.restore();
     monkey2.update.restore();

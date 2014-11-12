@@ -18,7 +18,6 @@ module.exports = Action.extend({
   update: function(dt) {
     var obj = this.actions.owner;
     var cursor = obj.game.inputs.cursor;
-
     obj.isHover = this.isHover;
 
     if (!this.isHover){

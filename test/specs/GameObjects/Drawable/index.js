@@ -1,7 +1,9 @@
 
 var pac = require('../../../../src/pac');
 var GameObject = require('../../../../src/GameObject');
+var GameObjectList = require('../../../../src/GameObjectList');
 var Rectangle = require('../../../../src/Rectangle');
+var Point = require('../../../../src/Point');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -106,6 +108,90 @@ describe('Drawable', function(){
     expect(obj.cid).to.be.an('string');
     expect(obj.position.x).to.be.equal(300);
     expect(obj.position.y).to.be.equal(200);
+  });
+
+  it('must manage hierarchy', function(){
+    var calledInit = false;
+
+    var MyDrawable = pac.Drawable.extend();
+
+    var parentPos = new Point(300, 200);
+    var childPos = new Point(50, 50);
+    var sumPos = parentPos.add(childPos);
+
+    var parent = new MyDrawable({
+      position: parentPos
+    });
+
+    var childA = new MyDrawable({
+      position: childPos
+    });
+
+    expect(parent.parent).to.be.null;
+    expect(parent.children).to.be.instanceof(GameObjectList);
+
+    expect(childA.localPosition).to.be.null;
+    parent.children.add(childA);
+
+    expect(childA.parent).to.be.equal(parent);
+    expect(childA.position.x).to.be.equal(sumPos.x);
+    expect(childA.position.y).to.be.equal(sumPos.y);
+
+    expect(childA.localPosition.x).to.be.equal(childPos.x);
+    expect(childA.localPosition.y).to.be.equal(childPos.y);
+
+  });
+
+  it('must manage update hierarchy position', function(){
+    var calledInit = false;
+
+    var MyDrawable = pac.Drawable.extend();
+
+    var parentPos = new Point(300, 200);
+    var childPos = new Point(50, 50);
+    var sumPos = parentPos.add(childPos);
+
+    var parent = new MyDrawable({
+      position: parentPos
+    });
+
+    var fakeGame = { test1: true };
+    var fakeScene = { test2: true };
+
+    parent.game = fakeGame;
+    parent.scene = fakeScene;
+
+    var childA = new MyDrawable({
+      position: childPos
+    });
+
+    expect(childA.game).to.be.undefined;
+    expect(childA.scene).to.be.undefined;
+
+    childA.updateHierarchy();
+    expect(childA.position.x).to.be.equal(childPos.x);
+    expect(childA.position.y).to.be.equal(childPos.y);
+
+    // add children
+    parent.children.add(childA);
+
+    expect(childA.game).to.be.equal(fakeGame);
+    expect(childA.scene).to.be.equal(fakeScene);
+
+    expect(childA.position.x).to.be.equal(sumPos.x);
+    expect(childA.position.y).to.be.equal(sumPos.y);
+
+    // change parent position
+    parent.position = parent.position.add(new Point(10, 20));
+
+    childA.updateHierarchy();
+
+    expect(childA.localPosition.x).to.be.equal(childPos.x);
+    expect(childA.localPosition.y).to.be.equal(childPos.y);
+
+    expect(childA.position.x).to.be.equal(sumPos.x+10);
+    expect(childA.position.y).to.be.equal(sumPos.y+20);
+
   });
 
 });

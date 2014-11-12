@@ -26,6 +26,8 @@ module.exports = {
   Rectangle: require('./Rectangle'),
   Circle: require('./Circle'),
 
+  prefabs: require('./prefabs'),
+
   Texture: require('./Texture'),
   JsonFile: require('./JsonFile'),
   BitmapFont: require('./BitmapFont'),

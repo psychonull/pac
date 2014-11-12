@@ -63,6 +63,10 @@ var Scene = module.exports = Emitter.extend({
 
     this.objects.each(function(gameObject){
 
+      if (gameObject.updateHierarchy){
+        gameObject.updateHierarchy(dt);
+      }
+
       gameObject.updateActions(dt);
       gameObject.update(dt);
 
