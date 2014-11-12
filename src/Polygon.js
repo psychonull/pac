@@ -44,6 +44,34 @@ module.exports = Shape.extend({
     })
     .flatten()
     .valueOf();
+  },
+
+  isConcave: function(){
+    var positive = 0,
+      negative = 0,
+      length = this.points.length;
+
+    for (var i = 0; i < length; i++)
+    {
+        var p0 = this.points[i];
+        var p1 = this.points[(i + 1) % length];
+        var p2 = this.points[(i + 2) % length];
+
+        var v0 = p0.subtract(p1);
+        var v1 = p1.subtract(p2);
+        var cross = v0.cross(v1);
+
+        if (cross < 0)
+        {
+            negative++;
+        }
+        else
+        {
+            positive++;
+        }
+    }
+
+    return (negative !== 0 && positive !== 0);
   }
 
 });

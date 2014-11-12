@@ -71,6 +71,15 @@ describe('Polygon', function(){
       expect(path).to.eql([0,0,1,1,2,1]);
     });
 
+    it('#isConcave', function(){
+      var convex = new Polygon([0,0 , 0,2 , 2,2 , 2,0]);
+      expect(convex.isConcave()).to.be.false;
+      var concave = new Polygon(
+        [0,0 , 3,0 , 3,1 , 2,1 , 2,2 , 2,3 , 3,3 , 0,3 ]
+      );
+      expect(concave.isConcave()).to.be.true;
+    });
+
   });
 
 });
