@@ -81,20 +81,31 @@ var NativeRenderer = module.exports = Renderer.extend({
       var layer = this.stage.get(name);
 
       layer.each(function(o){
-        if(o instanceof Sprite){
-          this._renderSprite(o);
-        }
-        else if(o instanceof Text){
-          this._renderText(o);
-        }
-        else if(o instanceof Shape){
-          this._renderShape(o);
+        this._renderObject(o);
+
+        if (o.children){
+
+          o.children.each(function(child){
+            this._renderObject(child);
+          }, this);
         }
 
       }, this);
 
     }, this);
 
+  },
+
+  _renderObject: function(o){
+    if(o instanceof Sprite){
+      this._renderSprite(o);
+    }
+    else if(o instanceof Text){
+      this._renderText(o);
+    }
+    else if(o instanceof Shape){
+      this._renderShape(o);
+    }
   },
 
   _renderSprite: function(o){

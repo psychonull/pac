@@ -94,46 +94,14 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     this.stage.get(layer).each(function(obj, index){
 
-      var textures = this.game.cache.images;
+      var pixiLayer = this.pixiLayers[layer];
+      this._createPixiObject(obj, pixiLayer);
 
-      if(obj instanceof Sprite){
-
-        var image = textures.get(obj.texture).raw();
-        var baseTexture = new PIXI.BaseTexture(image);
-        var texture = new PIXI.Texture(baseTexture);
-
-        // create a new Sprite using the texture
-        var sprite = new PIXI.Sprite(texture);
-        this._setSpriteProperties(obj, sprite);
-        sprite.cid = obj.cid;
-
-        this.pixiLayers[layer].addChild(sprite);
+      if (obj.children){
+        obj.children.each(function(child){
+          this._createPixiObject(child, pixiLayer);
+        }, this);
       }
-      else if (obj instanceof Text){
-        var text;
-        if (obj.isBitmapText){
-          text = new PIXI.BitmapText(obj.value, obj);
-        }
-        else {
-          text = new PIXI.Text(obj.value, obj);
-        }
-        this._setTextProperties(obj, text);
-        text.cid = obj.cid;
-
-        this.pixiLayers[layer].addChild(text);
-      }
-      else if (obj instanceof Shape){
-        var graphics = new PIXI.Graphics();
-        var shape = this._createShape(obj, graphics);
-
-        if (shape){
-          this._setObjectProperties(obj, shape);
-          shape.cid = obj.cid;
-
-          this.pixiLayers[layer].addChild(shape);
-        }
-      }
-
     },this);
 
   },
@@ -144,6 +112,48 @@ var PixiRenderer = module.exports = Renderer.extend({
       this.pixiLayers[layer].removeChildren();
     }
 
+  },
+
+  _createPixiObject: function(obj, parent){
+    var textures = this.game.cache.images;
+
+    if(obj instanceof Sprite){
+
+      var image = textures.get(obj.texture).raw();
+      var baseTexture = new PIXI.BaseTexture(image);
+      var texture = new PIXI.Texture(baseTexture);
+
+      // create a new Sprite using the texture
+      var sprite = new PIXI.Sprite(texture);
+      this._setSpriteProperties(obj, sprite);
+      sprite.cid = obj.cid;
+
+      parent.addChild(sprite);
+    }
+    else if (obj instanceof Text){
+      var text;
+      if (obj.isBitmapText){
+        text = new PIXI.BitmapText(obj.value, obj);
+      }
+      else {
+        text = new PIXI.Text(obj.value, obj);
+      }
+      this._setTextProperties(obj, text);
+      text.cid = obj.cid;
+
+      parent.addChild(text);
+    }
+    else if (obj instanceof Shape){
+      var graphics = new PIXI.Graphics();
+      var shape = this._createShape(obj, graphics);
+
+      if (shape){
+        this._setObjectProperties(obj, shape);
+        shape.cid = obj.cid;
+
+        parent.addChild(shape);
+      }
+    }
   },
 
   render: function () {
@@ -184,23 +194,49 @@ var PixiRenderer = module.exports = Renderer.extend({
     });
   },
 
-  _updateProperties: function(){
+  _getPixiObjectByCID: function(cid, container){
 
-    for (var layer in this.pixiLayers) {
+    //TODO: Change this with a local Associative Array by CID
 
-      if (this.pixiLayers.hasOwnProperty(layer)){
-
-        var stageLayer = this.stage.get(layer);
-        var pixiLayer = this.pixiLayers[layer];
-
-        for (var i = pixiLayer.children.length - 1; i >= 0; i--) {
-          var pixiSp = pixiLayer.children[i];
-          var obj = stageLayer.get(pixiSp.cid);
-          this._setObjectProperties(obj, pixiSp);
-        }
-
+    for (var i = container.children.length - 1; i >= 0; i--) {
+      var pixiObj = container.children[i];
+      if (pixiObj.cid === cid){
+        return pixiObj;
       }
     }
+
+    return null;
+  },
+
+  _updateProperties: function(){
+
+    this.stage.each(function(stageLayer, layer){
+
+      var pixiLayer = this.pixiLayers[layer];
+
+      stageLayer.each(function(obj){
+
+        var pixiObj = this._getPixiObjectByCID(obj.cid, pixiLayer);
+        if (pixiObj){
+          this._setObjectProperties(obj, pixiObj);
+        }
+
+        if (obj.children){
+
+          obj.children.each(function(child){
+
+            pixiObj = this._getPixiObjectByCID(child.cid, pixiLayer);
+            if (pixiObj){
+              this._setObjectProperties(child, pixiObj);
+            }
+
+          }, this);
+        }
+
+      }, this);
+
+    }, this);
+
   },
 
   _setObjectProperties: function(obj, pixiObj){
@@ -211,21 +247,9 @@ var PixiRenderer = module.exports = Renderer.extend({
       else if (obj instanceof Text){
         this._setTextProperties(obj, pixiObj);
       }
-      /*
-      else if (obj instanceof Rectangle){
-        this._createShape(obj, pixiObj);
-      }
-      else if (obj instanceof Circle){
-        this._createShape(obj, pixiObj);
-      }
-      else if(obj instanceof Polygon){
-        this._createShape(obj, pixiObj);
-      }
-      */
       else if(obj instanceof Shape){
         this._createShape(obj, pixiObj);
       }
-
     }
   },
 
