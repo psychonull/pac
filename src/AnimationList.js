@@ -57,8 +57,13 @@ var AnimationList = module.exports = MapList.extend({
 
   play: function(name){
 
+    if (name && this.current && name === this.current._name){
+      return;
+    }
+
     if (name){
       var found = this.get(name);
+
       if (found){
         this.stop();
         this.current = found;

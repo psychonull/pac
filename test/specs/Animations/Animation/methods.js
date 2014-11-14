@@ -67,7 +67,7 @@ describe('Run Loop', function(){
         expect(index).to.be.a('number');
         events.frame++;
       });
-    
+
     expect(animation.isPaused).to.be.false;
     expect(animation.isRunning).to.be.false;
 
@@ -83,7 +83,7 @@ describe('Run Loop', function(){
     // Iteration 1
 
     animation.update(step);
-    
+
     expect(animation.frameIndex).to.be.equal(0);
     expect(animation.frame).to.be.equal(5);
 
@@ -92,7 +92,7 @@ describe('Run Loop', function(){
 
     animation.update(step);
     framefires++;
-    
+
     expect(animation.frameIndex).to.be.equal(1);
     expect(animation.frame).to.be.equal(10);
 
@@ -101,7 +101,7 @@ describe('Run Loop', function(){
 
     animation.update(step);
     framefires++;
-    
+
     expect(animation.frameIndex).to.be.equal(2);
     expect(animation.frame).to.be.equal(20);
 
@@ -114,12 +114,12 @@ describe('Run Loop', function(){
     // Iteration 4
 
     animation.update(step);
-    
+
     expect(animation.frameIndex).to.be.equal(2);
     expect(animation.frame).to.be.equal(20);
 
     animation.resume();
-    
+
     expect(animation.isPaused).to.be.false;
     expect(animation.isRunning).to.be.true;
 
@@ -128,7 +128,7 @@ describe('Run Loop', function(){
 
     animation.update(step);
     framefires++;
-    
+
     expect(animation.frameIndex).to.be.equal(0);
     expect(animation.frame).to.be.equal(5);
 
@@ -148,7 +148,7 @@ describe('Run Loop', function(){
     // Iteration 7
 
     animation.update(step);
-    
+
     expect(animation.frameIndex).to.be.equal(1);
     expect(animation.frame).to.be.equal(10);
 
@@ -163,7 +163,7 @@ describe('Run Loop', function(){
     // Iteration 8
 
     animation.update(step);
-    
+
     expect(animation.frameIndex).to.be.equal(0);
     expect(animation.frame).to.be.equal(5);
 
@@ -172,7 +172,7 @@ describe('Run Loop', function(){
 
     animation.update(step);
     framefires++;
-    
+
     expect(animation.frameIndex).to.be.equal(1);
     expect(animation.frame).to.be.equal(10);
 
@@ -271,7 +271,7 @@ describe('Run Times', function(){
 
     for (var j=1; j<=3; j++){
       // Times
-      
+
       expect(events.end).to.be.equal(0);
 
       for (var i=0; i<=2; i++){

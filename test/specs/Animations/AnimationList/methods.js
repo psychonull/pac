@@ -14,9 +14,9 @@ describe('Methods', function(){
   describe('#play', function(){
 
     it('must allow to set and play current animation', function(){
-      
+
       var idle = new Animation({ frames: [ 0, 1 ] });
-      var run = new Animation({ frames: [ 2, 3 ] });
+      var run = new Animation({ frames: [ 2, 3, 6, 8, 7 ] });
       var jump = new Animation({ times: 1, frames: [ 4, 5 ] });
 
       var animations = {
@@ -29,7 +29,7 @@ describe('Methods', function(){
       });
 
       list.add('run', run);
-      
+
       expect(list.length).to.be.equal(3);
 
       expect(list.play).to.be.a('function');
@@ -55,6 +55,18 @@ describe('Methods', function(){
       expect(jump.isRunning).to.be.false;
       expect(idle.isRunning).to.be.true;
 
+      // must not re run the animation if it's the curren
+
+      list.play('run');
+      list.update(run.step);
+      list.update(run.step);
+
+      var runFrame = run.frameIndex;
+
+      list.play('run');
+      list.update(run.step);
+      expect(run.frameIndex).to.be.equal(runFrame+1);
+
     });
 
   });
@@ -62,7 +74,7 @@ describe('Methods', function(){
   describe('#stop', function(){
 
     it('must allow to stop current animation if any', function(){
-      
+
       var run = new Animation({ frames: [ 2, 3 ] });
 
       var animations = {
@@ -70,7 +82,7 @@ describe('Methods', function(){
       };
 
       var list = new AnimationList(animations);
-      
+
       expect(list.stop).to.be.a('function');
 
       list.play('run');
@@ -86,7 +98,7 @@ describe('Methods', function(){
   describe('#pause & #resume', function(){
 
     it('must allow to pause and resume current animation if any', function(){
-      
+
       var run = new Animation({ frames: [ 2, 3 ] });
 
       var animations = {
@@ -94,7 +106,7 @@ describe('Methods', function(){
       };
 
       var list = new AnimationList(animations);
-      
+
       expect(list.pause).to.be.a('function');
       expect(list.resume).to.be.a('function');
 

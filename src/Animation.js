@@ -18,7 +18,7 @@ module.exports = Emitter.extend({
     this.isRunning = false;
     this.runTimes = 0;
     this.started = false;
-    
+
     this.frameIndex = 0;
     this.frame = this.frames[this.frameIndex];
 
@@ -66,14 +66,14 @@ module.exports = Emitter.extend({
       this.emit('resume');
       return;
     }
-    
+
     this.start();
   },
 
   update: function(dt){
 
     if (this.isRunning && !this.isPaused){
-    
+
       if (!this.started){
         this.started = true;
         this.emit('start');
