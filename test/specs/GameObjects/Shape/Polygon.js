@@ -19,6 +19,10 @@ describe('Polygon', function(){
 
     it ('must create with defaults', function(){
       var poly = new Polygon();
+
+      expect(poly.position.x).to.be.equal(0);
+      expect(poly.position.y).to.be.equal(0);
+
       expect(poly.name).to.be.equal('Polygon');
       expect(poly.points.length).to.be.equal(0);
     });
@@ -42,11 +46,20 @@ describe('Polygon', function(){
     });
 
     it('accepts options as second parameter', function(){
+
       var poly = new Polygon([0,0 , 0,2 , 2,2 , 2,0], {
+        position: new Point(10, 10),
         fill: 'white',
         stroke: 'yellow',
         lineWidth: 2
       });
+
+      expect(poly.points[0].x).to.be.equal(10);
+      expect(poly.points[0].y).to.be.equal(10);
+
+      expect(poly.points[2].x).to.be.equal(12);
+      expect(poly.points[2].y).to.be.equal(12);
+
       expect(poly.fill).to.equal('white');
       expect(poly.stroke).to.equal('yellow');
       expect(poly.lineWidth).to.equal(2);
@@ -74,10 +87,13 @@ describe('Polygon', function(){
 
     it('#isConcave', function(){
       var convex = new Polygon([0,0 , 0,2 , 2,2 , 2,0]);
+
       expect(convex.isConcave()).to.be.false;
+
       var concave = new Polygon(
         [0,0 , 3,0 , 3,1 , 2,1 , 2,2 , 2,3 , 3,3 , 0,3 ]
       );
+
       expect(concave.isConcave()).to.be.true;
     });
 

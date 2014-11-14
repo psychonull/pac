@@ -3,6 +3,7 @@ var Point = require('../../../../src/Point');
 var Sprite = require('../../../../src/Sprite');
 var Rectangle = require('../../../../src/Rectangle');
 var Circle = require('../../../../src/Circle');
+var Polygon = require('../../../../src/Polygon');
 var Clickable = require('../../../../src/actions/Clickable');
 
 var chai = require('chai');
@@ -86,6 +87,9 @@ describe('Clickable', function(){
     validate();
 
     obj.shape = new Circle({ radius: 100 });
+    validate();
+
+    obj.shape = new Polygon([ 0,0 , 100,0 , 100,100, 0,100 ]);
     validate();
 
   });

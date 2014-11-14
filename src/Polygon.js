@@ -10,12 +10,10 @@ module.exports = Shape.extend({
 
   constructor: function(points, options){
     this.points = [];
-
-    if(arguments.length > 0){
-      this._initPoints(points);
-    }
+    var newPoints = points || (options && options.points) || [];
 
     Shape.call(this, options);
+    this._initPoints(newPoints);
   },
 
   _initPoints: function(points){
@@ -27,16 +25,25 @@ module.exports = Shape.extend({
     }
     else if(typeof points[0] === 'number'){
       for(var i=0; i<points.length; i+=2){
-        this.points.push(new Point(points[i], points[i+1]));
+        var p = new Point(points[i], points[i+1]);
+        this.points.push(p.add(this.position));
       }
     }
   },
 
-  isPointInside: function(point){
+  isPointInside: function(point, offset){
     var pointAsArray = [point.x, point.y];
+
+    var pos = new Point();
+    if (offset){
+      pos = pos.add(offset);
+    }
+
     var pointsAsArrays = _.map(this.points, function(p){
-      return [p.x, p.y];
+      var offsetP = p.add(offset);
+      return [offsetP.x, offsetP.y];
     });
+
     return inside(pointAsArray, pointsAsArrays);
   },
 
