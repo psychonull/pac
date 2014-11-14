@@ -145,6 +145,10 @@ var PixiRenderer = module.exports = Renderer.extend({
     }
     else if (obj instanceof Shape){
       var graphics = new PIXI.Graphics();
+
+      graphics.position.x = obj.position.x;
+      graphics.position.y = obj.position.y;
+
       var shape = this._createShape(obj, graphics);
 
       if (shape){
@@ -154,6 +158,8 @@ var PixiRenderer = module.exports = Renderer.extend({
         parent.addChild(shape);
       }
     }
+
+    this._drawDebug(obj, parent);
   },
 
   render: function () {
@@ -221,6 +227,7 @@ var PixiRenderer = module.exports = Renderer.extend({
         var pixiObj = this._getPixiObjectByCID(obj.cid, pixiLayer);
         if (pixiObj){
           this._setObjectProperties(obj, pixiObj);
+          this._drawDebug(obj, pixiLayer);
         }
 
         if (obj.children){
@@ -230,6 +237,7 @@ var PixiRenderer = module.exports = Renderer.extend({
             pixiObj = this._getPixiObjectByCID(child.cid, pixiLayer);
             if (pixiObj){
               this._setObjectProperties(child, pixiObj);
+              this._drawDebug(child, pixiLayer);
             }
 
           }, this);
@@ -243,6 +251,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   _setObjectProperties: function(obj, pixiObj){
     if (obj){
+
       if(obj instanceof Sprite){
         this._setSpriteProperties(obj, pixiObj);
       }
@@ -250,6 +259,9 @@ var PixiRenderer = module.exports = Renderer.extend({
         this._setTextProperties(obj, pixiObj);
       }
       else if(obj instanceof Shape){
+        pixiObj.position.x = obj.position.x;
+        pixiObj.position.y = obj.position.y;
+
         this._createShape(obj, pixiObj);
       }
     }
@@ -257,9 +269,6 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   _createShape: function(obj, graphics){
     graphics.clear();
-
-    graphics.position.x = obj.position.x;
-    graphics.position.y = obj.position.y;
 
     if (obj.fill){
       graphics.beginFill(obj.fill.replace('#', '0x'));
@@ -319,6 +328,39 @@ var PixiRenderer = module.exports = Renderer.extend({
       PIXI.TextureCache[key] = new PIXI.Texture(PIXI.BaseTextureCache[key]);
       PIXI.BitmapText.fonts[key] = convertFontDataToPIXI(raw.definition, key);
     }, this);
+  },
+
+
+  _drawDebug: function(obj, container){
+
+    if (pac.DEBUG && obj.shape){
+      var shape = obj.shape;
+
+      var graphics = this._getPixiObjectByCID(obj.shape.cid, container);
+
+      if (!graphics){
+        graphics = new PIXI.Graphics();
+      }
+
+      graphics.alpha = 0.4;
+      shape.fill = '#00ff00';
+
+      if (!obj.active){
+        shape.fill = '#ff0000';
+      }
+
+      var pos = obj.position.add(shape.position);
+
+      graphics.position.x = pos.x;
+      graphics.position.y = pos.y;
+
+      var draw = this._createShape(shape, graphics);
+
+      if (draw){
+        draw.cid = shape.cid;
+        container.addChild(draw);
+      }
+    }
   }
 
 });
