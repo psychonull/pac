@@ -33,12 +33,9 @@ describe('PAC', function(){
   require('./GameObjects');
   require('./Animations');
   require('./Cache');
-
   require('./Lists');
   require('./Assets');
   require('./Inputs');
-
   require('./ActionLists');
-
   require('./Prefabs');
 });

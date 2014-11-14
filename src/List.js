@@ -180,6 +180,14 @@ var List = module.exports = Emitter.extend({
 
     var found = _.filter(this._items, search);
     return new List(found);
+  },
+
+  findOne: function(search){
+    if (typeof search === 'string'){
+      search = { name: search };
+    }
+
+    return _.find(this._items, search);
   }
 
 });

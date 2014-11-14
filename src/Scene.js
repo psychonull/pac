@@ -60,6 +60,10 @@ var Scene = module.exports = Emitter.extend({
   },
 
   findObject: function(search){
+    return this.objects.findOne(search);
+  },
+
+  findObjects: function(search){
     return this.objects.find(search);
   },
 

@@ -111,19 +111,23 @@ describe('Command', function(){
     var useCalled = 0;
     var pushCalled = 0;
 
+    var obj;
+
     var ObjAction = TestObj.extend({
       onCommand: {
         use: function(){
           useCalled++;
+          expect(this).to.be.equal(obj);
         },
         push: function(){
           pushCalled++;
+          expect(this).to.be.equal(obj);
         }
       }
 
     });
 
-    var obj = new ObjAction({
+    obj = new ObjAction({
       actions: [ cmdAction ]
     });
 

@@ -8,12 +8,11 @@ module.exports = Action.extend({
   onStart: function() {
     var scene = this.actions.owner.scene;
 
-    var found = scene.findObject('CommandBar');
-    if (found.length === 0){
+    this.commandBar = scene.findObject('CommandBar');
+    if (!this.commandBar){
       throw new Error('A CommandBar was not found on this scene.');
     }
 
-    this.commandBar = found.at(0);
     this.isHovering = false;
   },
 
@@ -32,7 +31,7 @@ module.exports = Action.extend({
 
       if (obj.onCommand && obj.onCommand.hasOwnProperty(command)){
 
-        var cannot = obj.onCommand[command]();
+        var cannot = obj.onCommand[command].call(obj);
         if (cannot){
           this.commandBar.showCannotMessage(cannot);
         }

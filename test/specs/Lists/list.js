@@ -519,6 +519,34 @@ describe('List', function(){
 
     });
 
+    describe('#findOne', function(){
+
+      it('must return a the first item found', function(){
+
+        var list = new TestList([
+          new TestItem(),
+          new TestItem({ name: 'named' }),
+          new TestItem({ test: true })
+        ]);
+
+        var result = list.findOne('GameObject');
+        expect(result).to.be.equal(list.at(0));
+
+        result = list.findOne('named');
+        expect(result).to.be.equal(list.at(1));
+
+        result = list.findOne('no one');
+        expect(result).to.be.undefined;
+
+        result = list.findOne({ test: true });
+        expect(result).to.be.equal(list.at(2));
+
+        result = list.findOne({ test: false });
+        expect(result).to.be.equal(list.at(0));
+      });
+
+    });
+
   });
 
 });
