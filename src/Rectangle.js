@@ -3,6 +3,7 @@ var Shape = require('./Shape');
 
 module.exports = Shape.extend({
 
+  name: 'Rectangle',
   size: { width: 50, height: 50 },
 
   constructor: function(options){

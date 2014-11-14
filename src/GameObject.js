@@ -4,9 +4,12 @@ var ActionList = require('./ActionList');
 
 var GameObject = module.exports = Emitter.extend({
 
+  name: 'GameObject',
   actions: null,
 
   constructor: function(options){
+    this.name = (options && options.name) || this.name;
+
     if (options && options.actions){
 
       if (options.actions instanceof ActionList){

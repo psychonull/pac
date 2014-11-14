@@ -8,7 +8,13 @@ var expect = chai.expect;
 var GameObject = require('../../../src/GameObject');
 var Drawable = require('../../../src/Drawable');
 
-var TestItem = GameObject.extend();
+var TestItem = GameObject.extend({
+
+  init: function(options){
+    this.test = (options && options.test) || false;
+  },
+
+});
 
 var TestList = List.extend({
   childType: TestItem
@@ -205,7 +211,7 @@ describe('List', function(){
       });
 
       it('must keep the list sorted if has a comparator', function(){
-        
+
         var obj1 = new TestSort({ zIndex: 1 });
         var obj2 = new TestSort({ zIndex: 2 });
         var obj4 = new TestSort({ zIndex: 4 });
@@ -220,7 +226,7 @@ describe('List', function(){
         });
 
         list.add(obj2);
-        
+
         expect(emitted).to.be.equal(1);
       });
 
@@ -471,6 +477,44 @@ describe('List', function(){
         expect(function(){
           list.insertAt(0, duplicated);
         }).to.throw(/item already exists/);
+      });
+
+    });
+
+    describe('#find', function(){
+
+      it('must return a new List of items found', function(){
+
+        var list = new TestList([
+          new TestItem(),
+          new TestItem({ name: 'named' }),
+          new TestItem({ test: true })
+        ]);
+
+        expect(list.at(0).name).to.be.equal('GameObject');
+        expect(list.at(0).test).to.be.equal(false);
+
+        expect(list.at(1).name).to.be.equal('named');
+        expect(list.at(1).test).to.be.equal(false);
+
+        expect(list.at(2).name).to.be.equal('GameObject');
+        expect(list.at(2).test).to.be.equal(true);
+
+        var result = list.find('GameObject');
+        expect(result).to.be.instanceof(List);
+        expect(result.length).to.be.equal(2);
+
+        result = list.find('named');
+        expect(result.length).to.be.equal(1);
+
+        result = list.find('no one');
+        expect(result.length).to.be.equal(0);
+
+        result = list.find({ test: true });
+        expect(result.length).to.be.equal(1);
+
+        result = list.find({ test: false });
+        expect(result.length).to.be.equal(2);
       });
 
     });

@@ -20,6 +20,7 @@ describe('Rectangle', function(){
     it ('must create with defaults', function(){
       var rect = new Rectangle();
 
+      expect(rect.name).to.be.equal('Rectangle');
       expect(rect.position.x).to.be.equal(0);
       expect(rect.position.y).to.be.equal(0);
 

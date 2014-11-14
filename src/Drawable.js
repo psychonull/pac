@@ -5,6 +5,7 @@ var Point = require('./Point');
 
 var Drawable = module.exports = GameObject.extend({
 
+  name: 'Drawable',
   position: null,
 
   layer: null,

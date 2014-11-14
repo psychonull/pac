@@ -31,6 +31,28 @@ describe('GameObject', function(){
     expect(pac.GameObject.prototype).to.be.an.instanceof(Emitter);
   });
 
+  it('must have a default name and allow to set one', function(){
+    var obj = new pac.GameObject();
+    expect(obj.name).to.be.equal('GameObject');
+
+    obj = new pac.GameObject({
+      name: 'Crazy Object'
+    });
+    expect(obj.name).to.be.equal('Crazy Object');
+
+    var ObjectAux = pac.GameObject.extend({
+      name: 'Aux'
+    });
+
+    obj = new ObjectAux();
+    expect(obj.name).to.be.equal('Aux');
+
+    obj = new ObjectAux({
+      name: 'Aux New'
+    });
+    expect(obj.name).to.be.equal('Aux New');
+  });
+
   it('must expose update Method', function(){
     var obj = new pac.GameObject();
     expect(obj.update).to.be.a('function');

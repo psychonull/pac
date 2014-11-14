@@ -13,10 +13,10 @@ chai.use(sinonChai);
 
 var Monkey = Drawable.extend({
 
-  name: '',
+  title: '',
 
   init: function(options){
-    this.name = options && options.name || '';
+    this.title = options && options.title || '';
   },
 
   update: function() { },
@@ -76,16 +76,16 @@ describe('#addObject', function(){
     });
 
     var monkeys = [
-      new Monkey({ name: 'Chubaka' }),
-      new Monkey({ name: 'Pepito' })
+      new Monkey({ title: 'Chubaka' }),
+      new Monkey({ title: 'Pepito' })
     ];
 
     scene.addObject(monkeys);
 
     expect(scene.objects.length).to.be.equal(2);
 
-    expect(scene.objects.at(0).name).to.be.equal('Chubaka');
-    expect(scene.objects.at(1).name).to.be.equal('Pepito');
+    expect(scene.objects.at(0).title).to.be.equal('Chubaka');
+    expect(scene.objects.at(1).title).to.be.equal('Pepito');
   });
 
   it('must throw an error if not inherit from GameObject with an array',
@@ -99,7 +99,7 @@ describe('#addObject', function(){
       });
 
       var monkeys = [
-        new Monkey({ name: 'Chubaka' }),
+        new Monkey({ title: 'Chubaka' }),
         new Point()
       ];
 
@@ -107,6 +107,36 @@ describe('#addObject', function(){
 
     }).to.throw('invalid child type');
 
+  });
+
+});
+
+describe('#findObject', function(){
+
+  it('must return a list of objects found by a query or name', function(){
+
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    expect(scene.findObject).to.be.a('function');
+
+    var monkeys = [
+      new Monkey({ name: 'Chubaka', title: 'ChubakaTitle' }),
+      new Monkey({ title: 'Pepito' })
+    ];
+
+    scene.addObject(monkeys);
+
+    var found = scene.findObject('Chubaka');
+    expect(found.length).to.be.equal(1);
+
+    found = scene.findObject('Drawable');
+    expect(found.length).to.be.equal(1);
+
+    found = scene.findObject({ title: 'ChubakaTitle' });
+    expect(found.length).to.be.equal(1);
   });
 
 });
@@ -128,9 +158,9 @@ describe('#update', function(){
       size: { width: 200, height: 300 }
     });
 
-    var monkey1 = new Monkey({ name: 'Chubaka' });
-    var monkey2 = new Monkey({ name: 'Pepito' });
-    var monkeyChild = new Monkey({ name: 'Little Chubaka' });
+    var monkey1 = new Monkey({ title: 'Chubaka' });
+    var monkey2 = new Monkey({ title: 'Pepito' });
+    var monkeyChild = new Monkey({ title: 'Little Chubaka' });
     var gm = new GameObject();
 
     monkey1.children.add(monkeyChild);

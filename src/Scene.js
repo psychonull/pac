@@ -59,6 +59,10 @@ var Scene = module.exports = Emitter.extend({
     this.objects.add(toAdd);
   },
 
+  findObject: function(search){
+    return this.objects.find(search);
+  },
+
   update: function(dt){
 
     this.objects.each(function(gameObject){

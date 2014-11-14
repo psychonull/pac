@@ -10,9 +10,11 @@ var Hoverable = require('../actions/Hoverable');
 var Clickable = require('../actions/Clickable');
 
 var Command = require('./Command');
+var Text = require('../Text');
 
 module.exports = Rectangle.extend({
 
+  name: 'CommandBar',
   size: { width: 100, height: 100 },
 
   cannotHolder: 'Cannot {{action}} that',
@@ -20,6 +22,7 @@ module.exports = Rectangle.extend({
   commands: {},
   current: null,
 
+  messageBox: { },
   style: { },
 
   constructor: function(options){
@@ -28,6 +31,7 @@ module.exports = Rectangle.extend({
       'style',
       'cannotHolder',
       'commands',
+      'messageBox',
       'current'
     ];
 
@@ -39,10 +43,17 @@ module.exports = Rectangle.extend({
 
     Rectangle.apply(this, arguments);
 
-    this._buildChildren();
+    this._buildContainer();
   },
 
-  _buildChildren: function(){
+  _buildContainer: function(){
+
+    this.messageBox = new Text(_.clone(this.messageBox, true));
+    this.children.add(this.messageBox);
+
+    if (!this.style.position){
+      this.style.position = new Point();
+    }
 
     _.forIn(this.commands, function(value, key){
 
@@ -103,7 +114,8 @@ module.exports = Rectangle.extend({
     x = (x * size.width) + (x * margin.x) + margin.x;
     y = (y * size.height) + (y * margin.y) + margin.y;
 
-    return new Point(x, y);
+    var offset = this.style.position;
+    return new Point(x + offset.x, y + offset.y);
   },
 
   _setCommandStyle: function(command, style){
@@ -138,6 +150,22 @@ module.exports = Rectangle.extend({
       this._setCommandStyle(command, this.style.active);
       this.emit('command', cmd);
     }
+  },
+
+  showHoverMessage: function(message){
+    this.messageBox.value = this._current.value + ' ' + message;
+  },
+
+  hideHoverMessage: function(){
+    this.messageBox.value = '';
+  },
+
+  showCannotMessage: function(message){
+    if (!message){
+      message = this.cannotHolder.replace(/{{action}}/ig, this._current.value);
+    }
+
+    this.messageBox.value = message;
   },
 
   init: function() {},

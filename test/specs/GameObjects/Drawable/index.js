@@ -26,6 +26,7 @@ describe('Drawable', function(){
   it('must create a Drawable', function(){
     var obj = new pac.Drawable();
 
+    expect(obj.name).to.be.equal('Drawable');
     expect(obj.cid).to.be.an('string');
     expect(obj.position.x).to.be.equal(0);
     expect(obj.position.y).to.be.equal(0);
@@ -61,10 +62,12 @@ describe('Drawable', function(){
     expect(obj2.zIndex).to.be.equal(5);
 
     var obj3 = new TestObj({
+      name: 'TestObj',
       layer: 'middle',
       zIndex: 10
     });
 
+    expect(obj3.name).to.be.equal('TestObj');
     expect(obj3.layer).to.be.equal('middle');
     expect(obj3.zIndex).to.be.equal(10);
   });

@@ -9,6 +9,7 @@ describe('Constructor', function(){
   it ('must create a Text with defaults', function(){
     var text = new Text();
 
+    expect(text.name).to.be.equal('Text');
     expect(text.position.x).to.be.equal(0);
     expect(text.position.y).to.be.equal(0);
     expect(text.value).to.equal('');

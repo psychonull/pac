@@ -5,6 +5,7 @@ var Rectangle = require('./Rectangle');
 
 var Sprite = module.exports = Drawable.extend({
 
+  name: 'Sprite',
   position: null,
   size: null,
   texture: null,

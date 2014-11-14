@@ -19,6 +19,7 @@ describe('Polygon', function(){
 
     it ('must create with defaults', function(){
       var poly = new Polygon();
+      expect(poly.name).to.be.equal('Polygon');
       expect(poly.points.length).to.be.equal(0);
     });
 

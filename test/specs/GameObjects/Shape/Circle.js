@@ -20,6 +20,7 @@ describe('Circle', function(){
     it ('must create with defaults', function(){
       var circle = new Circle();
 
+      expect(circle.name).to.be.equal('Circle');
       expect(circle.position.x).to.be.equal(0);
       expect(circle.position.y).to.be.equal(0);
 

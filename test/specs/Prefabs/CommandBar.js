@@ -6,6 +6,7 @@ var GameObjectList = require('../../../src/GameObjectList');
 var CommandBar = require('../../../src/prefabs/CommandBar');
 var Command = require('../../../src/prefabs/Command');
 
+var Text = require('../../../src/Text');
 var Rectangle = require('../../../src/Rectangle');
 var ActionList = require('../../../src/ActionList');
 var Hoverable = require('../../../src/actions/Hoverable');
@@ -24,6 +25,12 @@ var commandBarOpts = {
 
   cannotHolder: 'I certain cannot {{action}} that',
 
+  messageBox: {
+    position: new Point(10, 20),
+    font: '20px Arial',
+    fill: '#fff',
+  },
+
   commands: {
     'use': 'Use',
     'walkto': 'Walk To',
@@ -34,6 +41,10 @@ var commandBarOpts = {
   current: 'use',
 
   style: {
+
+    position: new Point(10, 20),
+    margin: { x: 10, y: 5 },
+    size: { width: 200, height: 40 },
 
     text: {
       font: '20px Arial',
@@ -47,9 +58,6 @@ var commandBarOpts = {
     active: {
       fill: '#222',
     },
-
-    margin: { x: 10, y: 5 },
-    size: { width: 200, height: 40 },
 
     grid: [
       ['use',  'walkto'],
@@ -72,17 +80,26 @@ describe('CommandBar', function(){
 
     var cbar = new CommandBar(_.clone(commandBarOpts, true));
 
+    expect(cbar.name).to.be.equal('CommandBar');
+
     expect(cbar.position.x).to.be.equal(200);
     expect(cbar.position.y).to.be.equal(200);
 
     expect(cbar.size.width).to.be.equal(500);
     expect(cbar.size.height).to.be.equal(100);
 
+    expect(cbar.style.text.font).to.be.equal('20px Arial');
     expect(cbar.style.text.fill).to.be.equal('#000');
     expect(cbar.style.hover.fill).to.be.equal('#111');
     expect(cbar.style.active.fill).to.be.equal('#222');
 
     expect(cbar.cannotHolder).to.be.equal('I certain cannot {{action}} that');
+
+    expect(cbar.messageBox).to.be.instanceof(Text);
+    expect(cbar.messageBox.font).to.be.equal('20px Arial');
+    expect(cbar.messageBox.fill).to.be.equal('#fff');
+    expect(cbar.messageBox.position.x).to.be.equal(210);
+    expect(cbar.messageBox.position.y).to.be.equal(220);
 
     expect(cbar.current).to.be.equal('use');
     expect(cbar.children).to.be.instanceof(GameObjectList);
@@ -96,7 +113,7 @@ describe('CommandBar', function(){
     expect(cMargin.y).to.be.equal(5);
 
     // check commands creation
-    var i = 0;
+    var i = 1; // index 0 is for the message bar
     for(var c in cbar.commands){
 
       if (cbar.commands.hasOwnProperty(c)){
@@ -125,17 +142,20 @@ describe('CommandBar', function(){
         expect(hitbox.size.width).to.be.equal(cSize.width);
         expect(hitbox.size.height).to.be.equal(cSize.height);
 
-        var pos = gridPositions[child.command];
-        expect(child.localPosition.x).to.be.equal(pos.x);
-        expect(child.localPosition.y).to.be.equal(pos.y);
+        var cmdOffset = commandBarOpts.style.position;
 
-        expect(child.position.x).to.be.equal(pos.x + cbar.position.x);
-        expect(child.position.y).to.be.equal(pos.y + cbar.position.y);
+        var pos = gridPositions[child.command];
+        expect(child.localPosition.x).to.be.equal(pos.x + cmdOffset.x);
+        expect(child.localPosition.y).to.be.equal(pos.y + cmdOffset.y);
+
+        var cPosX = pos.x + cbar.position.x + cmdOffset.x;
+        var cPosY = pos.y + cbar.position.y + cmdOffset.y;
+        expect(child.position.x).to.be.equal(cPosX);
+        expect(child.position.y).to.be.equal(cPosY);
 
         i++;
       }
     }
-
   });
 
   it('must interact with hover and click events on commands', function(){
@@ -167,8 +187,8 @@ describe('CommandBar', function(){
     var cpos = gridPositions.walkto;
 
     cursor.position = new Point(
-      cpos.x+cbar.position.x+10,
-      cpos.y+cbar.position.y+10);
+      cpos.x+cbar.position.x+30,
+      cpos.y+cbar.position.y+30);
 
     cbar.updateHierarchy(0.16);
     cbar.updateActions(0.16);
@@ -185,8 +205,8 @@ describe('CommandBar', function(){
     expect(cbar.onCommandHoverOut).to.have.been.calledOnce;
 
     cursor.position = new Point(
-      cpos.x+cbar.position.x+10,
-      cpos.y+cbar.position.y+10);
+      cpos.x+cbar.position.x+30,
+      cpos.y+cbar.position.y+30);
     cursor.isDown = true;
 
     cbar.updateHierarchy(0.16);
@@ -248,8 +268,8 @@ describe('CommandBar', function(){
 
     // HOVER IN
     cursor.position = new Point(
-      cpos.x+cbar.position.x+10,
-      cpos.y+cbar.position.y+10);
+      cpos.x+cbar.position.x+30,
+      cpos.y+cbar.position.y+30);
 
     cbar.updateHierarchy(0.16);
     cbar.updateActions(0.16);
@@ -270,8 +290,8 @@ describe('CommandBar', function(){
 
     // HOVER IN & CLICK
     cursor.position = new Point(
-      cpos.x+cbar.position.x+10,
-      cpos.y+cbar.position.y+10);
+      cpos.x+cbar.position.x+30,
+      cpos.y+cbar.position.y+30);
     cursor.isDown = true;
 
     cbar.updateHierarchy(0.16);
@@ -292,7 +312,27 @@ describe('CommandBar', function(){
     cbar.updateActions(0.16);
 
     expect(commandWalkTo.fill).to.be.equal(active);
+  });
 
+  it('must allow to show and hide messages', function(){
+
+    var cbar = new CommandBar(_.clone(commandBarOpts, true));
+
+    expect(cbar.showHoverMessage).to.be.a('function');
+    expect(cbar.hideHoverMessage).to.be.a('function');
+    expect(cbar.showCannotMessage).to.be.a('function');
+
+    cbar.showHoverMessage('Crazy Monkey');
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
+
+    cbar.hideHoverMessage();
+    expect(cbar.messageBox.value).to.be.equal('');
+
+    cbar.showCannotMessage();
+    expect(cbar.messageBox.value).to.be.equal('I certain cannot Use that');
+
+    cbar.showCannotMessage('My custom message');
+    expect(cbar.messageBox.value).to.be.equal('My custom message');
   });
 
 });

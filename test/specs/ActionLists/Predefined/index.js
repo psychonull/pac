@@ -19,8 +19,15 @@ describe('Predefined', function(){
     expect(pac.actions.Delay.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.Command Action', function(){
+    expect(pac.actions.Command).to.be.a('function');
+    expect(pac.actions.Command.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
+
+  require('./Command.js');
 
 });

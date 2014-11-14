@@ -5,6 +5,7 @@ var _ = require('./utils');
 
 var Text = module.exports = Drawable.extend({
 
+  name: 'Text',
   value: '',
   font: '20px Arial',
   fill: 'black',

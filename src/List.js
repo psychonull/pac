@@ -111,13 +111,13 @@ var List = module.exports = Emitter.extend({
     if (!comp || (comp && typeof comp !== 'string')){
       return;
     }
-    
+
     var field = comp.replace('-', ''),
       dir = (comp[0] === '-' ? -1 : 1);
 
     this._items.sort(function (a, b) {
       var fieldA = a[field], fieldB = b[field];
-      
+
       if (fieldA < fieldB) return -dir;
       if (fieldA > fieldB) return dir;
       return 0;
@@ -170,6 +170,16 @@ var List = module.exports = Emitter.extend({
   each: function(cb, ctx){
     _.forEach(this._items, cb, ctx);
     return this;
+  },
+
+  find: function(search){
+
+    if (typeof search === 'string'){
+      search = { name: search };
+    }
+
+    var found = _.filter(this._items, search);
+    return new List(found);
   }
 
 });

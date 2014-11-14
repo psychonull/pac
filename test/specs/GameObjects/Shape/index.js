@@ -28,6 +28,7 @@ describe('Shape', function(){
     it ('must create with defaults', function(){
       var shape = new Shape();
 
+      expect(shape.name).to.equal('Shape');
       expect(shape.fill).to.equal(null);
       expect(shape.stroke).to.equal(null);
       expect(shape.lineWidth).to.equal(1);

@@ -15,6 +15,7 @@ describe('Constructor', function(){
       texture: 'test'
     });
 
+    expect(sprite.name).to.be.equal('Sprite');
     expect(sprite.position.x).to.be.equal(0);
     expect(sprite.position.y).to.be.equal(0);
 

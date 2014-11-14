@@ -3,6 +3,7 @@ var Drawable = require('./Drawable');
 
 module.exports = Drawable.extend({
 
+  name: 'Shape',
   fill: null,
   stroke: null,
   lineWidth: 1,

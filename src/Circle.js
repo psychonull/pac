@@ -3,6 +3,7 @@ var Shape = require('./Shape');
 
 module.exports = Shape.extend({
 
+  name: 'Circle',
   radius: 50,
 
   constructor: function(options){

@@ -6,6 +6,8 @@ var inside = require('point-in-polygon');
 
 module.exports = Shape.extend({
 
+  name: 'Polygon',
+
   constructor: function(points, options){
     this.points = [];
 
