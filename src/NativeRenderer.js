@@ -1,7 +1,8 @@
 
 var Renderer = require('./Renderer'),
   Sprite = require('./Sprite'),
-  Text = require('./Text');
+  Text = require('./Text'),
+  Point = require('./Point');
 
 var Shape = require('./Shape');
 var Rectangle = require('./Rectangle');
@@ -82,11 +83,13 @@ var NativeRenderer = module.exports = Renderer.extend({
 
       layer.each(function(o){
         this._renderObject(o);
+        this._drawDebug(o);
 
         if (o.children){
 
           o.children.each(function(child){
             this._renderObject(child);
+            this._drawDebug(child);
           }, this);
         }
 
@@ -146,7 +149,7 @@ var NativeRenderer = module.exports = Renderer.extend({
 
     ctx.beginPath();
 
-    this._drawShape(o, ctx);
+    this._drawShape(o);
 
     if (o.fill){
       ctx.fillStyle = o.fill;
@@ -160,13 +163,17 @@ var NativeRenderer = module.exports = Renderer.extend({
     }
   },
 
-  _drawShape: function(o, ctx){
+  _drawShape: function(o, offset){
+    var ctx = this.context;
+
+    offset = offset || new Point();
+    var pos = o.position.add(offset);
 
     if (o instanceof Rectangle){
-      ctx.rect(o.position.x, o.position.y, o.size.width, o.size.height);
+      ctx.rect(pos.x, pos.y, o.size.width, o.size.height);
     }
     else if (o instanceof Circle){
-      ctx.arc(o.position.x, o.position.y, o.radius, 0, 2 * Math.PI, false);
+      ctx.arc(pos.x, pos.y, o.radius, 0, 2 * Math.PI, false);
     }
     else if (o instanceof Polygon){
       _.forEach(o.points, function(point, index){
@@ -208,6 +215,26 @@ var NativeRenderer = module.exports = Renderer.extend({
     if(o.strikeThickness){
       this.context.strokeText(o.value, o.position.x, o.position.y);
     }
-  }
+  },
+
+  _drawDebug: function(o){
+
+    if (pac.DEBUG && o.shape){
+      var ctx = this.context;
+
+      ctx.beginPath();
+
+      this._drawShape(o.shape, o.position);
+
+      ctx.fillStyle = 'rgba(0,255,0,0.4)';
+
+      if (!o.active){
+        ctx.fillStyle = 'rgba(255,0,0,0.4)';
+      }
+
+      ctx.fill();
+    }
+
+  },
 
 });
