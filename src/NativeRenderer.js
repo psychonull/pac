@@ -177,11 +177,13 @@ var NativeRenderer = module.exports = Renderer.extend({
     }
     else if (o instanceof Polygon){
       _.forEach(o.points, function(point, index){
+
+        var p = pos.add(point);
         if(index === 0){
-          ctx.moveTo(point.x, point.y);
+          ctx.moveTo(p.x, p.y);
         }
         else {
-          ctx.lineTo(point.x, point.y);
+          ctx.lineTo(p.x, p.y);
         }
       });
       ctx.closePath();
