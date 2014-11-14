@@ -37,7 +37,7 @@ describe('Hoverable', function(){
     }).to.throw('Hoverable Action requires a [shape] on the Object');
   });
 
-  it('must emit an event on its owner when it is clicked', function(){
+  it('must emit an event on its owner when it is hovered', function(){
     var obj = new TestObj({
       position: new Point(200, 200),
       size: { width: 10, height: 10 },
@@ -96,7 +96,7 @@ describe('Hoverable', function(){
 
   });
 
-  it('must emit an event on its owner when it is clicked (circle)', function(){
+  it('must emit an event on its owner when it is hovered (circle)', function(){
     var obj = new TestObj({
       position: new Point(200, 200),
       size: { width: 10, height: 10 },
@@ -151,6 +151,55 @@ describe('Hoverable', function(){
     obj.updateActions();
     expect(emittedIn).to.be.equal(1);
     expect(emittedOut).to.be.equal(1);
+    expect(obj.isHover).to.be.false;
+
+  });
+
+  it('must NOT emit events it is NOT active', function(){
+    var obj = new TestObj({
+      position: new Point(200, 200),
+      size: { width: 10, height: 10 },
+      actions: [ new Hoverable() ],
+      shape: new Rectangle({ size: { width: 100, height: 100 }})
+    });
+
+    obj.game = fakeGame;
+    obj.active = false;
+
+    var emittedIn = 0;
+    var emittedOut = 0;
+    obj.on('hover:in', function(){
+      emittedIn++;
+    });
+
+    obj.on('hover:out', function(){
+      emittedOut++;
+    });
+
+    obj.updateActions();
+
+    // Hover inside
+    fakeGame.inputs.cursor.position = new Point(250, 250);
+
+    obj.updateActions();
+    expect(emittedIn).to.be.equal(0);
+    expect(emittedOut).to.be.equal(0);
+    expect(obj.isHover).to.be.false;
+
+    // Hover outside
+    fakeGame.inputs.cursor.position = new Point(310, 310);
+
+    obj.updateActions();
+    expect(emittedIn).to.be.equal(0);
+    expect(emittedOut).to.be.equal(0);
+    expect(obj.isHover).to.be.false;
+
+    // Hover outside moving
+    fakeGame.inputs.cursor.position = new Point(320, 320);
+
+    obj.updateActions();
+    expect(emittedIn).to.be.equal(0);
+    expect(emittedOut).to.be.equal(0);
     expect(obj.isHover).to.be.false;
 
   });

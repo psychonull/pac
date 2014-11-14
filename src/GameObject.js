@@ -5,18 +5,18 @@ var ActionList = require('./ActionList');
 var GameObject = module.exports = Emitter.extend({
 
   name: 'GameObject',
+  active: true,
   actions: null,
 
   constructor: function(options){
     this.name = (options && options.name) || this.name;
+    this.active = (options && options.active) || this.active;
+    this.actions = (options && options.actions) || this.actions;
 
-    if (options && options.actions){
+    if (this.actions){
 
-      if (options.actions instanceof ActionList){
-        this.actions = options.actions;
-      }
-      else {
-        this.actions = new ActionList(options.actions);
+      if (Array.isArray(this.actions)){
+        this.actions = new ActionList(this.actions);
       }
 
       this.actions.owner = this;

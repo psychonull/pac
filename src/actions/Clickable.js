@@ -19,7 +19,7 @@ module.exports = Action.extend({
 
     obj.isClicked = false;
 
-    if (cursor.isDown &&
+    if (obj.active && cursor.isDown &&
       obj.shape.isPointInside(cursor.position, obj.position)) {
 
         obj.isClicked = true;

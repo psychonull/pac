@@ -90,4 +90,54 @@ describe('Clickable', function(){
 
   });
 
+  it('must NOT emit an event when is NOT active', function(){
+
+    var obj = new TestObj({
+      position: new Point(200, 200),
+      size: { width: 10, height: 10 },
+      actions: [ new Clickable() ],
+      shape: new Rectangle({ size: { width: 100, height: 100 }})
+    });
+
+    obj.game = fakeGame;
+
+    function validate(){
+
+      var emitted = 0;
+      obj.on('click', function(){
+        emitted++;
+      });
+
+      obj.updateActions();
+      expect(emitted).to.be.equal(0);
+      expect(obj.isClicked).to.be.false;
+
+      // Click inside
+      fakeGame.inputs.cursor.position = new Point(250, 250);
+      fakeGame.inputs.cursor.isDown = true;
+
+      obj.updateActions();
+      expect(emitted).to.be.equal(0);
+      expect(obj.isClicked).to.be.false;
+
+      fakeGame.inputs.cursor.isDown = false;
+
+      obj.updateActions();
+      expect(emitted).to.be.equal(0);
+      expect(obj.isClicked).to.be.false;
+
+      // Click outside
+      fakeGame.inputs.cursor.position = new Point(350, 350);
+      fakeGame.inputs.cursor.isDown = true;
+
+      obj.updateActions();
+      expect(emitted).to.be.equal(0);
+      expect(obj.isClicked).to.be.false;
+    }
+
+    obj.active = false;
+    validate();
+
+  });
+
 });

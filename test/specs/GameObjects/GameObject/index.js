@@ -13,7 +13,7 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 var TestAction = Action.extend({
-  
+
   onStart: function() { },
   onEnd: function() { },
 
@@ -51,6 +51,8 @@ describe('GameObject', function(){
       name: 'Aux New'
     });
     expect(obj.name).to.be.equal('Aux New');
+
+    expect(obj.active).to.be.equal(true);
   });
 
   it('must expose update Method', function(){
@@ -77,6 +79,16 @@ describe('GameObject', function(){
       expect(obj.actions.length).to.be.equal(1);
       expect(obj.actions.owner).to.be.equal(obj);
 
+      var Prefab = pac.GameObject.extend({
+        actions: [ SomeAction ]
+      });
+
+      obj = new Prefab();
+
+      expect(obj.actions).to.be.an.instanceof(ActionList);
+      expect(obj.actions.length).to.be.equal(1);
+      expect(obj.actions.owner).to.be.equal(obj);
+
     });
 
     it('must allow to set and initialize Actions by an ActionList', function(){
@@ -87,6 +99,16 @@ describe('GameObject', function(){
       var obj = new pac.GameObject({
         actions: actList
       });
+
+      expect(obj.actions).to.be.an.instanceof(ActionList);
+      expect(obj.actions.length).to.be.equal(1);
+      expect(obj.actions.owner).to.be.equal(obj);
+
+      var Prefab = pac.GameObject.extend({
+        actions: actList
+      });
+
+      obj = new Prefab();
 
       expect(obj.actions).to.be.an.instanceof(ActionList);
       expect(obj.actions.length).to.be.equal(1);

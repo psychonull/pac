@@ -20,6 +20,12 @@ module.exports = Action.extend({
     var cursor = obj.game.inputs.cursor;
     obj.isHover = this.isHover;
 
+    if (!obj.active){
+      obj.isHover = false;
+      this.isHover = false;
+      return;
+    }
+
     if (!this.isHover){
 
       if(obj.shape.isPointInside(cursor.position, obj.position)){
