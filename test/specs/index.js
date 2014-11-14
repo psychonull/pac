@@ -10,6 +10,10 @@ describe('PAC', function(){
       expect(pac.VERSION).to.be.ok;
     });
 
+    it('must contain a DEBUG flag', function(){
+      expect(pac.DEBUG).to.be.false;
+    });
+
     //TODO: how to test this?
     it('must have noConflict()', function(){
       expect(pac.noConflict).to.be.a('function');

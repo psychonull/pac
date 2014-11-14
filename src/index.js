@@ -12,6 +12,8 @@ module.exports = (function(root) {
     return this;
   };
 
+  pac.DEBUG = false;
+
   return pac;
 
 })(window);
