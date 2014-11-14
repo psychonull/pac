@@ -192,6 +192,8 @@ var PixiRenderer = module.exports = Renderer.extend({
       wordWrap: !!obj.wordWrap,
       wordWrapWidth: obj.wordWrap
     });
+
+    text.setText(obj.value);
   },
 
   _getPixiObjectByCID: function(cid, container){
