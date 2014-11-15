@@ -172,6 +172,8 @@ describe('WalkableArea', function(){
       expect(act.target.x).to.be.equal(pos.x);
       expect(act.target.y).to.be.equal(pos.y);
       expect(act.velocity).to.be.equal(fakeWalker.velocity);
+      expect(act.pivot.x).to.be.equal(fakeWalker.feet.x);
+      expect(act.pivot.y).to.be.equal(fakeWalker.feet.y);
 
       WalkableArea.prototype.moveWalkers.restore();
     });
@@ -204,6 +206,8 @@ describe('WalkableArea', function(){
       expect(act.target.x).to.be.equal(pos.x);
       expect(act.target.y).to.be.equal(pos.y);
       expect(act.velocity).to.be.equal(fakeWalker.velocity);
+      expect(act.pivot.x).to.be.equal(fakeWalker.feet.x);
+      expect(act.pivot.y).to.be.equal(fakeWalker.feet.y);
 
       spy.reset();
 
@@ -221,6 +225,8 @@ describe('WalkableArea', function(){
       expect(act.target.x).to.be.equal(pos.x);
       expect(act.target.y).to.be.equal(pos.y);
       expect(act.velocity).to.be.equal(fakeWalker.velocity);
+      expect(act.pivot.x).to.be.equal(fakeWalker.feet.x);
+      expect(act.pivot.y).to.be.equal(fakeWalker.feet.y);
 
       WalkableArea.prototype.moveWalkers.restore();
     });

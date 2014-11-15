@@ -116,8 +116,12 @@ describe('WalkTo', function(){
       movePos = movePos.add(move);
       position = movePos.subtract(pivot);
 
-      expect(obj.position.x).to.be.equal(parseInt(position.x, 10));
-      expect(obj.position.y).to.be.equal(parseInt(position.y, 10));
+      //TODO: check parseInt (wont work nice on a big scale)
+      //expect(obj.position.x).to.be.equal(parseInt(position.x, 10));
+      //expect(obj.position.y).to.be.equal(parseInt(position.y, 10));
+
+      expect(obj.position.x).to.be.equal(position.x);
+      expect(obj.position.y).to.be.equal(position.y);
     }
 
     expect(walkto.isFinished).to.be.true;

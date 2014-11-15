@@ -58,7 +58,8 @@ module.exports = Drawable.extend({
 
       walker.actions.pushFront(new WalkTo({
         target: toPos,
-        velocity: walker.velocity
+        velocity: walker.velocity,
+        pivot: walker.feet
       }));
 
     });

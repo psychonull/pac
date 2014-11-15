@@ -42,8 +42,9 @@ module.exports = Action.extend({
     this.offset = this.offset.add(move);
     obj.position = this.offset.subtract(this.pivot);
 
-    obj.position.x = parseInt(obj.position.x, 10);
-    obj.position.y = parseInt(obj.position.y, 10);
+    //TODO: check parseInt (wont work nice on a big scale)
+    //obj.position.x = parseInt(obj.position.x, 10);
+    //obj.position.y = parseInt(obj.position.y, 10);
 
     if (this.target.subtract(this.offset).length() <= this.nearness){
       this.isFinished = true;
