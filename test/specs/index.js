@@ -41,7 +41,6 @@ describe('PAC', function(){
   require('./Assets');
   require('./Inputs');
   require('./ActionLists');
-
   require('./Prefabs');
 
 });

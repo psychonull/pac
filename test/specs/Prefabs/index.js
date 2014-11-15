@@ -14,7 +14,14 @@ describe('Prefabs', function(){
     expect(pac.prefabs.Command.prototype).to.be.an.instanceof(pac.Text);
   });
 
+  it('must expose pac.prefabs.WalkableArea', function(){
+    expect(pac.prefabs.WalkableArea).to.be.a('function');
+    expect(pac.prefabs.WalkableArea.prototype)
+      .to.be.an.instanceof(pac.GameObject);
+  });
+
   require('./Command');
   require('./CommandBar');
+  require('./WalkableArea');
 
 });

@@ -24,10 +24,21 @@ describe('Predefined', function(){
     expect(pac.actions.Command.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.Walker Action', function(){
+    expect(pac.actions.Walker).to.be.a('function');
+    expect(pac.actions.Walker.prototype).to.be.an.instanceof(pac.Action);
+  });
+
+  it('must expose pac.actions.WalkTo Action', function(){
+    expect(pac.actions.WalkTo).to.be.a('function');
+    expect(pac.actions.WalkTo.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
-
   require('./Command.js');
+  require('./Walker.js');
+  require('./WalkTo.js');
 
 });

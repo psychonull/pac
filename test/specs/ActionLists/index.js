@@ -18,7 +18,6 @@ describe('Action Lists', function(){
 
   require('./Action');
   require('./ActionList');
-
   require('./Predefined');
 
 });

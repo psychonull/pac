@@ -3,5 +3,7 @@ module.exports = {
   Clickable: require('./Clickable'),
   Hoverable: require('./Hoverable'),
   Delay: require('./Delay'),
-  Command: require('./Command')
+  Command: require('./Command'),
+  Walker: require('./Walker'),
+  WalkTo: require('./WalkTo')
 };

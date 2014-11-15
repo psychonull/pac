@@ -56,7 +56,22 @@ var ActionList = module.exports = List.extend({
     return found;
   },
 
+  removeAll: function(ActionType){
+    var itemsToRemove = [];
+
+    this.each(function(item, i){
+      if (item instanceof ActionType){
+        itemsToRemove.push(item);
+      }
+    }, this);
+
+    itemsToRemove.forEach(function(action){
+      this._endAction(action, true);
+    }, this);
+  },
+
   update: function(dt){
+    var finishedActions = [];
 
     this.each(function(action, i){
 
@@ -71,9 +86,12 @@ var ActionList = module.exports = List.extend({
         action.update(dt);
 
         if(action.isFinished) {
-          action.onEnd();
-          this.remove(action);
+          this._endAction(action, false);
+          finishedActions.push(action);
         }
+
+        //TODO: Check if this should be an ELSE
+        //else if (action.isBlocking){
 
         if (action.isBlocking){
           return false; // break loop
@@ -83,12 +101,26 @@ var ActionList = module.exports = List.extend({
 
     }, this);
 
+    finishedActions.forEach(function(action){
+      this.remove(action);
+    }, this);
+
   },
 
   _startAction: function(action){
     if (!action.started && action.resolve()){
       action.onStart();
       action.started = true;
+    }
+  },
+
+  _endAction: function(action, remove){
+    if (action.started){
+      action.onEnd();
+    }
+
+    if (remove){
+      this.remove(action);
     }
   }
 
