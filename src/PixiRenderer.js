@@ -199,7 +199,12 @@ var PixiRenderer = module.exports = Renderer.extend({
       wordWrapWidth: obj.wordWrap
     });
 
-    text.setText(obj.value);
+    if(obj.isBitmapText && obj.wordWrap){
+      text.setText(this._wrapBitmapText(obj));
+    }
+    else {
+      text.setText(obj.value);
+    }
   },
 
   _getPixiObjectByCID: function(cid, container){
@@ -265,6 +270,29 @@ var PixiRenderer = module.exports = Renderer.extend({
         this._createShape(obj, pixiObj);
       }
     }
+  },
+
+  _wrapBitmapText: function(obj){
+    //TODO: Find a better way, performance-wise at least
+    var text = new PIXI.BitmapText(obj.value, obj);
+    var wrapWidth = obj.wordWrap;
+    if(text.textWidth <= wrapWidth){
+      return text.text;
+    }
+    var words = text.text.split(' ');
+    var temp = words[0];
+    var result = temp;
+    for(var i=1; i < words.length; i++){
+      temp = result + ' ' + words[i];
+      text = new PIXI.BitmapText(temp, obj);
+      if(text.textWidth > wrapWidth){
+        temp = result + '\n' + words[i];
+        text = new PIXI.BitmapText(temp, obj);
+      }
+      result = temp;
+    }
+    result = temp;
+    return result;
   },
 
   _createShape: function(obj, graphics){
