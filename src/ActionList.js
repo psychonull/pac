@@ -43,15 +43,29 @@ var ActionList = module.exports = List.extend({
     }
   },
 
+  has: function(ActionType){
+    var found = false;
+
+    this.each(function(item){
+      if (item instanceof ActionType){
+        found = true;
+        return false;
+      }
+    });
+
+    return found;
+  },
+
   update: function(dt){
 
     this.each(function(action, i){
 
       if (action){
 
+        this._startAction(action);
+
         if (!action.started){
-          action.onStart();
-          action.started = true;
+          return false; //break loop
         }
 
         action.update(dt);
@@ -64,10 +78,18 @@ var ActionList = module.exports = List.extend({
         if (action.isBlocking){
           return false; // break loop
         }
+
       }
 
     }, this);
 
+  },
+
+  _startAction: function(action){
+    if (!action.started && action.resolve()){
+      action.onStart();
+      action.started = true;
+    }
   }
 
 });

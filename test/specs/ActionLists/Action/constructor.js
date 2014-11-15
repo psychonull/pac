@@ -13,6 +13,7 @@ describe('Constructor', function(){
   it('must allow to create an empty action with defaults', function(){
     var action = new Action();
 
+    expect(action.requires).to.be.null;
     expect(action.isFinished).to.be.equal(false);
     expect(action.isBlocking).to.be.equal(false);
   });

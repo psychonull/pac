@@ -1,7 +1,11 @@
 
 var Action = require('../Action');
+var Hoverable = require('./Hoverable');
+var Clickable = require('./Clickable');
 
 module.exports = Action.extend({
+
+  requires: [ Hoverable, Clickable ],
 
   init: function() { },
 

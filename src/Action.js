@@ -6,6 +6,25 @@ module.exports = Emitter.extend({
   isFinished: false,
   isBlocking: false,
   actions: null,
+  requires: null,
+
+  resolve: function(){
+    if (this.requires && this.requires.length > 0){
+      var createdOne = false;
+
+      this.requires.forEach(function(Action){
+
+        if (!this.actions.has(Action)){
+          this.insertInFrontOfMe(new Action());
+          createdOne = true;
+        }
+      }, this);
+
+      return !createdOne;
+    }
+
+    return true;
+  },
 
   init: function() { },
 

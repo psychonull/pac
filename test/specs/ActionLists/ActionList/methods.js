@@ -137,4 +137,19 @@ describe('Methods', function(){
 
   });
 
+  describe('#has', function(){
+
+    it('must return if an Action exists in the list', function(){
+
+      var list = new ActionList([ new TestAction1(), new TestAction2() ]);
+
+      expect(list.has).to.be.a('function');
+
+      expect(list.has(TestAction1)).to.be.true;
+      expect(list.has(TestAction2)).to.be.true;
+      expect(list.has(TestAction3)).to.be.false;
+    });
+
+  });
+
 });

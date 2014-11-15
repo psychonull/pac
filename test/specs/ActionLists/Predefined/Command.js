@@ -3,9 +3,13 @@ var pac = require('../../../../src/pac');
 
 var Point = require('../../../../src/Point');
 var Sprite = require('../../../../src/Sprite');
+var Rectangle = require('../../../../src/Rectangle');
 var Scene = require('../../../../src/Scene');
 var CommandBar = require('../../../../src/prefabs/CommandBar');
 var Command = require('../../../../src/actions/Command');
+
+var Hoverable = require('../../../../src/actions/Hoverable');
+var Clickable = require('../../../../src/actions/Clickable');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -74,13 +78,17 @@ describe('Command', function(){
       size: { width: 500, height: 600 }
     });
 
+    noCommandBarScene.game = fakeGame;
+
     var obj = new TestObj({
+      shape: new Rectangle(),
       actions: [ new Command() ],
     });
 
     noCommandBarScene.addObject(obj);
 
     expect(function(){
+      noCommandBarScene.update(dt);
       noCommandBarScene.update(dt);
     }).to.throw('A CommandBar was not found on this scene.');
 
@@ -91,12 +99,22 @@ describe('Command', function(){
     var cmdAction = new Command();
 
     var obj = new TestObj({
+      shape: new Rectangle(),
       actions: [ cmdAction ],
     });
+
+    // must require Hoverable & Clickable
+    expect(cmdAction.requires).to.be.a('array');
+    expect(cmdAction.requires.length).to.be.equal(2);
+    expect(cmdAction.requires[0]).to.be.equal(Hoverable);
+    expect(cmdAction.requires[1]).to.be.equal(Clickable);
 
     scene.addObject(commandBar);
     scene.addObject(obj);
     scene.update(dt);
+    scene.update(dt);
+
+    expect(obj.actions.length).to.be.equal(3);
 
     expect(cmdAction.commandBar).to.be.equal(commandBar);
     expect(cmdAction.isHovering).to.be.false;
@@ -128,15 +146,23 @@ describe('Command', function(){
     });
 
     obj = new ObjAction({
+      shape: new Rectangle(),
       actions: [ cmdAction ]
     });
 
     scene.addObject(commandBar);
     scene.addObject(obj);
     scene.update(dt);
+    scene.update(dt);
 
     expect(useCalled).to.be.equal(0);
     expect(pushCalled).to.be.equal(0);
+
+    // remove hover and click from actions to test only command
+    var hoverable = obj.actions.at(0);
+    var clickable = obj.actions.at(1);
+    obj.actions.remove(hoverable);
+    obj.actions.remove(clickable);
 
     obj.isClicked = true;
     scene.update(dt);
@@ -176,16 +202,24 @@ describe('Command', function(){
     });
 
     var obj = new ObjAction({
+      shape: new Rectangle(),
       actions: [ cmdAction ]
     });
 
     scene.addObject(commandBar);
     scene.addObject(obj);
     scene.update(dt);
+    scene.update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
     expect(commandBar.showCannotMessage).to.not.have.been.called;
+
+    // remove hover and click from actions to test only command
+    var hoverable = obj.actions.at(0);
+    var clickable = obj.actions.at(1);
+    obj.actions.remove(hoverable);
+    obj.actions.remove(clickable);
 
     obj.isHover = true;
 
