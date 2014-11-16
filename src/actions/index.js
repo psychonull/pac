@@ -5,5 +5,7 @@ module.exports = {
   Delay: require('./Delay'),
   Command: require('./Command'),
   Walker: require('./Walker'),
-  WalkTo: require('./WalkTo')
+  WalkTo: require('./WalkTo'),
+  Speaker: require('./Speaker'),
+  Speak: require('./Speak')
 };

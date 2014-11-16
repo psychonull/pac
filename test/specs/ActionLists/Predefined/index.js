@@ -34,11 +34,23 @@ describe('Predefined', function(){
     expect(pac.actions.WalkTo.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.Speaker Action', function(){
+    expect(pac.actions.Speaker).to.be.a('function');
+    expect(pac.actions.Speaker.prototype).to.be.an.instanceof(pac.Action);
+  });
+
+  it('must expose pac.actions.Speak Action', function(){
+    expect(pac.actions.Speak).to.be.a('function');
+    expect(pac.actions.Speak.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
   require('./Command.js');
   require('./Walker.js');
   require('./WalkTo.js');
+  require('./Speaker.js');
+  require('./Speak.js');
 
 });
