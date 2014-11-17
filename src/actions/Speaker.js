@@ -14,15 +14,17 @@ module.exports = Action.extend({
   },
 
   onStart: function() {
-    var owner = this.actions.owner,
-      scene = owner.scene;
+    var owner = this.actions.owner;
     owner.speakerText = new Text('', this.textOptions);
-    owner.speakerText.position = this.offset.add(owner.position);
-    scene.addObject(owner.speakerText);
+    //owner.speakerText.position = this.offset.add(owner.position);
+    owner.speakerText.position = this.offset.clone();
+    owner.children.add(owner.speakerText);
   },
 
   onEnd: function() {
-    delete this.actions.owner.speakerText;
+    var owner = this.actions.owner;
+    owner.children.remove(owner.speakerText);
+    delete owner.speakerText;
   },
 
   update: function(dt) { }
