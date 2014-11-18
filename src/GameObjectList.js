@@ -10,15 +10,18 @@ module.exports = List.extend({
 
     this.each(function(gameObject){
 
-      if (gameObject.updateHierarchy){
-        gameObject.updateHierarchy(dt);
-      }
+      if (gameObject){
 
-      gameObject.updateActions(dt);
-      gameObject.update(dt);
+        if (gameObject.updateHierarchy){
+          gameObject.updateHierarchy(dt);
+        }
 
-      if (gameObject.updateAnimations){
-        gameObject.updateAnimations(dt);
+        gameObject.updateActions(dt);
+        gameObject.update(dt);
+
+        if (gameObject.updateAnimations){
+          gameObject.updateAnimations(dt);
+        }
       }
 
     });
