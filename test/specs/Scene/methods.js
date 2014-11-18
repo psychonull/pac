@@ -110,7 +110,7 @@ describe('#addObject', function(){
 
 });
 
-describe('#findObject', function(){
+describe('#findOne', function(){
 
   it('must return the first object found by a query or name', function(){
 
@@ -119,7 +119,7 @@ describe('#findObject', function(){
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.findObject).to.be.a('function');
+    expect(scene.findOne).to.be.a('function');
 
     var monkeys = [
       new Monkey({ name: 'Chubaka', title: 'ChubakaTitle' }),
@@ -128,22 +128,22 @@ describe('#findObject', function(){
 
     scene.addObject(monkeys);
 
-    var found = scene.findObject('Chubaka');
+    var found = scene.findOne('Chubaka');
     expect(found).to.be.equal(monkeys[0]);
 
-    found = scene.findObject('Drawable');
+    found = scene.findOne('Drawable');
     expect(found).to.be.equal(monkeys[1]);
 
-    found = scene.findObject({ title: 'ChubakaTitle' });
+    found = scene.findOne({ title: 'ChubakaTitle' });
     expect(found).to.be.equal(monkeys[0]);
 
-    found = scene.findObject('Chubakita');
+    found = scene.findOne('Chubakita');
     expect(found).to.be.undefined;
   });
 
 });
 
-describe('#findObjects', function(){
+describe('#find', function(){
 
   it('must return a list of objects found by a query or name', function(){
 
@@ -152,7 +152,7 @@ describe('#findObjects', function(){
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.findObjects).to.be.a('function');
+    expect(scene.find).to.be.a('function');
 
     var monkeys = [
       new Monkey({ name: 'Chubaka', title: 'ChubakaTitle' }),
@@ -161,16 +161,16 @@ describe('#findObjects', function(){
 
     scene.addObject(monkeys);
 
-    var found = scene.findObjects('Chubaka');
+    var found = scene.find('Chubaka');
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects('Drawable');
+    found = scene.find('Drawable');
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects({ title: 'ChubakaTitle' });
+    found = scene.find({ title: 'ChubakaTitle' });
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects({ title: 'Chubakita' });
+    found = scene.find({ title: 'Chubakita' });
     expect(found.length).to.be.equal(0);
   });
 

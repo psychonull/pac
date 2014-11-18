@@ -220,7 +220,7 @@ describe('#switch', function(){
       expect(sceneX.objects.length).to.be.equal(0);
       expect(sceneY.objects.length).to.be.equal(2);
 
-      var passed = sceneY.findObjects('GameObject');
+      var passed = sceneY.find('GameObject');
       expect(passed.at(1).cid).to.be.equal(sharedCID);
       expect(passed.at(0).cid).to.be.equal(sharedCID2);
 

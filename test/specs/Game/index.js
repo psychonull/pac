@@ -13,12 +13,10 @@ describe('Game', function(){
     expect(pac.Game).to.be.a('function');
   });
 
-  require('./create.js');
+  require('./methods.js');
   require('./use.js');
 
-  require('./start.js');
   require('./gameLoop.js');
-
   require('./fullGame.js');
 
 });

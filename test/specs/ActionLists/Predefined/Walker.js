@@ -19,12 +19,25 @@ var TestObj = pac.Sprite.extend({
   texture: 'testTexture'
 });
 
+var warea = new WalkableArea({
+  position: new Point(200, 200),
+
+  shape: new Rectangle({
+    position: new pac.Point(0,0),
+    size: { width: 200, height: 100 }
+  }),
+});
+
 var fakeGame = {
   inputs: {
     cursor: {
       isDown: false,
       position: new Point()
     }
+  },
+
+  findOne: function(){
+    return warea;
   }
 };
 
@@ -34,15 +47,6 @@ var scene = new Scene({
 });
 
 scene.game = fakeGame;
-
-var warea = new WalkableArea({
-  position: new Point(200, 200),
-
-  shape: new Rectangle({
-    position: new pac.Point(0,0),
-    size: { width: 200, height: 100 }
-  }),
-});
 
 var dt = 0.16;
 
@@ -133,7 +137,7 @@ describe('Walker', function(){
       size: { width: 500, height: 600 }
     });
 
-    noWAreaScene.game = fakeGame;
+    noWAreaScene.game = { findOne: function(){ return undefined; }};
 
     var obj = new TestObj({
       actions: [ new Walker() ],
@@ -143,8 +147,7 @@ describe('Walker', function(){
 
     expect(function(){
       noWAreaScene._update(dt);
-    }).to.throw('A WalkableArea with name [WalkableArea] ' +
-      'was not found on this scene.');
+    }).to.throw('A WalkableArea with name [WalkableArea] was not found.');
 
   });
 

@@ -21,22 +21,6 @@ var TestObj = pac.Sprite.extend({
   texture: 'testTexture'
 });
 
-var fakeGame = {
-  inputs: {
-    cursor: {
-      isDown: false,
-      position: new Point()
-    }
-  }
-};
-
-var scene = new Scene({
-  name: 'Scene01',
-  size: { width: 500, height: 600 }
-});
-
-scene.game = fakeGame;
-
 var commandBar = new CommandBar({
   position: new Point(0, 500),
   size: { width: 800, height: 100 },
@@ -67,6 +51,26 @@ var commandBar = new CommandBar({
   }
 });
 
+var fakeGame = {
+  inputs: {
+    cursor: {
+      isDown: false,
+      position: new Point()
+    }
+  },
+
+  findOne: function(){
+    return commandBar;
+  }
+};
+
+var scene = new Scene({
+  name: 'Scene01',
+  size: { width: 500, height: 600 }
+});
+
+scene.game = fakeGame;
+
 var dt = 0.16;
 
 describe('Command', function(){
@@ -78,7 +82,10 @@ describe('Command', function(){
       size: { width: 500, height: 600 }
     });
 
-    noCommandBarScene.game = fakeGame;
+    noCommandBarScene.game = {
+      inputs: { cursor: { isDown: false, position: new Point() } },
+      findOne: function(){ return undefined; }
+    };
 
     var obj = new TestObj({
       shape: new Rectangle(),
@@ -90,7 +97,7 @@ describe('Command', function(){
     expect(function(){
       noCommandBarScene._update(dt);
       noCommandBarScene._update(dt);
-    }).to.throw('A CommandBar was not found on this scene.');
+    }).to.throw('A CommandBar was not found.');
 
   });
 

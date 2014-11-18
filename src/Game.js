@@ -1,6 +1,7 @@
 
 var ClassExtend = require('./ClassExtend'),
-  Gameloop = require('gameloop');
+  Gameloop = require('gameloop'),
+  GameObjectList = require('./GameObjectList');
 
 var componentTypes = ['renderer', 'loader', 'input', 'scenes'];
 
@@ -24,6 +25,8 @@ var Game = module.exports = Gameloop.extend({
     this.loader = null;
     this.inputs = null;
     this.scenes = null;
+
+    this.objects = new GameObjectList();
 
     // Private members
     this.assetsLoaded = false;
@@ -116,24 +119,26 @@ var Game = module.exports = Gameloop.extend({
       throw new Error('must define scenes. game.use(\'scenes\', scenes);');
     }
 
+    this.emit('ready');
+
     this.loadScene(sceneName);
 
-    Game.__super__.start.apply(this, arguments);
+    Game.__super__.start.call(this);
   },
 
   pause: function(){
-    Game.__super__.pause.apply(this, arguments);
+    Game.__super__.pause.call(this);
   },
 
   resume: function(){
     if (this.paused){
-      Game.__super__.start.apply(this, arguments);
+      Game.__super__.start.call(this);
       this.emit('resume');
     }
   },
 
   end: function(){
-    Game.__super__.end.apply(this, arguments);
+    Game.__super__.end.call(this);
   },
 
   update: function(dt){
@@ -141,7 +146,9 @@ var Game = module.exports = Gameloop.extend({
       this.inputs.update(dt);
     }
 
+    this.objects.update(dt);
     this.scenes.update(dt);
+
     this.emit('update', dt);
   },
 
@@ -164,9 +171,39 @@ var Game = module.exports = Gameloop.extend({
       this.renderer.setBackTexture(scene.texture);
     }
 
+    this.renderer.stage.addObjects(this.objects);
     this.renderer.stage.addObjects(scene.objects);
     this.renderer.stage.ready();
-  }
+  },
+
+  addObject: function(toAdd){
+    this.objects.add(toAdd);
+  },
+
+  findOne: function(search){
+    var found = this.objects.findOne(search);
+
+    if (!found && this.scenes && this.scenes.current){
+      return this.scenes.current.findOne(search);
+    }
+
+    return found;
+  },
+
+  find: function(search){
+    var gameFounds = this.objects.find(search);
+    var sceneFounds;
+
+    if (this.scenes && this.scenes.current){
+      sceneFounds = this.scenes.current.find(search);
+    }
+
+    if (sceneFounds && sceneFounds.length > 0){
+      gameFounds.add(sceneFounds);
+    }
+
+    return gameFounds;
+  },
 
 }, {
 

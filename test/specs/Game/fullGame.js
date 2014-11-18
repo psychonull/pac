@@ -104,10 +104,10 @@ var Scene1 = pac.Scene.extend({
 
   onExit: function(){
 
-    var monkeyX = this.findObject('monkeyX');
-    var monkeyY = this.findObject('monkeyY');
-    var monkeySP = this.findObject('monkeySP');
-    var monkeyActioner = this.findObject('monkeyActioner');
+    var monkeyX = this.findOne('monkeyX');
+    var monkeyY = this.findOne('monkeyY');
+    var monkeySP = this.findOne('monkeySP');
+    var monkeyActioner = this.findOne('monkeyActioner');
 
     /* check normal update */
     expect(monkeyX.update).to.have.been.called;
@@ -191,7 +191,22 @@ describe('Full Update', function(){
     expect(scenes.firstSc.game).to.be.ok;
     expect(scenes.firstSc.game).to.be.equal(game);
 
+    var gameMonkey = new MonkeyY({ name: 'monkey_game' });
+    sinon.spy(gameMonkey, 'update');
+
+    var startEmitted = 0;
+    game.on('ready', function(){
+
+      // first call game start before the scene onEnter
+      expect(scenes.firstSc.onEnter).to.not.have.been.called;
+      expect(this).to.be.equal(game);
+
+      this.addObject(gameMonkey);
+      startEmitted++;
+    });
+
     game.start('firstSc');
+    expect(startEmitted).to.be.equal(1);
 
     // let the game run for 50 ms
     setTimeout(function(){
@@ -206,6 +221,8 @@ describe('Full Update', function(){
 
         expect(game.inputs.update).to.have.been.called;
 
+        expect(gameMonkey.update).to.have.been.called;
+
         expect(scenes.firstSc.onEnter).to.have.been.calledOnce;
         expect(scenes.firstSc.onExit).to.have.been.calledOnce;
 
@@ -213,6 +230,7 @@ describe('Full Update', function(){
         expect(scenes.secondSc.onExit).to.not.have.been.called;
 
         game.inputs.update.restore();
+        gameMonkey.update.restore();
 
         done();
 
@@ -249,6 +267,16 @@ describe('Full Draw', function(){
 
     game.use('scenes', scenes);
 
+    var gameMonkey = new MonkeyY({
+      name: 'monkey_game',
+      layer: 'monkeys',
+      zIndex: 3
+    });
+
+    game.on('ready', function(){
+      this.addObject(gameMonkey);
+    });
+
     game.start('firstSc');
 
     expect(game.renderer.setBackTexture)
@@ -264,12 +292,13 @@ describe('Full Draw', function(){
     // monkeyActioner & monkeySP
     expect(stage.get('default').length).to.be.equal(2);
 
-    var monkeyY = scenes.firstSc.findObject('monkeyY');
-    var monkeyX = scenes.firstSc.findObject('monkeyX');
+    var monkeyY = scenes.firstSc.findOne('monkeyY');
+    var monkeyX = scenes.firstSc.findOne('monkeyX');
 
-    expect(stage.get('monkeys').length).to.be.equal(2);
+    expect(stage.get('monkeys').length).to.be.equal(3);
     expect(stage.get('monkeys').at(0).cid).to.be.equal(monkeyY.cid);
     expect(stage.get('monkeys').at(1).cid).to.be.equal(monkeyX.cid);
+    expect(stage.get('monkeys').at(2).cid).to.be.equal(gameMonkey.cid);
 
     expect(stage.get('monkeys2').length).to.be.equal(0);
 
@@ -292,10 +321,12 @@ describe('Full Draw', function(){
       expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
 
       expect(stage.get('default').length).to.be.equal(0);
-      expect(stage.get('monkeys').length).to.be.equal(0);
+      expect(stage.get('monkeys').length).to.be.equal(1);
 
-      var monkeyY2 = scenes.secondSc.findObject('monkeyY');
-      var monkeyX2 = scenes.secondSc.findObject('monkeyX');
+      expect(stage.get('monkeys').at(0).cid).to.be.equal(gameMonkey.cid);
+
+      var monkeyY2 = scenes.secondSc.findOne('monkeyY');
+      var monkeyX2 = scenes.secondSc.findOne('monkeyX');
 
       expect(stage.get('monkeys2').length).to.be.equal(2);
       expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);

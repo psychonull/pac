@@ -12,13 +12,13 @@ module.exports = Action.extend({
 
   onStart: function() {
     var obj = this.actions.owner;
-    var scene = obj.scene;
+    var game = obj.game;
 
-    this.walkableArea = scene.findObject(this.area);
+    this.walkableArea = game.findOne(this.area);
 
     if (!this.walkableArea){
       throw new Error('A WalkableArea with name [' + this.area +
-        '] was not found on this scene.');
+        '] was not found.');
     }
 
     if (!this.feet){

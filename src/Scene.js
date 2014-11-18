@@ -31,31 +31,16 @@ var Scene = module.exports = Emitter.extend({
     this.objects.add(toAdd);
   },
 
-  findObject: function(search){
+  findOne: function(search){
     return this.objects.findOne(search);
   },
 
-  findObjects: function(search){
+  find: function(search){
     return this.objects.find(search);
   },
 
   _update: function(dt){
-
-    this.objects.each(function(gameObject){
-
-      if (gameObject.updateHierarchy){
-        gameObject.updateHierarchy(dt);
-      }
-
-      gameObject.updateActions(dt);
-      gameObject.update(dt);
-
-      if (gameObject.updateAnimations){
-        gameObject.updateAnimations(dt);
-      }
-
-    });
-
+    this.objects.update(dt);
     this.update(dt);
   },
 
