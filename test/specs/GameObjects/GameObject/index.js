@@ -17,7 +17,7 @@ var TestAction = Action.extend({
   onStart: function() { },
   onEnd: function() { },
 
-  update: function(dt) { }
+  update: function(dt) { },
 
 });
 
@@ -63,6 +63,11 @@ describe('GameObject', function(){
     expect(obj.cid.length).to.be.greaterThan(0);
 
     expect(obj.actions).to.be.null;
+  });
+
+  it('must expose onEnterScene Method', function(){
+    var obj = new pac.GameObject();
+    expect(obj.onEnterScene).to.be.a('function');
   });
 
   describe('Actions', function(){

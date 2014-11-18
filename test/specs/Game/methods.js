@@ -97,6 +97,28 @@ describe('#start', function(){
     game.loadScene.restore();
   });
 
+  it('must have a getScene method and return the current', function() {
+    var game = pac.create();
+
+    expect(game.getScene).to.be.a('function');
+
+    game.use('renderer', MockRenderer);
+
+    var scenes = {
+      'scene1': new MockScene(),
+      'scene2': new MockScene(),
+    };
+
+    game.use('scenes', scenes);
+
+    game.start('scene1');
+
+    expect(game.scenes.current).to.be.equal(scenes.scene1);
+    expect(game.getScene()).to.be.equal(scenes.scene1);
+
+    game.end();
+  });
+
 });
 
 describe('Objects', function(){
@@ -129,7 +151,7 @@ describe('Objects', function(){
 
   describe('#find & findOne', function(){
 
-    it('must find objects on game and the current scene', function() {
+    it('must find objects on game and the current scene', function(done) {
       var game = pac.create();
 
       game.use('renderer', MockRenderer);
@@ -193,27 +215,31 @@ describe('Objects', function(){
       // change scene
       game.loadScene('scene2');
 
-      // find one
-      found = game.findOne('obj1');
-      expect(found.layer).to.be.equal('game');
+      setTimeout(function(){
 
-      found = game.findOne('obj3');
-      expect(found).to.be.undefined;
+        // find one
+        found = game.findOne('obj1');
+        expect(found.layer).to.be.equal('game');
 
-      found = game.findOne('obj4');
-      expect(found.layer).to.be.equal('scene2');
+        found = game.findOne('obj3');
+        expect(found).to.be.undefined;
 
-      // find multiple
-      founds = game.find('obj1');
-      expect(founds.length).to.be.equal(1);
+        found = game.findOne('obj4');
+        expect(found.layer).to.be.equal('scene2');
 
-      founds = game.find('obj4');
-      expect(founds.length).to.be.equal(1);
+        // find multiple
+        founds = game.find('obj1');
+        expect(founds.length).to.be.equal(1);
 
-      founds = game.find('obj2');
-      expect(founds.length).to.be.equal(2);
+        founds = game.find('obj4');
+        expect(founds.length).to.be.equal(1);
 
-      game.end();
+        founds = game.find('obj2');
+        expect(founds.length).to.be.equal(2);
+
+        game.end();
+        done();
+      }, 100);
     });
 
   });

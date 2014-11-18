@@ -27,9 +27,11 @@ var Game = module.exports = Gameloop.extend({
     this.scenes = null;
 
     this.objects = new GameObjectList();
+    this.objects.on('add', this._onAddObject.bind(this));
 
     // Private members
     this.assetsLoaded = false;
+    this.loadingScene = false;
   },
 
   use: function(type, Component, options){
@@ -142,6 +144,10 @@ var Game = module.exports = Gameloop.extend({
   },
 
   update: function(dt){
+    if (this.loadingScene){
+      this._switchScene();
+    }
+
     if (this.inputs){
       this.inputs.update(dt);
     }
@@ -152,13 +158,26 @@ var Game = module.exports = Gameloop.extend({
     this.emit('update', dt);
   },
 
+  _switchScene: function(){
+    this.scenes.switch(this.loadingScene);
+    this.loadingScene = null;
+
+    this.objects.each(function(obj){
+      obj.onEnterScene();
+    });
+  },
+
   draw: function(){
     this.renderer.render();
     this.emit('draw');
   },
 
   loadScene: function(sceneName){
-    this.scenes.switch(sceneName);
+    this.loadingScene = sceneName;
+  },
+
+  getScene: function(){
+    return this.scenes.current;
   },
 
   onExitScene: function(scene){
@@ -178,6 +197,11 @@ var Game = module.exports = Gameloop.extend({
 
   addObject: function(toAdd){
     this.objects.add(toAdd);
+  },
+
+  _onAddObject: function(obj){
+    obj.game = this;
+    obj.scene = null;
   },
 
   findOne: function(search){

@@ -12,6 +12,10 @@ module.exports = List.extend({
 
       if (gameObject){
 
+        if (gameObject.game && gameObject.game.loadingScene){
+          return false; // break loop
+        }
+
         if (gameObject.updateHierarchy){
           gameObject.updateHierarchy(dt);
         }

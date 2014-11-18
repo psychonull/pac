@@ -193,6 +193,7 @@ describe('Full Update', function(){
 
     var gameMonkey = new MonkeyY({ name: 'monkey_game' });
     sinon.spy(gameMonkey, 'update');
+    //sinon.spy(gameMonkey, 'reset');
 
     var startEmitted = 0;
     game.on('ready', function(){
@@ -202,6 +203,9 @@ describe('Full Update', function(){
       expect(this).to.be.equal(game);
 
       this.addObject(gameMonkey);
+      expect(gameMonkey.game).to.be.equal(this);
+      expect(gameMonkey.scene).to.be.null;
+
       startEmitted++;
     });
 
@@ -309,36 +313,40 @@ describe('Full Draw', function(){
 
       game.loadScene('secondSc');
 
-      expect(game.renderer.clearBackTexture).to.have.been.called;
-      expect(game.renderer.onLayerClear).to.have.been.called;
+      // let the game run for 50 ms more
+      setTimeout(function(){
 
-      expect(game.renderer.setBackTexture)
-        .to.have.been.calledWith(scenes.secondSc.texture);
+        expect(game.renderer.clearBackTexture).to.have.been.called;
+        expect(game.renderer.onLayerClear).to.have.been.called;
 
-      expect(game.renderer.onLayerFill).to.have.been.calledThrice;
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
+        expect(game.renderer.setBackTexture)
+          .to.have.been.calledWith(scenes.secondSc.texture);
 
-      expect(stage.get('default').length).to.be.equal(0);
-      expect(stage.get('monkeys').length).to.be.equal(1);
+        expect(game.renderer.onLayerFill).to.have.been.calledThrice;
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
 
-      expect(stage.get('monkeys').at(0).cid).to.be.equal(gameMonkey.cid);
+        expect(stage.get('default').length).to.be.equal(0);
+        expect(stage.get('monkeys').length).to.be.equal(1);
 
-      var monkeyY2 = scenes.secondSc.findOne('monkeyY');
-      var monkeyX2 = scenes.secondSc.findOne('monkeyX');
+        expect(stage.get('monkeys').at(0).cid).to.be.equal(gameMonkey.cid);
 
-      expect(stage.get('monkeys2').length).to.be.equal(2);
-      expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
-      expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
+        var monkeyY2 = scenes.secondSc.findOne('monkeyY');
+        var monkeyX2 = scenes.secondSc.findOne('monkeyX');
 
-      game.end();
+        expect(stage.get('monkeys2').length).to.be.equal(2);
+        expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
+        expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
 
-      game.renderer.onLayerFill.restore();
-      game.renderer.onLayerClear.restore();
+        game.end();
 
-      done();
+        game.renderer.onLayerFill.restore();
+        game.renderer.onLayerClear.restore();
 
+        done();
+
+      }, 50);
     }, 50);
 
   });

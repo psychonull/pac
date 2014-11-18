@@ -15,7 +15,7 @@ describe('Game', function(){
 
   require('./methods.js');
   require('./use.js');
-
+  require('./loadScene.js');
   require('./gameLoop.js');
   require('./fullGame.js');
 
