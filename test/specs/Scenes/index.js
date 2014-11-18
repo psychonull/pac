@@ -23,7 +23,7 @@ describe('Scenes', function(){
 
     expect(scenes.childType).to.be.equal(Scene);
 
-    expect(scenes.current).to.be.equal(null);
+    expect(scenes.current).to.be.null;
     expect(scenes.length).to.be.equal(0);
     expect(scenes.game).to.be.equal(fakeGame);
   });

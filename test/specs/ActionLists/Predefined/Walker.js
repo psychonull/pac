@@ -86,7 +86,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(50);
     expect(walker.feet.y).to.be.equal(200);
@@ -104,7 +104,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(150);
     expect(walker.feet.y).to.be.equal(300);
@@ -120,7 +120,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(0);
     expect(walker.feet.y).to.be.equal(0);
@@ -142,7 +142,7 @@ describe('Walker', function(){
     noWAreaScene.addObject(obj);
 
     expect(function(){
-      noWAreaScene.update(dt);
+      noWAreaScene._update(dt);
     }).to.throw('A WalkableArea with name [WalkableArea] ' +
       'was not found on this scene.');
 
@@ -163,7 +163,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(1);
 
@@ -194,14 +194,14 @@ describe('Walker', function(){
     scene.addObject(warea);
     scene.addObject(obj);
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(1);
     expect(walkerAction.walkableArea.walkers.length).to.be.equal(1);
 
     walkerAction.isFinished = true;
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(warea.removeWalker).to.have.been.calledOnce;
     expect(warea.removeWalker).to.have.been.calledWith(obj);

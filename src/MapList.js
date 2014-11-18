@@ -19,7 +19,7 @@ module.exports = Emitter.extend({
     this.on('clear', _.bind(updateLength, this));
 
     if(data){
-      _.forIn(data, _.bind(this._set, this));
+      this.add(data);
     }
   },
 
@@ -32,9 +32,16 @@ module.exports = Emitter.extend({
     return val;
   },
 
-  //TODO: support an object as more than one key/value pair (like constructor)
-  add: function(key, value){
-    this._set(value, key);
+  add: function(){
+    var arg0 = arguments[0];
+
+    if (typeof arg0 === 'string'){
+      this._set(arguments[1], arg0);
+      return this;
+    }
+
+    _.forIn(arg0, _.bind(this._set, this));
+
     return this;
   },
 
@@ -59,7 +66,7 @@ module.exports = Emitter.extend({
     if (val !== null){
       delete this._data[key];
     }
-    
+
     this.emit('remove', key, val);
     return val;
   },

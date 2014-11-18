@@ -40,6 +40,9 @@ describe('#addObject', function(){
       size: { width: 200, height: 300 }
     });
 
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+
     var monkey = new Monkey();
 
     scene.addObject(monkey);
@@ -47,10 +50,6 @@ describe('#addObject', function(){
     expect(scene.objects.length).to.be.equal(1);
     expect(scene.objects.get(monkey.cid)).to.be.instanceof(Monkey);
     expect(monkey.scene).to.be.equal(scene);
-    expect(monkey.game).to.be.equal(undefined);
-
-    var fakeGame = { hi: true };
-    scene.setGame(fakeGame);
     expect(monkey.game).to.be.equal(fakeGame);
   });
 
@@ -177,18 +176,33 @@ describe('#findObjects', function(){
 
 });
 
-describe('#update', function(){
+describe('#_update', function(){
 
-  it('must exist update method', function(){
+  it('must exist _update method', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.update).to.be.a('function');
+    expect(scene._update).to.be.a('function');
   });
 
-  it('must call update for every contained GameObject', function(){
+  it('must call the implemented update method', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    sinon.spy(scene, 'update');
+    scene._update(0.16);
+
+    expect(scene.update).to.have.been.calledOnce;
+    expect(scene.update).to.have.been.calledWith(0.16);
+
+    scene.update.restore();
+  });
+
+  it('must call _update for every contained GameObject', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
@@ -213,7 +227,7 @@ describe('#update', function(){
     scene.addObject([monkey1, monkey2, gm]);
 
     var dt = 0.16;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(monkey1.update).to.have.been.calledOnce;
     expect(monkey2.update).to.have.been.calledOnce;

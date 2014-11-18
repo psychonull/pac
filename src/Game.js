@@ -1,14 +1,14 @@
 
 var ClassExtend = require('./ClassExtend'),
-  Gameloop = require('gameloop'),
-  Scenes = require('./Scenes'),
-  InputManager = require('./InputManager');
+  Gameloop = require('gameloop');
 
-var componentTypes = ['renderer', 'loader', 'input'];
+var componentTypes = ['renderer', 'loader', 'input', 'scenes'];
 
 var EngineComponents = {
   Renderer: require('./Renderer'),
-  Loader: require('./Loader')
+  Loader: require('./Loader'),
+  Scenes: require('./Scenes'),
+  Inputs: require('./InputManager')
 };
 
 Gameloop.extend = ClassExtend.extend;
@@ -23,18 +23,26 @@ var Game = module.exports = Gameloop.extend({
     this.renderer = null;
     this.loader = null;
     this.inputs = null;
-
-    // Public members
-    this.scenes = new Scenes({}, { game: this });
-    this.scenes.on('leave', this.onLeaveScene.bind(this));
-    this.scenes.on('enter', this.onEnterScene.bind(this));
+    this.scenes = null;
 
     // Private members
     this.assetsLoaded = false;
   },
 
   use: function(type, Component, options){
+    this._validateComponent(type, Component);
 
+    switch(type){
+      case 'renderer': this._attachRenderer(Component, options); break;
+      case 'loader': this._attachLoader(Component, options); break;
+      case 'input': this._attachInputs(Component, options); break;
+      case 'scenes': this._attachScenes(Component, options); break;
+    }
+
+    return this;
+  },
+
+  _validateComponent: function(type, Component){
     if (componentTypes.indexOf(type) === -1){
       throw new Error('The type "' + type + '" is not allowed.');
     }
@@ -42,14 +50,6 @@ var Game = module.exports = Gameloop.extend({
     if (!Component){
       throw new Error('Expected a "' + type + '" Component.');
     }
-
-    switch(type){
-      case 'renderer': this._attachRenderer(Component, options); break;
-      case 'loader': this._attachLoader(Component, options); break;
-      case 'input': this._attachInputs(Component, options); break;
-    }
-
-    return this;
   },
 
   _attachRenderer: function(Renderer, options){
@@ -74,6 +74,10 @@ var Game = module.exports = Gameloop.extend({
 
   _attachInputs: function(_inputs, options){
 
+    if (!this.renderer){
+      throw new Error('Renderer must be defined before inputs');
+    }
+
     if (!this.renderer.viewport){
       throw new Error('Renderer must define a [viewport] ' +
         'property to attach events');
@@ -82,11 +86,38 @@ var Game = module.exports = Gameloop.extend({
     options = options || {};
     options.container = this.renderer.viewport;
 
-    this.inputs = InputManager.create(_inputs, options);
+    this.inputs = EngineComponents.Inputs.create(_inputs, options);
   },
 
-  start: function(){
-    this.onEnterScene(this.scenes.current);
+  _attachScenes: function(_scenes, options){
+
+    if (!this.renderer){
+      throw new Error('Renderer must be defined before Scenes');
+    }
+
+    options = options || {};
+    options.size = options.size || this.renderer.size;
+    options.game = this;
+
+    this.scenes = new EngineComponents.Scenes(_scenes, options);
+
+    this.scenes.on('exit', this.onExitScene.bind(this));
+    this.scenes.on('enter', this.onEnterScene.bind(this));
+  },
+
+  start: function(sceneName){
+
+    if (!sceneName){
+      throw new
+        Error('expected an scene to start with game.start(\'scene-name\');');
+    }
+
+    if (!this.scenes){
+      throw new Error('must define scenes. game.use(\'scenes\', scenes);');
+    }
+
+    this.loadScene(sceneName);
+
     Game.__super__.start.apply(this, arguments);
   },
 
@@ -95,7 +126,10 @@ var Game = module.exports = Gameloop.extend({
   },
 
   resume: function(){
-    Game.__super__.resume.apply(this, arguments);
+    if (this.paused){
+      Game.__super__.start.apply(this, arguments);
+      this.emit('resume');
+    }
   },
 
   end: function(){
@@ -116,7 +150,11 @@ var Game = module.exports = Gameloop.extend({
     this.emit('draw');
   },
 
-  onLeaveScene: function(scene){
+  loadScene: function(sceneName){
+    this.scenes.switch(sceneName);
+  },
+
+  onExitScene: function(scene){
     this.renderer.clearBackTexture();
     this.renderer.stage.clearLayer();
   },

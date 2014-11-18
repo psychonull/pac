@@ -1,6 +1,7 @@
 
 var Scenes = require('../../../src/Scenes');
 var Scene = require('../../../src/Scene');
+var GameObject = require('../../../src/GameObject');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -16,30 +17,66 @@ describe('#add', function(){
   });
 
   it('must add an Scene by options', function(){
-    var scenes = new Scenes();
+    var fakeGame = { test: true };
 
-    scenes.add(new Scene({
-      name: 'Scene1',
-      size: { width: 400, height: 500 }
-    }));
+    var scenes = new Scenes(null, {
+      game: fakeGame,
+      size: { width: 200, height: 500 }
+    });
+
+    scenes.add('Scene1', new Scene());
 
     expect(scenes.length).to.be.equal(1);
-    expect(scenes.get('Scene1').name).to.be.equal('Scene1');
+    expect(scenes.game).to.be.equal(fakeGame);
+
+    var scene = scenes.get('Scene1');
+    expect(scene.name).to.be.equal('Scene1');
+    expect(scene.game).to.be.equal(fakeGame);
+    expect(scene.size.width).to.be.equal(200);
+    expect(scene.size.height).to.be.equal(500);
   });
 
-  it('must add Scenes by Scene instance array', function(){
-    var scenes = new Scenes();
+  it('must add Scenes by constructor', function(){
+    var fakeGame = { test: true };
 
-    var toAdd = [
-      new Scene({
-        name: 'Scene1',
+    var scenes = new Scenes({
+      'Scene1': new Scene({
         size: { width: 400, height: 500 }
       }),
-      new Scene({
-        name: 'Scene2',
+      'Scene2': new Scene()
+    }, {
+      game: fakeGame,
+      size: { width: 100, height: 200 }
+    });
+
+    expect(scenes.length).to.be.equal(2);
+    var scene1 = scenes.get('Scene1');
+    var scene2 = scenes.get('Scene2');
+
+    expect(scene1.name).to.be.equal('Scene1');
+    expect(scene2.name).to.be.equal('Scene2');
+
+    expect(scene1.game).to.be.equal(fakeGame);
+    expect(scene2.game).to.be.equal(fakeGame);
+
+    expect(scene1.size.width).to.be.equal(400);
+    expect(scene1.size.height).to.be.equal(500);
+
+    expect(scene2.size.width).to.be.equal(100);
+    expect(scene2.size.height).to.be.equal(200);
+  });
+
+  it('must add Scenes by Scene instance object', function(){
+    var scenes = new Scenes();
+
+    var toAdd = {
+      'Scene1': new Scene({
+        size: { width: 400, height: 500 }
+      }),
+      'Scene2': new Scene({
         size: { width: 400, height: 500 }
       })
-    ];
+    };
 
     scenes.add(toAdd);
 
@@ -48,28 +85,25 @@ describe('#add', function(){
     expect(scenes.get('Scene2').name).to.be.equal('Scene2');
   });
 
-  it('must set the first scene as current', function(){
+  it('must not set the first scene as current', function(){
     var scenes = new Scenes();
 
-    scenes.add(new Scene({
-      name: 'Scene1',
+    scenes.add('Scene1', new Scene({
       size: { width: 400, height: 500 }
     }));
 
     expect(scenes.length).to.be.equal(1);
     expect(scenes.get('Scene1').name).to.be.equal('Scene1');
-    expect(scenes.current.name).to.be.equal('Scene1');
+    expect(scenes.current).to.be.null;
 
-    var toAdd = [
-      new Scene({
-        name: 'Scene2',
+    var toAdd = {
+      'Scene2': new Scene({
         size: { width: 400, height: 500 }
       }),
-      new Scene({
-        name: 'Scene3',
+      'Scene3': new Scene({
         size: { width: 400, height: 500 }
       })
-    ];
+    };
 
     scenes.add(toAdd);
 
@@ -78,37 +112,58 @@ describe('#add', function(){
     expect(scenes.get('Scene1').name).to.be.equal('Scene1');
     expect(scenes.get('Scene2').name).to.be.equal('Scene2');
     expect(scenes.get('Scene3').name).to.be.equal('Scene3');
-    
-    expect(scenes.current.name).to.be.equal('Scene1');
+
+    expect(scenes.current).to.be.null;
   });
 
 });
 
 describe('#switch', function(){
-  
+
+  var sharedCID, sharedCID2;
   var scenes = new Scenes(),
-    sceneStart = new Scene({
-      name: 'start', 
+
+    SceneStart = Scene.extend({
       size: { width: 400, height: 500 }
     }),
-    sceneX = new Scene({
-      name: 'x', 
+
+    SceneX = Scene.extend({
       size: { width: 400, height: 500 },
-      onEnter: function(){},
-      onLeave: function(){}
+      onEnter: function(){
+        var obj = new GameObject();
+        this.addObject(obj);
+        sharedCID = obj.cid;
+
+        var obj2 = new GameObject();
+        this.addObject(obj2);
+        sharedCID2 = obj2.cid;
+      },
+      onExit: function(to){
+        to.addObject(this.objects.get(sharedCID2));
+      }
     }),
-    sceneY = new Scene({
-      name: 'y', 
+
+    SceneY = Scene.extend({
       size: { width: 400, height: 500 },
-      onEnter: function(){},
-      onLeave: function(){}
+      onEnter: function(scene){
+        this.addObject(scene.objects.get(sharedCID));
+      },
+      onExit: function(){}
     });
 
-  scenes.add([sceneStart, sceneX, sceneY]);
+  var sceneStart = new SceneStart();
+  var sceneX = new SceneX();
+  var sceneY = new SceneY();
+
+  scenes.add({
+    start: sceneStart,
+    x: sceneX,
+    y: sceneY
+  });
 
   it('must exist switch method', function(){
     expect(scenes.switch).to.be.a('function');
-    expect(scenes.current.name).to.equal(sceneStart.name);
+    scenes.switch('start');
   });
 
   it('must set it as current by name', function(){
@@ -124,22 +179,22 @@ describe('#switch', function(){
 
   });
 
-  it('must emit "enter" in the new scene and "leave" in the previous',
+  it('must emit "enter" in the new scene and "exit" in the previous',
     function(){
 
       expect(scenes.current.name).to.equal('x');
 
       sinon.spy(sceneX, 'onEnter');
-      sinon.spy(sceneX, 'onLeave');
+      sinon.spy(sceneX, 'onExit');
 
       sinon.spy(sceneY, 'onEnter');
-      sinon.spy(sceneY, 'onLeave');
+      sinon.spy(sceneY, 'onExit');
 
-      var emitScenesLeave = 0;
+      var emitScenesExit = 0;
       var emitScenesEnter = 0;
-      
-      scenes.on('leave', function(scene){
-        emitScenesLeave++;
+
+      scenes.on('exit', function(scene){
+        emitScenesExit++;
         expect(scene.name).to.be.equal('x');
       });
 
@@ -148,21 +203,31 @@ describe('#switch', function(){
         expect(scene.name).to.be.equal('y');
       });
 
+      expect(sceneX.objects.length).to.be.equal(2);
+      expect(sceneY.objects.length).to.be.equal(0);
+
       scenes.switch('y');
 
       expect(sceneX.onEnter).to.not.have.been.called;
-      expect(sceneX.onLeave).to.have.been.called;
+      expect(sceneX.onExit).to.have.been.calledWith(sceneY);
 
       expect(sceneY.onEnter).to.have.been.calledWith(sceneX);
-      expect(sceneY.onLeave).to.not.have.been.called;
+      expect(sceneY.onExit).to.not.have.been.called;
 
       expect(emitScenesEnter).to.be.equal(1);
-      expect(emitScenesLeave).to.be.equal(1);
+      expect(emitScenesExit).to.be.equal(1);
+
+      expect(sceneX.objects.length).to.be.equal(0);
+      expect(sceneY.objects.length).to.be.equal(2);
+
+      var passed = sceneY.findObjects('GameObject');
+      expect(passed.at(1).cid).to.be.equal(sharedCID);
+      expect(passed.at(0).cid).to.be.equal(sharedCID2);
 
       sceneX.onEnter.restore();
-      sceneX.onLeave.restore();
+      sceneX.onExit.restore();
       sceneY.onEnter.restore();
-      sceneY.onLeave.restore();
+      sceneY.onExit.restore();
   });
 
 });
@@ -171,15 +236,16 @@ describe('#get', function(){
 
   var scenes = new Scenes(),
     sceneX = new Scene({
-      name: 'x', 
       size: { width: 400, height: 500 }
-    }), 
+    }),
     sceneY = new Scene({
-      name: 'y', 
       size: { width: 400, height: 500 }
     });
 
-  scenes.add([sceneX, sceneY]);
+  scenes.add({
+    x: sceneX,
+    y: sceneY
+  });
 
   it('must return the scene by name', function(){
     expect(scenes.get('x')).to.equal(sceneX);
@@ -198,35 +264,38 @@ describe('#update', function(){
     expect(scenes.update).to.be.a('function');
   });
 
-  it('must call update for current scene', function(){
-    
+  it('must call _update for current scene', function(){
+
     var scenes = new Scenes();
 
     var scene1 = new Scene({
-      name: 'Scene1',
       size: { width: 400, height: 500 }
     });
 
     var scene2 = new Scene({
-      name: 'Scene2',
       size: { width: 400, height: 500 }
     });
-    
-    sinon.spy(scene1, 'update');
-    sinon.spy(scene2, 'update');
 
-    scenes.add([scene1, scene2]);
+    sinon.spy(scene1, '_update');
+    sinon.spy(scene2, '_update');
+
+    scenes.add({
+      'Scene1': scene1,
+      'Scene2': scene2
+    });
+
+    scenes.switch('Scene1');
 
     var dt = 0.16;
     scenes.update(dt);
 
-    expect(scene1.update).to.have.been.calledOnce;
-    expect(scene2.update).to.not.have.been.called;
+    expect(scene1._update).to.have.been.calledOnce;
+    expect(scene2._update).to.not.have.been.called;
 
-    expect(scene1.update).to.have.been.calledWith(dt);
+    expect(scene1._update).to.have.been.calledWith(dt);
 
-    scene1.update.restore();
-    scene2.update.restore();
+    scene1._update.restore();
+    scene2._update.restore();
   });
 
 });

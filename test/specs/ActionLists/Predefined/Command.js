@@ -88,8 +88,8 @@ describe('Command', function(){
     noCommandBarScene.addObject(obj);
 
     expect(function(){
-      noCommandBarScene.update(dt);
-      noCommandBarScene.update(dt);
+      noCommandBarScene._update(dt);
+      noCommandBarScene._update(dt);
     }).to.throw('A CommandBar was not found on this scene.');
 
   });
@@ -111,8 +111,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(3);
 
@@ -152,8 +152,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(0);
     expect(pushCalled).to.be.equal(0);
@@ -165,13 +165,13 @@ describe('Command', function(){
     obj.actions.remove(clickable);
 
     obj.isClicked = true;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(0);
 
     commandBar.current = 'push';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(1);
@@ -208,8 +208,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -223,7 +223,7 @@ describe('Command', function(){
 
     obj.isHover = true;
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.have.been.calledWith('Weird Thing');
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -232,7 +232,7 @@ describe('Command', function(){
     commandBar.showHoverMessage.reset();
 
     obj.isHover = false;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.have.been.called;
@@ -243,7 +243,7 @@ describe('Command', function(){
     obj.isClicked = true;
     obj.isHover = true;
     commandBar.current = 'push';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -256,7 +256,7 @@ describe('Command', function(){
 
     obj.isClicked = true;
     commandBar.current = 'pull';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;

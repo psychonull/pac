@@ -15,8 +15,10 @@ describe('Game', function(){
 
   require('./create.js');
   require('./use.js');
+
+  require('./start.js');
   require('./gameLoop.js');
-  
+
   require('./fullGame.js');
 
 });
