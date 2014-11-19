@@ -130,7 +130,8 @@ describe('Walker', function(){
     expect(walker.feet.y).to.be.equal(0);
   });
 
-  it('must throw an error if a walkable area is not found', function(){
+  it('must NOT throw if no walkable area removing it-self from the list',
+    function(){
 
     var noWAreaScene = new Scene({
       name: 'Scene01',
@@ -143,11 +144,16 @@ describe('Walker', function(){
       actions: [ new Walker() ],
     });
 
+    expect(obj.actions.length).to.be.equal(1);
+
     noWAreaScene.addObject(obj);
 
     expect(function(){
       noWAreaScene._update(dt);
-    }).to.throw('A WalkableArea with name [WalkableArea] was not found.');
+    }).to.not.throw('A WalkableArea with name [WalkableArea] was not found.');
+
+    noWAreaScene._update(dt);
+    expect(obj.actions.length).to.be.equal(0);
 
   });
 

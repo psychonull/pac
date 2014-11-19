@@ -335,4 +335,24 @@ describe('CommandBar', function(){
     expect(cbar.messageBox.value).to.be.equal('My custom message');
   });
 
+  it('must allow to be reset onEnterScene', function(){
+
+    var cbar = new CommandBar(_.clone(commandBarOpts, true));
+
+    expect(cbar.onEnterScene).to.be.a('function');
+
+    expect(cbar._current.command).to.be.equal('use');
+
+    cbar.showHoverMessage('Crazy Monkey');
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
+
+    cbar.setCommand('talkto');
+    expect(cbar._current.command).to.be.equal('talkto');
+
+    cbar.onEnterScene();
+
+    expect(cbar._current.command).to.be.equal('use');
+    expect(cbar.messageBox.value).to.be.equal('');
+  });
+
 });

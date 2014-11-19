@@ -40,6 +40,7 @@ module.exports = Rectangle.extend({
     }
 
     props.forEach(setProp.bind(this));
+    this.default = this.current;
 
     Rectangle.apply(this, arguments);
 
@@ -139,17 +140,32 @@ module.exports = Rectangle.extend({
   onCommandClick: function(command){
     var cmd = command.command;
 
-    if (this.current !== cmd){
+    if (this.setCommand(cmd)) {
+      this.emit('command', cmd);
+    }
+  },
+
+  setCommand: function(commandName){
+    if (commandName === this.current){
+      return;
+    }
+
+    var cmd = this.children.findOne({ command: commandName });
+
+    if (cmd){
+
       if (this._current){
         this._setCommandStyle(this._current, this.style.text);
       }
 
-      this.current = cmd;
-      this._current = command;
+      this.current = commandName;
+      this._current = cmd;
 
-      this._setCommandStyle(command, this.style.active);
-      this.emit('command', cmd);
+      this._setCommandStyle(cmd, this.style.active);
+      return true;
     }
+
+    return false;
   },
 
   showHoverMessage: function(message){
@@ -171,5 +187,13 @@ module.exports = Rectangle.extend({
   init: function() {},
 
   update: function(dt) {},
+
+  onEnterScene: function(){
+    if (this.default){
+      this.setCommand(this.default);
+    }
+
+    this.hideHoverMessage();
+  }
 
 });
