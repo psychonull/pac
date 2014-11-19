@@ -197,6 +197,7 @@ var Game = module.exports = Gameloop.extend({
 
   addObject: function(toAdd){
     this.objects.add(toAdd);
+    return this;
   },
 
   _onAddObject: function(obj){

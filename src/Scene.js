@@ -29,6 +29,7 @@ var Scene = module.exports = Emitter.extend({
 
   addObject: function(toAdd){
     this.objects.add(toAdd);
+    return this;
   },
 
   findOne: function(search){
