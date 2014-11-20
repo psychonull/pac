@@ -19,12 +19,25 @@ var TestObj = pac.Sprite.extend({
   texture: 'testTexture'
 });
 
+var warea = new WalkableArea({
+  position: new Point(200, 200),
+
+  shape: new Rectangle({
+    position: new pac.Point(0,0),
+    size: { width: 200, height: 100 }
+  }),
+});
+
 var fakeGame = {
   inputs: {
     cursor: {
       isDown: false,
       position: new Point()
     }
+  },
+
+  findOne: function(){
+    return warea;
   }
 };
 
@@ -34,15 +47,6 @@ var scene = new Scene({
 });
 
 scene.game = fakeGame;
-
-var warea = new WalkableArea({
-  position: new Point(200, 200),
-
-  shape: new Rectangle({
-    position: new pac.Point(0,0),
-    size: { width: 200, height: 100 }
-  }),
-});
 
 var dt = 0.16;
 
@@ -86,7 +90,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(50);
     expect(walker.feet.y).to.be.equal(200);
@@ -104,7 +108,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(150);
     expect(walker.feet.y).to.be.equal(300);
@@ -120,31 +124,36 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(walker.feet.x).to.be.equal(0);
     expect(walker.feet.y).to.be.equal(0);
   });
 
-  it('must throw an error if a walkable area is not found', function(){
+  it('must NOT throw if no walkable area removing it-self from the list',
+    function(){
 
     var noWAreaScene = new Scene({
       name: 'Scene01',
       size: { width: 500, height: 600 }
     });
 
-    noWAreaScene.game = fakeGame;
+    noWAreaScene.game = { findOne: function(){ return undefined; }};
 
     var obj = new TestObj({
       actions: [ new Walker() ],
     });
 
+    expect(obj.actions.length).to.be.equal(1);
+
     noWAreaScene.addObject(obj);
 
     expect(function(){
-      noWAreaScene.update(dt);
-    }).to.throw('A WalkableArea with name [WalkableArea] ' +
-      'was not found on this scene.');
+      noWAreaScene._update(dt);
+    }).to.not.throw('A WalkableArea with name [WalkableArea] was not found.');
+
+    noWAreaScene._update(dt);
+    expect(obj.actions.length).to.be.equal(0);
 
   });
 
@@ -163,7 +172,7 @@ describe('Walker', function(){
 
     scene.addObject(warea);
     scene.addObject(obj);
-    scene.update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(1);
 
@@ -194,14 +203,14 @@ describe('Walker', function(){
     scene.addObject(warea);
     scene.addObject(obj);
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(1);
     expect(walkerAction.walkableArea.walkers.length).to.be.equal(1);
 
     walkerAction.isFinished = true;
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(warea.removeWalker).to.have.been.calledOnce;
     expect(warea.removeWalker).to.have.been.calledWith(obj);

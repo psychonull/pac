@@ -40,6 +40,9 @@ describe('#addObject', function(){
       size: { width: 200, height: 300 }
     });
 
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+
     var monkey = new Monkey();
 
     scene.addObject(monkey);
@@ -47,10 +50,6 @@ describe('#addObject', function(){
     expect(scene.objects.length).to.be.equal(1);
     expect(scene.objects.get(monkey.cid)).to.be.instanceof(Monkey);
     expect(monkey.scene).to.be.equal(scene);
-    expect(monkey.game).to.be.equal(undefined);
-
-    var fakeGame = { hi: true };
-    scene.setGame(fakeGame);
     expect(monkey.game).to.be.equal(fakeGame);
   });
 
@@ -111,7 +110,7 @@ describe('#addObject', function(){
 
 });
 
-describe('#findObject', function(){
+describe('#findOne', function(){
 
   it('must return the first object found by a query or name', function(){
 
@@ -120,7 +119,7 @@ describe('#findObject', function(){
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.findObject).to.be.a('function');
+    expect(scene.findOne).to.be.a('function');
 
     var monkeys = [
       new Monkey({ name: 'Chubaka', title: 'ChubakaTitle' }),
@@ -129,22 +128,22 @@ describe('#findObject', function(){
 
     scene.addObject(monkeys);
 
-    var found = scene.findObject('Chubaka');
+    var found = scene.findOne('Chubaka');
     expect(found).to.be.equal(monkeys[0]);
 
-    found = scene.findObject('Drawable');
+    found = scene.findOne('Drawable');
     expect(found).to.be.equal(monkeys[1]);
 
-    found = scene.findObject({ title: 'ChubakaTitle' });
+    found = scene.findOne({ title: 'ChubakaTitle' });
     expect(found).to.be.equal(monkeys[0]);
 
-    found = scene.findObject('Chubakita');
+    found = scene.findOne('Chubakita');
     expect(found).to.be.undefined;
   });
 
 });
 
-describe('#findObjects', function(){
+describe('#find', function(){
 
   it('must return a list of objects found by a query or name', function(){
 
@@ -153,7 +152,7 @@ describe('#findObjects', function(){
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.findObjects).to.be.a('function');
+    expect(scene.find).to.be.a('function');
 
     var monkeys = [
       new Monkey({ name: 'Chubaka', title: 'ChubakaTitle' }),
@@ -162,33 +161,48 @@ describe('#findObjects', function(){
 
     scene.addObject(monkeys);
 
-    var found = scene.findObjects('Chubaka');
+    var found = scene.find('Chubaka');
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects('Drawable');
+    found = scene.find('Drawable');
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects({ title: 'ChubakaTitle' });
+    found = scene.find({ title: 'ChubakaTitle' });
     expect(found.length).to.be.equal(1);
 
-    found = scene.findObjects({ title: 'Chubakita' });
+    found = scene.find({ title: 'Chubakita' });
     expect(found.length).to.be.equal(0);
   });
 
 });
 
-describe('#update', function(){
+describe('#_update', function(){
 
-  it('must exist update method', function(){
+  it('must exist _update method', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
     });
 
-    expect(scene.update).to.be.a('function');
+    expect(scene._update).to.be.a('function');
   });
 
-  it('must call update for every contained GameObject', function(){
+  it('must call the implemented update method', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    sinon.spy(scene, 'update');
+    scene._update(0.16);
+
+    expect(scene.update).to.have.been.calledOnce;
+    expect(scene.update).to.have.been.calledWith(0.16);
+
+    scene.update.restore();
+  });
+
+  it('must call _update for every contained GameObject', function(){
     var scene = new Scene({
       name: 'test',
       size: { width: 200, height: 300 }
@@ -213,7 +227,7 @@ describe('#update', function(){
     scene.addObject([monkey1, monkey2, gm]);
 
     var dt = 0.16;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(monkey1.update).to.have.been.calledOnce;
     expect(monkey2.update).to.have.been.calledOnce;

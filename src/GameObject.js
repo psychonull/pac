@@ -33,7 +33,9 @@ var GameObject = module.exports = Emitter.extend({
     if (this.actions){
       this.actions.update(dt);
     }
-  }
+  },
+
+  onEnterScene: function(){}
 
 });
 

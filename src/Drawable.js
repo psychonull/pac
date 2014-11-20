@@ -51,19 +51,7 @@ var Drawable = module.exports = GameObject.extend({
     }
 
     if (this.children){
-      this.children.each(function(child){
-
-        if (child.updateHierarchy){
-          child.updateHierarchy(dt);
-        }
-
-        child.updateActions(dt);
-        child.update(dt);
-
-        if (child.updateAnimations){
-          child.updateAnimations(dt);
-        }
-      });
+      this.children.update(dt);
     }
   },
 

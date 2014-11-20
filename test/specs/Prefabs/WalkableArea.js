@@ -138,6 +138,25 @@ describe('WalkableArea', function(){
 
   });
 
+  describe('#clearWalkers', function(){
+
+    it('must allow remove a walker', function(){
+
+      var opts = _.clone(walkableOpts, true);
+      var warea = new WalkableArea(opts);
+
+      expect(warea.clearWalkers).to.be.a('function');
+      expect(warea.walkers.length).to.be.equal(0);
+
+      warea.addWalker(fakeWalker);
+      expect(warea.walkers.length).to.be.equal(1);
+
+      warea.clearWalkers();
+      expect(warea.walkers.length).to.be.equal(0);
+    });
+
+  });
+
   describe('#moveWalkers', function(){
 
     it('must have the function', function(){

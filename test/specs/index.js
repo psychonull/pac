@@ -28,7 +28,6 @@ describe('PAC', function(){
   });
 
   require('./base');
-
   require('./Game');
   require('./Scene');
   require('./Scenes');

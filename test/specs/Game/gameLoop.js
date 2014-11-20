@@ -1,6 +1,5 @@
 
 var pac = require('../../../src/pac');
-var Scenes = require('../../../src/Scenes');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -14,7 +13,16 @@ var MockRenderer = pac.Renderer.extend({
   onLayerFill: function(){ },
   onLayerClear: function(){ },
   render: function(){}
-  
+
+});
+
+var MockScene = pac.Scene.extend({
+
+  init: function(){ },
+  onEnter: function(){ },
+  onExit: function(){ },
+  update: function(){}
+
 });
 
 var game;
@@ -22,26 +30,27 @@ var game;
 describe('GameLoop', function(){
 
   before(function(){
-    
+
     game = pac.create();
     game.use('renderer', MockRenderer);
-    
-    game.scenes.add(new pac.Scene({
-      name: 'test',
-      size: { width: 100, height: 100 }
-    }));
+
+    game.use('scenes', {
+      'test': new MockScene({
+        size: { width: 100, height: 100 }
+      })
+    });
 
   });
 
   it('must be able to start', function(done) {
     expect(game.start).to.be.a('function');
-    
+
     var emitted = 0;
     game.on('start', function(){
       emitted++;
     });
 
-    game.start();
+    game.start('test');
     expect(emitted).to.be.equal(1);
 
     expect(game.dt).to.be.greaterThan(0);
@@ -57,7 +66,7 @@ describe('GameLoop', function(){
 
   it('must be able to pause', function(done) {
     expect(game.pause).to.be.a('function');
-    
+
     var emitted = 0;
     game.on('pause', function(){
       emitted++;
@@ -79,7 +88,7 @@ describe('GameLoop', function(){
 
   it('must be able to resume', function(done) {
     expect(game.resume).to.be.a('function');
-    
+
     var emitted = 0;
     game.on('resume', function(){
       emitted++;
@@ -102,7 +111,7 @@ describe('GameLoop', function(){
 
   it('must be able to end', function(done) {
     expect(game.end).to.be.a('function');
-    
+
     var emitted = 0;
     game.on('end', function(){
       emitted++;
@@ -129,10 +138,11 @@ describe('GameLoop', function(){
 
     testGame.use('renderer', MockRenderer);
 
-    testGame.scenes.add(new pac.Scene({
-      name: 'test',
-      size: { width: 100, height: 100 }
-    }));
+    testGame.use('scenes', {
+      'test': new MockScene({
+        size: { width: 100, height: 100 }
+      })
+    });
 
     var updateTime = 0;
     var drawTime = 0;
@@ -146,7 +156,7 @@ describe('GameLoop', function(){
       drawTime = new Date().getTime();
     });
 
-    testGame.start();
+    testGame.start('test');
 
     var currentTime = testGame.time;
 
@@ -155,9 +165,9 @@ describe('GameLoop', function(){
 
       expect(drawTime).to.be.greaterThan(0);
       expect(updateTime).to.be.greaterThan(0);
-      
+
       expect(drawTime).to.be.greaterThan(updateTime);
-      
+
       testGame.end();
 
       expect(testGame.renderer.render).to.have.been.called;

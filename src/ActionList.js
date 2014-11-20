@@ -21,10 +21,12 @@ var ActionList = module.exports = List.extend({
 
   pushFront: function(action){
     this.insertAt(0, action);
+    return this;
   },
 
   pushBack: function(action){
     this.add(action);
+    return this;
   },
 
   insertBefore: function(action, before){
@@ -33,6 +35,7 @@ var ActionList = module.exports = List.extend({
     if (idx > -1){
       this.insertAt(idx, action);
     }
+    return this;
   },
 
   insertAfter: function(action, after){
@@ -41,6 +44,7 @@ var ActionList = module.exports = List.extend({
     if (idx > -1){
       this.insertAt(idx+1, action);
     }
+    return this;
   },
 
   has: function(ActionType){
@@ -68,6 +72,7 @@ var ActionList = module.exports = List.extend({
     itemsToRemove.forEach(function(action){
       this._endAction(action, true);
     }, this);
+    return this;
   },
 
   update: function(dt){

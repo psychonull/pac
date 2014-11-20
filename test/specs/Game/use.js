@@ -2,6 +2,8 @@
 var pac = require('../../../src/pac');
 var EngineComponent = require('../../../src/EngineComponent');
 var InputManager = require('../../../src/InputManager');
+var Scenes = require('../../../src/Scenes');
+var Scene = require('../../../src/Scene');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -116,6 +118,46 @@ describe('#use', function(){
 
       newGame.use('loader', DummyLoader);
       expect(newGame.loader).to.be.instanceof(DummyLoader);
+    });
+
+  });
+
+  describe('Scenes', function(){
+
+    it('must attach Scenes to the game and set defaults', function() {
+      var newGame = pac.create();
+      expect(newGame.scenes).to.be.equal(null);
+
+      newGame.use('renderer', DummyRenderer, {
+        size: { width: 50, height: 50 }
+      });
+
+      newGame.use('scenes', {
+        'sceneA': new Scene(),
+        'sceneB': new Scene({
+          size: { width: 200, height: 200 }
+        })
+      }, {
+        size: { width: 100, height: 100 }
+      });
+
+      expect(newGame.scenes).to.be.instanceof(Scenes);
+      expect(newGame.scenes.length).to.be.equal(2);
+      expect(newGame.scenes.size.width).to.be.equal(100);
+
+      expect(newGame.scenes.get('sceneA').size.width).to.be.equal(100);
+      expect(newGame.scenes.get('sceneB').size.width).to.be.equal(200);
+
+      newGame = pac.create();
+      newGame.use('renderer', DummyRenderer, {
+        size: { width: 50, height: 50 }
+      });
+
+      newGame.use('scenes', {
+        'sceneA': new Scene()
+      });
+
+      expect(newGame.scenes.get('sceneA').size.width).to.be.equal(50);
     });
 
   });

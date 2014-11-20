@@ -31,7 +31,7 @@ var Stage = module.exports = MapList.extend({
       (function(_name){ self.emit('addToLayer', obj, _name); })(name);
     });
     */
-    
+
     layer.on('clear', function(obj){
       (function(_name){ self.emit('layerClear', _name); })(name);
     });
@@ -48,7 +48,7 @@ var Stage = module.exports = MapList.extend({
       this.get(obj.layer).add(obj);
     }
     else {
-      this.get(this.defaultName).add(obj); 
+      this.get(this.defaultName).add(obj);
     }
   },
 
@@ -66,7 +66,7 @@ var Stage = module.exports = MapList.extend({
       arg0.forEach(this._addToLayer.bind(this));
       return this;
     }
-    
+
     if (arg0 instanceof List){
       arg0.each(this._addToLayer.bind(this));
       return this;
@@ -77,7 +77,7 @@ var Stage = module.exports = MapList.extend({
   },
 
   clearLayer: function(layerName){
-    
+
     if (layerName){
       var layer = this.get(layerName);
 

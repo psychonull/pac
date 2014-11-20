@@ -21,22 +21,6 @@ var TestObj = pac.Sprite.extend({
   texture: 'testTexture'
 });
 
-var fakeGame = {
-  inputs: {
-    cursor: {
-      isDown: false,
-      position: new Point()
-    }
-  }
-};
-
-var scene = new Scene({
-  name: 'Scene01',
-  size: { width: 500, height: 600 }
-});
-
-scene.game = fakeGame;
-
 var commandBar = new CommandBar({
   position: new Point(0, 500),
   size: { width: 800, height: 100 },
@@ -67,6 +51,26 @@ var commandBar = new CommandBar({
   }
 });
 
+var fakeGame = {
+  inputs: {
+    cursor: {
+      isDown: false,
+      position: new Point()
+    }
+  },
+
+  findOne: function(){
+    return commandBar;
+  }
+};
+
+var scene = new Scene({
+  name: 'Scene01',
+  size: { width: 500, height: 600 }
+});
+
+scene.game = fakeGame;
+
 var dt = 0.16;
 
 describe('Command', function(){
@@ -78,7 +82,10 @@ describe('Command', function(){
       size: { width: 500, height: 600 }
     });
 
-    noCommandBarScene.game = fakeGame;
+    noCommandBarScene.game = {
+      inputs: { cursor: { isDown: false, position: new Point() } },
+      findOne: function(){ return undefined; }
+    };
 
     var obj = new TestObj({
       shape: new Rectangle(),
@@ -88,9 +95,9 @@ describe('Command', function(){
     noCommandBarScene.addObject(obj);
 
     expect(function(){
-      noCommandBarScene.update(dt);
-      noCommandBarScene.update(dt);
-    }).to.throw('A CommandBar was not found on this scene.');
+      noCommandBarScene._update(dt);
+      noCommandBarScene._update(dt);
+    }).to.throw('A CommandBar was not found.');
 
   });
 
@@ -111,8 +118,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(obj.actions.length).to.be.equal(3);
 
@@ -152,8 +159,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(0);
     expect(pushCalled).to.be.equal(0);
@@ -165,13 +172,13 @@ describe('Command', function(){
     obj.actions.remove(clickable);
 
     obj.isClicked = true;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(0);
 
     commandBar.current = 'push';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(1);
@@ -208,8 +215,8 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
-    scene.update(dt);
-    scene.update(dt);
+    scene._update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -223,7 +230,7 @@ describe('Command', function(){
 
     obj.isHover = true;
 
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.have.been.calledWith('Weird Thing');
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -232,7 +239,7 @@ describe('Command', function(){
     commandBar.showHoverMessage.reset();
 
     obj.isHover = false;
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.have.been.called;
@@ -243,7 +250,7 @@ describe('Command', function(){
     obj.isClicked = true;
     obj.isHover = true;
     commandBar.current = 'push';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
@@ -256,7 +263,7 @@ describe('Command', function(){
 
     obj.isClicked = true;
     commandBar.current = 'pull';
-    scene.update(dt);
+    scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;

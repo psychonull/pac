@@ -12,13 +12,15 @@ module.exports = Action.extend({
 
   onStart: function() {
     var obj = this.actions.owner;
-    var scene = obj.scene;
+    var game = obj.game;
 
-    this.walkableArea = scene.findObject(this.area);
+    this.walkableArea = game.findOne(this.area);
 
     if (!this.walkableArea){
-      throw new Error('A WalkableArea with name [' + this.area +
-        '] was not found on this scene.');
+      this.isFinished = true;
+      return;
+      //throw new Error('A WalkableArea with name [' + this.area +
+      //  '] was not found.');
     }
 
     if (!this.feet){
@@ -47,8 +49,11 @@ module.exports = Action.extend({
   },
 
   onEnd: function() {
-    var obj = this.actions.owner;
-    this.walkableArea.removeWalker(obj);
+
+    if (this.walkableArea){
+      var obj = this.actions.owner;
+      this.walkableArea.removeWalker(obj);
+    }
   },
 
   update: function(dt) { }

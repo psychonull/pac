@@ -49,6 +49,115 @@ var MonkeyAction = pac.Action.extend({
 
 var MonkeyActioner = pac.Drawable.extend();
 
+var Scene1 = pac.Scene.extend({
+
+  texture: 'first_scene_texture',
+
+  init: function(){ },
+
+  onEnter: function(){
+
+    var monkeyX = new MonkeyX({
+      layer: 'monkeys',
+      zIndex: 2,
+      name: 'monkeyX'
+    });
+
+    var monkeyY = new MonkeyY({
+      layer: 'monkeys',
+      zIndex: 1,
+      name: 'monkeyY'
+    });
+
+    var monkeySP = new MonkeySprite({
+      name: 'monkeySP'
+    });
+
+    /* test Actions Update */
+    var monkeyAct = new MonkeyAction();
+
+    var monkeyActioner = new MonkeyActioner({
+      name: 'monkeyActioner',
+      actions: [ monkeyAct ]
+    });
+
+    sinon.spy(monkeyX, 'update');
+    sinon.spy(monkeyY, 'update');
+
+    /* test Actions Update */
+    sinon.spy(monkeyActioner, 'update');
+    sinon.spy(monkeyActioner, 'updateActions');
+
+    /* test animations */
+    sinon.spy(monkeySP, 'updateAnimations');
+    sinon.spy(monkeySP, 'update');
+
+    this.addObject([ monkeyX, monkeyY, monkeyActioner, monkeySP ]);
+
+    expect(monkeyY.scene).to.be.ok;
+    expect(monkeyY.scene).to.be.equal(this);
+
+    expect(monkeyY.game).to.be.ok;
+    expect(monkeyY.game).to.be.equal(this.game);
+
+  },
+
+  onExit: function(){
+
+    var monkeyX = this.findOne('monkeyX');
+    var monkeyY = this.findOne('monkeyY');
+    var monkeySP = this.findOne('monkeySP');
+    var monkeyActioner = this.findOne('monkeyActioner');
+
+    /* check normal update */
+    expect(monkeyX.update).to.have.been.called;
+    expect(monkeyY.update).to.have.been.called;
+
+    expect(monkeyX.position.x).to.be.greaterThan(0);
+    expect(monkeyX.position.y).to.be.equal(0);
+
+    expect(monkeyY.position.x).to.be.equal(0);
+    expect(monkeyY.position.y).to.be.greaterThan(0);
+
+    /* check updateAnimations */
+    expect(monkeySP.updateAnimations).to.have.been.called;
+    expect(monkeySP.update).to.have.been.called;
+
+    /* check updateActions */
+    expect(monkeyActioner.update).to.have.been.called;
+    expect(monkeyActioner.updateActions).to.have.been.called;
+    expect(monkeyActioner.position.x).to.be.greaterThan(1000);
+  },
+
+  update: function(){}
+
+});
+
+var Scene2 = pac.Scene.extend({
+
+  texture: 'second_scene_texture',
+
+  init: function(){ },
+
+  onEnter: function(){
+    this.addObject(new MonkeyX({
+      name: 'monkeyX',
+      layer: 'monkeys2',
+      zIndex: 4
+    }));
+
+    this.addObject(new MonkeyY({
+      name: 'monkeyY',
+      layer: 'monkeys2',
+      zIndex: 3
+    }));
+  },
+
+  onExit: function(){ },
+  update: function(){}
+
+});
+
 /*
   Test an update gameloop event from game to an scene object.
 */
@@ -64,84 +173,72 @@ describe('Full Update', function(){
     game.use('renderer', MockRenderer);
     game.use('input', pac.MouseInput);
 
+    var scenes = {
+      'firstSc': new Scene1(),
+      'secondSc': new Scene2(),
+    };
+
+    game.use('scenes', scenes);
+
     sinon.spy(game.inputs, 'update');
 
-    var monkeyX = new MonkeyX();
-    var monkeyY = new MonkeyY();
-    var monkeySP = new MonkeySprite();
+    sinon.spy(scenes.firstSc, 'onEnter');
+    sinon.spy(scenes.firstSc, 'onExit');
 
-    /* test Actions Update */
-    var monkeyAct = new MonkeyAction();
-    var monkeyActioner = new MonkeyActioner({
-      actions: [ monkeyAct ]
+    sinon.spy(scenes.secondSc, 'onEnter');
+    sinon.spy(scenes.secondSc, 'onExit');
+
+    expect(scenes.firstSc.game).to.be.ok;
+    expect(scenes.firstSc.game).to.be.equal(game);
+
+    var gameMonkey = new MonkeyY({ name: 'monkey_game' });
+    sinon.spy(gameMonkey, 'update');
+    //sinon.spy(gameMonkey, 'reset');
+
+    var startEmitted = 0;
+    game.on('ready', function(){
+
+      // first call game start before the scene onEnter
+      expect(scenes.firstSc.onEnter).to.not.have.been.called;
+      expect(this).to.be.equal(game);
+
+      this.addObject(gameMonkey);
+      expect(gameMonkey.game).to.be.equal(this);
+      expect(gameMonkey.scene).to.be.null;
+
+      startEmitted++;
     });
 
-    sinon.spy(monkeyX, 'update');
-    sinon.spy(monkeyY, 'update');
-
-    /* test Actions Update */
-    sinon.spy(monkeyActioner, 'update');
-    sinon.spy(monkeyAct, 'update');
-    sinon.spy(monkeyActioner, 'updateActions');
-
-    /* test animations */
-    sinon.spy(monkeySP, 'updateAnimations');
-    sinon.spy(monkeySP, 'update');
-
-    var firstSc = new pac.Scene({
-      name: 'first',
-      size: { width: 200, height: 300 }
-    });
-
-    sinon.spy(firstSc, 'update');
-
-    firstSc.addObject([ monkeyX, monkeyY, monkeyActioner, monkeySP ]);
-
-    game.scenes.add(firstSc);
-    expect(firstSc.game).to.be.ok;
-    expect(firstSc.game).to.be.equal(game);
-
-    expect(monkeyY.scene).to.be.ok;
-    expect(monkeyY.scene).to.be.equal(firstSc);
-
-    expect(monkeyY.game).to.be.ok;
-    expect(monkeyY.game).to.be.equal(game);
-
-    game.start();
+    game.start('firstSc');
+    expect(startEmitted).to.be.equal(1);
 
     // let the game run for 50 ms
     setTimeout(function(){
-      game.end();
 
-      expect(game.inputs.update).to.have.been.called;
+      //change Scene to test expects onExit
+      game.loadScene('secondSc');
 
-      expect(firstSc.update).to.have.been.called;
-      expect(monkeyX.update).to.have.been.called;
-      expect(monkeyY.update).to.have.been.called;
-      expect(monkeyActioner.update).to.have.been.called;
-      expect(monkeyActioner.update).to.have.been.called;
+      // let the game run for 50 ms more
+      setTimeout(function(){
 
-      /* check updateActions */
-      expect(monkeyActioner.updateActions).to.have.been.called;
-      expect(monkeyAct.update).to.have.been.called;
+        game.end();
 
-      /* check updateAnimations */
-      expect(monkeySP.updateAnimations).to.have.been.called;
-      expect(monkeySP.update).to.have.been.called;
+        expect(game.inputs.update).to.have.been.called;
 
-      expect(monkeyX.position.x).to.be.greaterThan(0);
-      expect(monkeyX.position.y).to.be.equal(0);
+        expect(gameMonkey.update).to.have.been.called;
 
-      expect(monkeyY.position.x).to.be.equal(0);
-      expect(monkeyY.position.y).to.be.greaterThan(0);
+        expect(scenes.firstSc.onEnter).to.have.been.calledOnce;
+        expect(scenes.firstSc.onExit).to.have.been.calledOnce;
 
-      expect(monkeyActioner.position.x).to.be.greaterThan(1000);
+        expect(scenes.secondSc.onEnter).to.have.been.calledOnce;
+        expect(scenes.secondSc.onExit).to.not.have.been.called;
 
-      firstSc.update.restore();
-      monkeyX.update.restore();
-      monkeyY.update.restore();
+        game.inputs.update.restore();
+        gameMonkey.update.restore();
 
-      done();
+        done();
+
+      }, 50);
 
     }, 50);
 
@@ -163,36 +260,31 @@ describe('Full Draw', function(){
     });
 
     game.use('renderer', MockRenderer, {
-      layers: [ 'monkeys', 'monkeys2' ]
-    });
-
-    var firstSc = new pac.Scene({
-      name: 'first',
-      texture: 'first_scene_texture',
+      layers: [ 'monkeys', 'monkeys2' ],
       size: { width: 200, height: 300 }
     });
 
-    var secondSc = new pac.Scene({
-      name: 'second',
-      texture: 'second_scene_texture',
-      size: { width: 200, height: 300 }
+    var scenes = {
+      'firstSc': new Scene1(),
+      'secondSc': new Scene2(),
+    };
+
+    game.use('scenes', scenes);
+
+    var gameMonkey = new MonkeyY({
+      name: 'monkey_game',
+      layer: 'monkeys',
+      zIndex: 3
     });
 
-    var monkeyX = new MonkeyX({ layer: 'monkeys', zIndex: 2 });
-    var monkeyY = new MonkeyY({ layer: 'monkeys', zIndex: 1 });
-    firstSc.addObject([ monkeyX, monkeyY ]);
+    game.on('ready', function(){
+      this.addObject(gameMonkey);
+    });
 
-    var monkeyX2 = new MonkeyX({ layer: 'monkeys2', zIndex: 4 });
-    var monkeyY2 = new MonkeyY({ layer: 'monkeys2', zIndex: 3 });
-    secondSc.addObject([ monkeyX2, monkeyY2 ]);
-
-    game.scenes.add(firstSc);
-    game.scenes.add(secondSc);
-
-    game.start();
+    game.start('firstSc');
 
     expect(game.renderer.setBackTexture)
-      .to.have.been.calledWith(firstSc.texture);
+      .to.have.been.calledWith(scenes.firstSc.texture);
 
     expect(game.renderer.onLayerFill).to.have.been.calledThrice;
     expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
@@ -201,11 +293,16 @@ describe('Full Draw', function(){
 
     var stage = game.renderer.stage;
 
-    expect(stage.get('default').length).to.be.equal(0);
+    // monkeyActioner & monkeySP
+    expect(stage.get('default').length).to.be.equal(2);
 
-    expect(stage.get('monkeys').length).to.be.equal(2);
+    var monkeyY = scenes.firstSc.findOne('monkeyY');
+    var monkeyX = scenes.firstSc.findOne('monkeyX');
+
+    expect(stage.get('monkeys').length).to.be.equal(3);
     expect(stage.get('monkeys').at(0).cid).to.be.equal(monkeyY.cid);
     expect(stage.get('monkeys').at(1).cid).to.be.equal(monkeyX.cid);
+    expect(stage.get('monkeys').at(2).cid).to.be.equal(gameMonkey.cid);
 
     expect(stage.get('monkeys2').length).to.be.equal(0);
 
@@ -214,33 +311,42 @@ describe('Full Draw', function(){
 
       spyLayerFill.reset();
 
-      game.scenes.switch('second');
+      game.loadScene('secondSc');
 
-      expect(game.renderer.clearBackTexture).to.have.been.called;
-      expect(game.renderer.onLayerClear).to.have.been.called;
+      // let the game run for 50 ms more
+      setTimeout(function(){
 
-      expect(game.renderer.setBackTexture)
-        .to.have.been.calledWith(secondSc.texture);
+        expect(game.renderer.clearBackTexture).to.have.been.called;
+        expect(game.renderer.onLayerClear).to.have.been.called;
 
-      expect(game.renderer.onLayerFill).to.have.been.calledThrice;
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
-      expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
+        expect(game.renderer.setBackTexture)
+          .to.have.been.calledWith(scenes.secondSc.texture);
 
-      expect(stage.get('default').length).to.be.equal(0);
-      expect(stage.get('monkeys').length).to.be.equal(0);
+        expect(game.renderer.onLayerFill).to.have.been.calledThrice;
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('default');
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys');
+        expect(game.renderer.onLayerFill).to.have.been.calledWith('monkeys2');
 
-      expect(stage.get('monkeys2').length).to.be.equal(2);
-      expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
-      expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
+        expect(stage.get('default').length).to.be.equal(0);
+        expect(stage.get('monkeys').length).to.be.equal(1);
 
-      game.end();
+        expect(stage.get('monkeys').at(0).cid).to.be.equal(gameMonkey.cid);
 
-      game.renderer.onLayerFill.restore();
-      game.renderer.onLayerClear.restore();
+        var monkeyY2 = scenes.secondSc.findOne('monkeyY');
+        var monkeyX2 = scenes.secondSc.findOne('monkeyX');
 
-      done();
+        expect(stage.get('monkeys2').length).to.be.equal(2);
+        expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
+        expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
 
+        game.end();
+
+        game.renderer.onLayerFill.restore();
+        game.renderer.onLayerClear.restore();
+
+        done();
+
+      }, 50);
     }, 50);
 
   });

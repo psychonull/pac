@@ -10,11 +10,11 @@ module.exports = Action.extend({
   init: function() { },
 
   onStart: function() {
-    var scene = this.actions.owner.scene;
+    var game = this.actions.owner.game;
 
-    this.commandBar = scene.findObject('CommandBar');
+    this.commandBar = game.findOne('CommandBar');
     if (!this.commandBar){
-      throw new Error('A CommandBar was not found on this scene.');
+      throw new Error('A CommandBar was not found.');
     }
 
     this.isHovering = false;

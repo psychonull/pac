@@ -3,8 +3,6 @@ var Emitter = require('./Emitter');
 var GameObject = require('./GameObject');
 var GameObjectList = require('./GameObjectList');
 
-var required = ['name', 'size'];
-
 var Scene = module.exports = Emitter.extend({
 
   name: null,
@@ -18,71 +16,39 @@ var Scene = module.exports = Emitter.extend({
     this.size = (options && options.size) || this.size;
     this.texture = (options && options.texture) || this.texture;
 
-    required.forEach(function(req){
-
-      if (!this[req]) {
-        throw new Error('Cannot create scene ' + (this.name || '') +
-          ': "' + req + '" is required');
-      }
-
-    }, this);
-
     this.objects = new GameObjectList();
-
-    var self = this;
-    this.objects.on('add', function(obj){
-      obj.scene = self;
-
-      if (self.game){
-        obj.game = self.game;
-      }
-    });
+    this.objects.on('add', this._initObject.bind(this));
 
     Emitter.apply(this, arguments);
   },
 
-  setGame: function(game){
-    this.game = game;
-
-    this.objects.each(function(obj){
-      obj.game = game;
-    });
+  _initObject: function(obj){
+    obj.game = this.game;
+    obj.scene = this;
   },
-
-  init: function(){},
-
-  onEnter: function(sceneFrom){},
-
-  onLeave: function(){},
 
   addObject: function(toAdd){
     this.objects.add(toAdd);
+    return this;
   },
 
-  findObject: function(search){
+  findOne: function(search){
     return this.objects.findOne(search);
   },
 
-  findObjects: function(search){
+  find: function(search){
     return this.objects.find(search);
   },
 
-  update: function(dt){
+  _update: function(dt){
+    this.objects.update(dt);
+    this.update(dt);
+  },
 
-    this.objects.each(function(gameObject){
-
-      if (gameObject.updateHierarchy){
-        gameObject.updateHierarchy(dt);
-      }
-
-      gameObject.updateActions(dt);
-      gameObject.update(dt);
-
-      if (gameObject.updateAnimations){
-        gameObject.updateAnimations(dt);
-      }
-
-    });
-  }
+  // Methods to implement Custom behaviors
+  init: function(options){},
+  onEnter: function(sceneFrom){},
+  onExit: function(sceneTo){},
+  update: function(dt){ },
 
 });

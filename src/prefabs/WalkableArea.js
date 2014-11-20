@@ -71,6 +71,10 @@ module.exports = Drawable.extend({
 
   removeWalker: function(walker){
     this.walkers.remove(walker);
+  },
+
+  clearWalkers: function(){
+    this.walkers.clear();
   }
 
 });
