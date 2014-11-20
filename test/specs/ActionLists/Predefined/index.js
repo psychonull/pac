@@ -39,9 +39,9 @@ describe('Predefined', function(){
     expect(pac.actions.Speaker.prototype).to.be.an.instanceof(pac.Action);
   });
 
-  it('must expose pac.actions.Speak Action', function(){
-    expect(pac.actions.Speak).to.be.a('function');
-    expect(pac.actions.Speak.prototype).to.be.an.instanceof(pac.Action);
+  it('must expose pac.actions.Dialoguer Action', function(){
+    expect(pac.actions.Dialoguer).to.be.a('function');
+    expect(pac.actions.Dialoguer.prototype).to.be.an.instanceof(pac.Action);
   });
 
   require('./Clickable.js');
@@ -52,5 +52,6 @@ describe('Predefined', function(){
   require('./WalkTo.js');
   require('./Speaker.js');
   require('./Speak.js');
+  require('./Dialoguer.js');
 
 });

@@ -7,5 +7,6 @@ module.exports = {
   Walker: require('./Walker'),
   WalkTo: require('./WalkTo'),
   Speaker: require('./Speaker'),
-  Speak: require('./Speak')
+  Speak: require('./Speak'),
+  Dialoguer: require('./Dialoguer')
 };
