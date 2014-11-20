@@ -49,7 +49,8 @@ var DialogueManager = Emitter.extend({
       text = dialogueUnit.value;
     }
     owner.actions.pushBack(new Speak({
-      text: text
+      text: text,
+      after: _.bind(this.next, this)
     }));
   },
 

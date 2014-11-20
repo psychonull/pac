@@ -16,6 +16,7 @@ chai.use(sinonChai);
 
 var player = new GameObject({actions:[]}),
   b = new GameObject({actions:[]});
+player.speakerText = {};
 var defaultChars = {
   'player': player,
   'b': b
@@ -138,6 +139,9 @@ describe('DialogueManager', function(){
 
       it('must add Speak for that owner character with the values passed',
         function(){
+          var expectedFn = function(){};
+          sinon.stub(_, 'bind').returns(expectedFn);
+
           dialogue.say({
             value: 'xD',
             owner: 'player'
@@ -146,6 +150,11 @@ describe('DialogueManager', function(){
           expect(player.actions.length).to.equal(1);
           expect(player.actions.at(0)).to.be.an.instanceof(Speak);
           expect(player.actions.at(0).text).to.equal('xD');
+          expect(_.bind).to.have.been
+            .calledWith(DialogueManager.prototype.next, dialogue);
+          expect(player.actions.at(0).after).to.equal(expectedFn);
+
+          _.bind.restore();
         }
       );
 
