@@ -9,11 +9,13 @@ module.exports = Action.extend({
   requires: [Speaker],
 
   text: '',
-  duration: 500,
+  duration: 2,
+  after: null,
 
   init: function(options) {
     this.text = (options && options.text) || this.text;
     this.duration = (options && options.duration) || this.duration;
+    this.after = (options && options.after) || this.after;
   },
 
   onStart: function() {
@@ -25,6 +27,9 @@ module.exports = Action.extend({
   onEnd: function() {
     var owner = this.actions.owner;
     owner.speakerText.value = '';
+    if(this.after){
+      this.after(this);
+    }
   },
 
   update: function(dt) {

@@ -17,16 +17,19 @@ describe('Speak', function(){
   });
 
   it('must initialize with options', function(){
+    var onAfter = function(){};
     var speak = new Speak();
     expect(speak.text).to.equal('');
-    expect(speak.duration).to.equal(500);
-
+    expect(speak.duration).to.equal(2);
+    expect(speak.after).to.be.null;
     speak = new Speak({
       text: 'Hola camarada',
-      duration: 600
+      duration: 600,
+      after: onAfter
     });
     expect(speak.text).to.equal('Hola camarada');
     expect(speak.duration).to.equal(600);
+    expect(speak.after).to.equal(onAfter);
   });
 
   describe('#onStart', function(){
@@ -94,6 +97,23 @@ describe('Speak', function(){
         speak.onEnd();
 
         expect(speak.actions.owner.speakerText.value).to.equal('');
+    });
+
+    it('must call after callback if set', function(){
+      var speak = new Speak({
+        after: sinon.stub()
+      });
+      speak.actions = {
+        owner: {
+          speakerText: {
+            value: 'a text'
+          }
+        }
+      };
+      speak.onEnd();
+
+      expect(speak.actions.owner.speakerText.value).to.equal('');
+      expect(speak.after).to.have.been.calledWith(speak);
     });
   });
 
