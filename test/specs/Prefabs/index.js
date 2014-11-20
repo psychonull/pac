@@ -23,5 +23,6 @@ describe('Prefabs', function(){
   require('./Command');
   require('./CommandBar');
   require('./WalkableArea');
+  require('./DialogueManager');
 
 });
