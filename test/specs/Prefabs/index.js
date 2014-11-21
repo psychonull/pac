@@ -20,9 +20,16 @@ describe('Prefabs', function(){
       .to.be.an.instanceof(pac.GameObject);
   });
 
+  it('must expose pac.prefabs.DialogueOptionsBar', function(){
+    expect(pac.prefabs.DialogueOptionsBar).to.be.a('function');
+    expect(pac.prefabs.DialogueOptionsBar.prototype)
+      .to.be.an.instanceof(pac.GameObject);
+  });
+
   require('./Command');
   require('./CommandBar');
   require('./WalkableArea');
   require('./DialogueManager');
+  require('./DialogueOptionsBar');
 
 });
