@@ -13,6 +13,7 @@ module.exports = Action.extend({
   init: function(options) {
     this.options = options || this.options;
     this.command = (options && options.command) || this.command;
+    this.isRunning = false;
   },
 
   onStart: function() {
@@ -22,6 +23,9 @@ module.exports = Action.extend({
       owner.onCommand = {};
     }
     owner.onCommand[this.command] = _.bind(this.onDialogueCommand, this);
+    owner.dialogue.on('end', _.bind(function(){
+      this.isRunning = false;
+    }, this));
   },
 
   onEnd: function() {
@@ -33,7 +37,11 @@ module.exports = Action.extend({
   update: function(dt) { },
 
   onDialogueCommand: function(){
+    if(this.isRunning){
+      return;
+    }
     this.actions.owner.dialogue.next();
+    this.isRunning = true;
   }
 
 });

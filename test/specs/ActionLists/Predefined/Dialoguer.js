@@ -27,6 +27,7 @@ describe('Dialoguer', function(){
     dialoguer = new Dialoguer(options);
     expect(dialoguer.options).to.equal(options);
     expect(dialoguer.command).to.equal('conversate');
+    expect(dialoguer.isRunning).to.be.false;
   });
 
   it('must require Command', function(){
@@ -76,6 +77,23 @@ describe('Dialoguer', function(){
           .to.equal(expectedFn);
 
         _.bind.restore();
+      }
+    );
+
+    it('must subscribe to the dialogueManager end',
+      function(){
+        sinon.spy(DialogueManager.prototype, 'on');
+
+        dialoguer.onStart();
+        expect(dialoguer.actions.owner.dialogue.on)
+          .to.have.been.calledWith('end');
+        dialoguer.isRunning = true;
+
+        dialoguer.actions.owner.dialogue.emit('end');
+
+        expect(dialoguer.isRunning).to.be.false;
+        
+        DialogueManager.prototype.on.restore();
       }
     );
 
@@ -145,6 +163,17 @@ describe('Dialoguer', function(){
     it('must call owner.dialogue.next()', function(){
       dialoguer.onDialogueCommand();
       expect(dialoguer.actions.owner.dialogue.next).to.have.been.called;
+    });
+
+    it('must set isRunning to true', function(){
+      dialoguer.onDialogueCommand();
+      expect(dialoguer.isRunning).to.be.true;
+    });
+
+    it('must not call owner.dialogue if isRunning', function(){
+      dialoguer.isRunning = true;
+      dialoguer.onDialogueCommand();
+      expect(dialoguer.actions.owner.dialogue.next).to.not.have.been.called;
     });
   });
 
