@@ -17,6 +17,7 @@ describe('Dialoguer', function(){
     var options = {
       characters: {},
       dialogue: [],
+      dialogueOptionsBar: {},
       command: 'conversate'
     };
 
@@ -34,6 +35,7 @@ describe('Dialoguer', function(){
     expect(Dialoguer.prototype.requires).to.have.length(1);
     expect(Dialoguer.prototype.requires[0]).to.equal(Command);
   });
+
   describe('#onStart', function(){
     var dialoguer,
       owner = {
@@ -61,6 +63,31 @@ describe('Dialoguer', function(){
         dialoguer.onStart();
         expect(dialoguer.actions.owner.dialogue)
           .to.be.an.instanceof(DialogueManager);
+      }
+    );
+
+    it('must find and pass the optionsBar to dialogueManager if not provided',
+      function(){
+        var options = {
+          characters: {},
+          dialogue: [],
+          command: 'conversate'
+        };
+        var optionsBar = {};
+        var game = {
+          findOne: sinon.stub().returns(optionsBar)
+        };
+        var owner = {
+          game: game
+        };
+        var dialoguer = new Dialoguer(options);
+        dialoguer.actions = {
+          owner: owner
+        };
+        dialoguer.onStart();
+        expect(game.findOne).to.have.been.calledWith('DialogueOptionsBar');
+        expect(dialoguer.actions.owner.dialogue.dialogueOptionsBar)
+          .to.equal(optionsBar);
       }
     );
 
@@ -92,10 +119,11 @@ describe('Dialoguer', function(){
         dialoguer.actions.owner.dialogue.emit('end');
 
         expect(dialoguer.isRunning).to.be.false;
-        
+
         DialogueManager.prototype.on.restore();
       }
     );
+
 
   });
 

@@ -18,6 +18,10 @@ module.exports = Action.extend({
 
   onStart: function() {
     var owner = this.actions.owner;
+    if(this.options && !this.options.dialogueOptionsBar){
+      this.options.dialogueOptionsBar =
+        owner.game.findOne('DialogueOptionsBar');
+    }
     owner.dialogue = new DialogueManager(this.options);
     if(!owner.onCommand){
       owner.onCommand = {};
