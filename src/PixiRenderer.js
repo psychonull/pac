@@ -101,6 +101,10 @@ var PixiRenderer = module.exports = Renderer.extend({
         obj.children.each(function(child){
           this._createPixiObject(child, pixiLayer);
         }, this);
+        //HACK
+        obj.children.on('add', _.bind(function(c){
+          this._createPixiObject(c, pixiLayer);
+        }, this));
       }
     },this);
 
