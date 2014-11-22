@@ -105,6 +105,13 @@ var PixiRenderer = module.exports = Renderer.extend({
         obj.children.on('add', _.bind(function(c){
           this._createPixiObject(c, pixiLayer);
         }, this));
+        obj.children.on('remove', _.bind(function(c){
+          this._removePixiObject(c, pixiLayer);
+        }, this));
+        obj.children.on('clear', _.bind(function(){
+          //TODO: obj.children is already cleared here so this doesnt work
+          //this._clearPixiObjectChildren(obj, pixiLayer);
+        }, this));
       }
     },this);
 
@@ -164,6 +171,28 @@ var PixiRenderer = module.exports = Renderer.extend({
     }
 
     this._drawDebug(obj, parent);
+  },
+
+  _removePixiObject: function(obj, parent){
+    var pixiObj = _.find(parent.children, {cid: obj.cid});
+    if(pixiObj){
+      parent.removeChild(pixiObj);
+    }
+    if(pac.DEBUG && obj.shape){
+      var debugPixiObj = _.find(parent.children, {cid: obj.shape.cid});
+      if(debugPixiObj){
+        parent.removeChild(debugPixiObj);
+      }
+    }
+  },
+
+  _clearPixiObjectChildren: function(obj, parent){
+    var that = this;
+    if(obj.children){
+      obj.children.each(function(c){
+        that._removePixiObject(c, parent);
+      });
+    }
   },
 
   render: function () {

@@ -89,7 +89,16 @@ module.exports = Rectangle.extend({
   onOptionSelected: function(code){
     this.active = false;
     this.optionSelectedCb(code);
-    this.children.clear();
+
+    //HACK: remove individually instead of clearing to avoid renderer issue
+    var optionCids = _.map(this.children._items, function(item){
+      return {
+        cid: item.cid
+      };
+    });
+    _.forEach(optionCids, function(cidObj){
+      this.children.remove(cidObj);
+    }, this);
   }
 
 });
