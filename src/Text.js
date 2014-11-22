@@ -21,7 +21,7 @@ var Text = module.exports = Drawable.extend({
 
     if(args.options){
       var optionsWhitelist = ['font', 'fill', 'stroke',
-        'strokeThickness', 'wordWrap', 'isBitmapText'];
+        'strokeThickness', 'wordWrap', 'isBitmapText', 'tint'];
       _.extend(this, _.pick(args.options, optionsWhitelist));
     }
 

@@ -48,6 +48,7 @@ describe('Constructor', function(){
     expect(text.strokeThickness).to.equal(0);
     expect(text.wordWrap).to.equal(0);
     expect(text.isBitmapText).to.be.false;
+    expect(text.tint).to.be.undefined;
   });
 
   it('must allow to pass all settings', function(){
@@ -57,7 +58,8 @@ describe('Constructor', function(){
       stroke: 'yellow',
       strokeThickness: 2,
       wordWrap: 200,
-      isBitmapText: true
+      isBitmapText: true,
+      tint: 0x0000FF
     });
 
     expect(text.font).to.equal('20px Helvetica');
@@ -66,6 +68,7 @@ describe('Constructor', function(){
     expect(text.strokeThickness).to.equal(2);
     expect(text.wordWrap).to.equal(200);
     expect(text.isBitmapText).to.be.true;
+    expect(text.tint).to.equal(0x0000FF);
   });
 
 });

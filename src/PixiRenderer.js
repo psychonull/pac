@@ -205,6 +205,10 @@ var PixiRenderer = module.exports = Renderer.extend({
     else {
       text.setText(obj.value);
     }
+    if(obj.isBitmapText && obj.tint){
+      text.tint = obj.tint;
+    }
+
   },
 
   _getPixiObjectByCID: function(cid, container){
