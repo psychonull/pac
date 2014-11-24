@@ -44,6 +44,7 @@ describe('DialogueOptionsBar', function(){
       expect(optsBar.size.width).to.equal(500);
       expect(optsBar.size.height).to.equal(100);
       expect(optsBar.active).to.be.false;
+      expect(optsBar.visible).to.be.false;
     });
   });
 
@@ -58,10 +59,12 @@ describe('DialogueOptionsBar', function(){
       });
     });
 
-    it('must make itself active', function(){
+    it('must make itself active and visible', function(){
       expect(optsBar.active).to.be.false;
+      expect(optsBar.visible).to.be.false;
       optsBar.showOptions([{code: 'x', value: 'lol'}], function(){});
       expect(optsBar.active).to.be.true;
+      expect(optsBar.visible).to.be.true;
     });
 
     it('must set the options passed', function(){
@@ -146,12 +149,14 @@ describe('DialogueOptionsBar', function(){
       optsBar.showOptions(options, cb);
     });
 
-    it('must mark itself as inactive', function(){
+    it('must mark itself as inactive and invisible', function(){
       expect(optsBar.active).to.be.true;
+      expect(optsBar.visible).to.be.true;
 
       optsBar.onOptionSelected('a');
 
       expect(optsBar.active).to.be.false;
+      expect(optsBar.visible).to.be.false;
     });
 
     it('must call the optionSelected callback passing the code', function(){

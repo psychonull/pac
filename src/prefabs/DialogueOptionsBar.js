@@ -32,6 +32,7 @@ module.exports = Rectangle.extend({
     Rectangle.apply(this, arguments);
 
     this.active = false;
+    this.visible = false;
   },
 
   init: function() {},
@@ -61,6 +62,7 @@ module.exports = Rectangle.extend({
     this.optionSelectedCb = cb;
 
     this.active = true;
+    this.visible = true;
   },
 
   update: function(dt) {},
@@ -88,6 +90,7 @@ module.exports = Rectangle.extend({
 
   onOptionSelected: function(code){
     this.active = false;
+    this.visible = false;
     this.optionSelectedCb(code);
 
     //HACK: remove individually instead of clearing to avoid renderer issue
