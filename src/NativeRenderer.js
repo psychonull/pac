@@ -88,7 +88,9 @@ var NativeRenderer = module.exports = Renderer.extend({
         if (o.children){
 
           o.children.each(function(child){
-            this._renderObject(child);
+            if(o.visible && child.visible){
+              this._renderObject(child);
+            }
             this._drawDebug(child);
           }, this);
         }
@@ -100,6 +102,9 @@ var NativeRenderer = module.exports = Renderer.extend({
   },
 
   _renderObject: function(o){
+    if(!o.visible){
+      return;
+    }
     if(o instanceof Sprite){
       this._renderSprite(o);
     }

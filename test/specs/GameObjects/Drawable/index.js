@@ -31,6 +31,7 @@ describe('Drawable', function(){
     expect(obj.position.x).to.be.equal(0);
     expect(obj.position.y).to.be.equal(0);
     expect(obj.zIndex).to.be.equal(0);
+    expect(obj.visible).to.be.true;
   });
 
   it('must create a Drawable with defaults', function(){

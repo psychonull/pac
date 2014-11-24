@@ -218,6 +218,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
     sprite.width = obj.size.width;
     sprite.height = obj.size.height;
+    sprite.visible = obj.visible;
   },
 
   _setTextProperties: function(obj, text){
@@ -241,6 +242,7 @@ var PixiRenderer = module.exports = Renderer.extend({
     if(obj.isBitmapText && obj.tint){
       text.tint = obj.tint;
     }
+    text.visible = obj.visible;
 
   },
 
@@ -279,6 +281,7 @@ var PixiRenderer = module.exports = Renderer.extend({
             pixiObj = this._getPixiObjectByCID(child.cid, pixiLayer);
             if (pixiObj){
               this._setObjectProperties(child, pixiObj);
+              pixiObj.visible = obj.visible && child.visible;
               this._drawDebug(child, pixiLayer);
             }
 
@@ -306,6 +309,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
         this._createShape(obj, pixiObj);
       }
+      pixiObj.visible = obj.visible;
     }
   },
 

@@ -12,6 +12,7 @@ var Drawable = module.exports = GameObject.extend({
   zIndex: 0,
 
   shape: null,
+  visible: true,
 
   // hierarchy
   children: null,
@@ -19,13 +20,23 @@ var Drawable = module.exports = GameObject.extend({
   localPosition: null,
 
   constructor: function(opts){
+
     this.position = (opts && opts.position) || this.position || new Point();
     this.position = new Point(this.position);
 
-    this.layer = (opts && opts.layer) || this.layer;
-    this.zIndex = (opts && opts.zIndex) || this.zIndex;
+    var props = [
+    'layer',
+    'zIndex',
+    'shape'
+    ];
 
-    this.shape = (opts && opts.shape) || this.shape;
+    function setProp(prop){
+      this[prop] = (opts && opts[prop]) || this[prop];
+    }
+
+    props.forEach(setProp.bind(this));
+
+    this.visible = (opts && opts.visible === false) ? false : this.visible;
 
     this.children = new GameObjectList();
     this.children.on('add', this._initChild.bind(this));
@@ -60,4 +71,3 @@ var Drawable = module.exports = GameObject.extend({
   update: function(dt) { }
 
 });
-
