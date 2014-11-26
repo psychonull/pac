@@ -90,10 +90,10 @@ describe('InputManager', function(){
       expect(cursor.isDown).to.be.true;
 
       manager.update();
-      expect(cursor.isDown).to.be.true;
+      expect(cursor.isDown).to.be.false;
 
       mouse.emit(Input.events.UP);
-      expect(cursor.isDown).to.be.true;
+      expect(cursor.isDown).to.be.false;
 
       manager.update();
       expect(cursor.isDown).to.be.false;
@@ -103,6 +103,9 @@ describe('InputManager', function(){
 
       manager.update();
       expect(cursor.isDown).to.be.true;
+
+      manager.update();
+      expect(cursor.isDown).to.be.false;
 
     });
 

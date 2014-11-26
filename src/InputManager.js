@@ -18,6 +18,7 @@ var InputManager = module.exports = MapList.extend({
     };
 
     this._down = false;
+    this.prevDown = false;
     this._up = false;
 
     this.on('add', this._attachEvents.bind(this));
@@ -43,6 +44,13 @@ var InputManager = module.exports = MapList.extend({
 
   update: function(dt){
     this.cursor.isDown = this._down;
+
+    if (this.prevDown && this.cursor.isDown){
+      this.prevDown = this.cursor.isDown = this._down = false;
+    }
+    else {
+      this.prevDown = this.cursor.isDown;
+    }
 
     if (this._up){
       this.cursor.isDown = false;
