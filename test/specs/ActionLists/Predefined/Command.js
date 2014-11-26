@@ -57,7 +57,8 @@ var commandBar = new CommandBar({
   commands: {
     'use': 'Use',
     'push': 'Push',
-    'pull': 'Pull'
+    'pull': 'Pull',
+    'give': 'Give'
   },
 
   inventory: inventory,
@@ -66,6 +67,7 @@ var commandBar = new CommandBar({
   },
 
   current: 'use',
+
   style: {
     position: new Point(10, 20),
     margin: { x: 10, y: 5 },
@@ -209,13 +211,13 @@ describe('Command', function(){
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(0);
 
-    commandBar.current = 'push';
+    commandBar.setCommand('push');
     scene._update(dt);
 
     expect(useCalled).to.be.equal(1);
     expect(pushCalled).to.be.equal(1);
 
-    commandBar.current = 'use';
+    commandBar.setCommand('use');
     scene.objects.clear();
   });
 
@@ -264,7 +266,8 @@ describe('Command', function(){
 
     scene._update(dt);
 
-    expect(commandBar.showHoverMessage).to.have.been.calledWith('Weird Thing');
+    expect(commandBar.showHoverMessage)
+      .to.have.been.calledWith(obj);
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
     expect(commandBar.showCannotMessage).to.not.have.been.called;
 
@@ -281,29 +284,293 @@ describe('Command', function(){
 
     obj.isClicked = true;
     obj.isHover = true;
-    commandBar.current = 'push';
+    commandBar.setCommand('push');
     scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
 
     expect(commandBar.showCannotMessage)
-      .to.have.been.calledWith('cannot push this weird thing!');
+      .to.have.been.calledWith(obj, 'cannot push this weird thing!');
 
     commandBar.showHoverMessage.reset();
     commandBar.showCannotMessage.reset();
 
     obj.isClicked = true;
-    commandBar.current = 'pull';
+    commandBar.setCommand('pull');
     scene._update(dt);
 
     expect(commandBar.showHoverMessage).to.not.have.been.called;
     expect(commandBar.hideHoverMessage).to.not.have.been.called;
-    expect(commandBar.showCannotMessage).to.have.been.calledWith();
+    expect(commandBar.showCannotMessage).to.have.been.calledWith(obj);
 
     commandBar.showHoverMessage.restore();
     commandBar.hideHoverMessage.restore();
     commandBar.showCannotMessage.restore();
+
+    commandBar.setCommand('use');
+    scene.objects.clear();
+  });
+
+  it('must not run disabled commands', function(){
+
+    commandBar.onEnterScene();
+
+    var cmdAction = new Command();
+
+    var ObjAction = pac.Sprite.extend({
+      texture: 'testTexture',
+      name: 'Weird Thing'
+    });
+
+    var obj = new ObjAction({
+      shape: new Rectangle(),
+      actions: [ cmdAction ]
+    });
+
+    obj.onCommand = {
+      use: false
+    };
+
+    scene.addObject(commandBar);
+    scene.addObject(obj);
+    scene._update(dt);
+    scene._update(dt);
+
+    // remove hover and click from actions to test only command
+    var hoverable = obj.actions.at(0);
+    var clickable = obj.actions.at(1);
+    obj.actions.remove(hoverable);
+    obj.actions.remove(clickable);
+
+    commandBar.messageBox.value = '';
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = false;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isClicked = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    commandBar.setCommand('use');
+    scene.objects.clear();
+  });
+
+  it('must not show messages on SPECIFIC hidden commands', function(){
+
+    commandBar.onEnterScene();
+
+    var ObjAction = pac.Sprite.extend({
+      texture: 'testTexture'
+    });
+
+    var obj = new ObjAction({
+      name: 'Object',
+      shape: new Rectangle(),
+      actions: [ new Command() ]
+    });
+
+    var calledUse = 0;
+    var calledPull = 0;
+
+    obj.hiddenCommands = [ 'use' ];
+    obj.onCommand = {
+      use: function(){
+        calledUse++;
+      },
+      pull: function(){
+        calledPull++;
+      }
+    };
+
+    scene.addObject(commandBar);
+    scene.addObject(obj);
+    scene._update(dt);
+    scene._update(dt);
+
+    // remove hover and click from actions to test only command
+    var hoverable = obj.actions.at(0);
+    var clickable = obj.actions.at(1);
+    obj.actions.remove(hoverable);
+    obj.actions.remove(clickable);
+
+    commandBar.messageBox.value = '';
+
+    // USE
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = false;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isClicked = true;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(1);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    // PULL
+
+    obj.isClicked = false;
+    obj.isHover = false;
+    commandBar.setCommand('pull');
+    scene._update(dt);
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(calledPull).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('Pull Object');
+
+    obj.isHover = false;
+    scene._update(dt);
+
+    expect(obj.isClicked).to.be.false;
+
+    expect(calledPull).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('Pull Object');
+
+    obj.isClicked = true;
+    scene._update(dt);
+
+    expect(calledPull).to.be.equal(1);
+
+    // TODO: Clear Message box after run command
+    //expect(commandBar.messageBox.value).to.be.equal('');
+
+    commandBar.setCommand('use');
+    scene.objects.clear();
+  });
+
+  it('must not show messages on ALL hidden commands', function(){
+
+    commandBar.onEnterScene();
+
+    var ObjAction = pac.Sprite.extend({
+      texture: 'testTexture'
+    });
+
+    var obj = new ObjAction({
+      name: 'Object',
+      shape: new Rectangle(),
+      actions: [ new Command() ]
+    });
+
+    var calledUse = 0;
+    var calledPull = 0;
+
+    obj.hiddenCommands = true;
+    obj.onCommand = {
+      use: function(){
+        calledUse++;
+      },
+      pull: function(){
+        calledPull++;
+      }
+    };
+
+    scene.addObject(commandBar);
+    scene.addObject(obj);
+    scene._update(dt);
+    scene._update(dt);
+
+    // remove hover and click from actions to test only command
+    var hoverable = obj.actions.at(0);
+    var clickable = obj.actions.at(1);
+    obj.actions.remove(hoverable);
+    obj.actions.remove(clickable);
+
+    commandBar.messageBox.value = '';
+
+    // USE
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = false;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isClicked = true;
+    scene._update(dt);
+
+    expect(calledUse).to.be.equal(1);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    // PULL
+
+    commandBar.setCommand('pull');
+
+    obj.isHover = false;
+    obj.isClicked = false;
+    scene._update(dt);
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(calledPull).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = false;
+    scene._update(dt);
+
+    expect(calledPull).to.be.equal(0);
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isHover = true;
+    scene._update(dt);
+
+    expect(commandBar.messageBox.value).to.be.equal('');
+
+    obj.isClicked = true;
+    scene._update(dt);
+
+    expect(calledPull).to.be.equal(1);
+    //TODO: Clear message box after run command
+    //expect(commandBar.messageBox.value).to.be.equal('');
+
+    commandBar.setCommand('use');
+    scene.objects.clear();
   });
 
 });
@@ -409,7 +676,7 @@ describe('Commands at Inventory', function(){
 
     expect(inventory.current).to.be.equal(objInv.name);
 
-    expect(commandBar.showHoverMessage).to.have.been.calledWith('inventoryObj');
+    expect(commandBar.showHoverMessage).to.have.been.calledWith(objInv);
     expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
 
     expect(invCalled).to.be.equal(0); //must not call use of invObj
@@ -426,7 +693,7 @@ describe('Commands at Inventory', function(){
     objSce.isClicked = false;
     scene2._update(dt);
 
-    expect(commandBar.showHoverMessage).to.have.been.calledWith('sceneObj');
+    expect(commandBar.showHoverMessage).to.have.been.calledWith(objSce);
     expect(commandBar.messageBox.value)
       .to.be.equal('Use inventoryObj with sceneObj');
 
@@ -452,7 +719,7 @@ describe('Commands at Inventory', function(){
 
     expect(inventory.current).to.be.equal(objInv.name);
 
-    expect(commandBar.showHoverMessage).to.have.been.calledWith('inventoryObj');
+    expect(commandBar.showHoverMessage).to.have.been.calledWith(objInv);
     expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
 
     expect(invCalled).to.be.equal(0); //must not call use of invObj
@@ -470,7 +737,7 @@ describe('Commands at Inventory', function(){
     scene2._update(dt);
 
     expect(commandBar.showHoverMessage)
-      .to.have.been.calledWith('inventoryObj2');
+      .to.have.been.calledWith(objInv2);
     expect(commandBar.messageBox.value)
       .to.be.equal('Use inventoryObj with inventoryObj2');
 

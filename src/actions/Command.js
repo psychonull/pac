@@ -24,14 +24,14 @@ module.exports = Action.extend({
 
   update: function(dt) {
     var obj = this.actions.owner;
+    var command = this.commandBar.current;
 
     if (obj.isHover && !this.isHovering){
-      this.commandBar.showHoverMessage(obj.name);
       this.isHovering = true;
+      this.commandBar.showHoverMessage(obj);
     }
 
     if (obj.isClicked){
-      var command = this.commandBar.current;
 
       if (obj.isInInventory){
         var join = this._onInventoryCommand(obj, command);
@@ -42,8 +42,8 @@ module.exports = Action.extend({
     }
 
     if (!obj.isHover && this.isHovering){
-      this.commandBar.hideHoverMessage();
       this.isHovering = false;
+      this.commandBar.hideHoverMessage(obj);
     }
 
   },
@@ -56,7 +56,7 @@ module.exports = Action.extend({
       invCommands && invCommands.hasOwnProperty(command)){
 
       inventory.current = obj.name;
-      this.commandBar.showHoverMessage(obj.name);
+      this.commandBar.showHoverMessage(obj);
       return true;
     }
 
@@ -65,7 +65,9 @@ module.exports = Action.extend({
 
   _onCommand: function(obj, command){
 
-    if (obj.onCommand && obj.onCommand.hasOwnProperty(command)){
+    if (obj.onCommand &&
+      obj.onCommand.hasOwnProperty(command) &&
+      typeof obj.onCommand[command] === 'function'){
 
       var cannot;
       var inventory = this.commandBar.inventory;
@@ -79,11 +81,11 @@ module.exports = Action.extend({
       }
 
       if (cannot){
-        this.commandBar.showCannotMessage(cannot);
+        this.commandBar.showCannotMessage(obj, cannot);
       }
     }
     else {
-      this.commandBar.showCannotMessage();
+      this.commandBar.showCannotMessage(obj);
     }
   }
 

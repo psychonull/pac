@@ -338,17 +338,43 @@ describe('CommandBar', function(){
     expect(cbar.hideHoverMessage).to.be.a('function');
     expect(cbar.showCannotMessage).to.be.a('function');
 
-    cbar.showHoverMessage('Crazy Monkey');
+    var fakeObj = {
+      cid: '123456789',
+      name: 'Crazy Monkey'
+    };
+
+    var fakeObj2 = {
+      cid: '987654321',
+      name: 'Crazy Monkey 2'
+    };
+
+    cbar.showHoverMessage(fakeObj);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj.cid);
     expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
 
-    cbar.hideHoverMessage();
+    cbar.hideHoverMessage(fakeObj2);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj.cid);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
+
+    cbar.hideHoverMessage(fakeObj);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj.cid);
     expect(cbar.messageBox.value).to.be.equal('');
 
-    cbar.showCannotMessage();
+    cbar.showCannotMessage(fakeObj);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj.cid);
     expect(cbar.messageBox.value).to.be.equal('I certain cannot Use that');
 
-    cbar.showCannotMessage('My custom message');
+    cbar.showCannotMessage(fakeObj, 'My custom message');
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj.cid);
     expect(cbar.messageBox.value).to.be.equal('My custom message');
+
+    cbar.showHoverMessage(fakeObj2);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj2.cid);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey 2');
+
+    cbar.hideHoverMessage(fakeObj);
+    expect(cbar.lastRequestOf).to.be.equal(fakeObj2.cid);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey 2');
   });
 
   it('must allow to be reset onEnterScene', function(){
@@ -359,7 +385,12 @@ describe('CommandBar', function(){
 
     expect(cbar._current.command).to.be.equal('use');
 
-    cbar.showHoverMessage('Crazy Monkey');
+    var fakeObj = {
+      cid: '123456789',
+      name: 'Crazy Monkey'
+    };
+
+    cbar.showHoverMessage(fakeObj);
     expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
 
     cbar.setCommand('talkto');

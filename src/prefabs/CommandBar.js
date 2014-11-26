@@ -183,29 +183,70 @@ module.exports = Rectangle.extend({
     return null;
   },
 
-  showHoverMessage: function(objName){
+  _isCommandDisabled: function(obj){
+    return (obj && obj.onCommand && obj.onCommand[this.current] === false);
+  },
+
+  _isCommandHidden: function(obj){
+    if (obj && obj.hasOwnProperty('hiddenCommands')){
+
+      if (obj.hiddenCommands === true){
+        return true;
+      }
+
+      if (Array.isArray(obj.hiddenCommands) &&
+        obj.hiddenCommands.indexOf(this.current) > -1){
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  showHoverMessage: function(obj){
+
+    if (this._isCommandDisabled(obj) || this._isCommandHidden(obj)){
+      return;
+    }
+
     var cmdValue = this._current.value,
+      name = obj.name,
       cmdCode = this.current,
       join = this._getJoin();
 
-    var message = join ? objName + ' ' + join : objName;
+    var message = join ? name + ' ' + join : name;
 
-    if (join && this.inventory.current !== objName){
-      message = this.inventory.current + ' ' + join + ' ' + objName;
+    if (join && this.inventory.current !== name){
+      message = this.inventory.current + ' ' + join + ' ' + name;
     }
 
     this.messageBox.value = cmdValue + ' ' + message;
+    this.lastRequestOf = obj.cid;
   },
 
-  hideHoverMessage: function(){
+  hideHoverMessage: function(obj){
+    if (this._isCommandDisabled(obj) || this._isCommandHidden(obj)){
+      return;
+    }
+
     if (this._getJoin()){
+      return;
+    }
+
+    if (obj && this.lastRequestOf && this.lastRequestOf !== obj.cid){
       return;
     }
 
     this.messageBox.value = '';
   },
 
-  showCannotMessage: function(message){
+  showCannotMessage: function(obj, message){
+    if (this._isCommandDisabled(obj) || this._isCommandHidden(obj)){
+      return;
+    }
+
+    this.lastRequestOf = (obj && obj.cid) || null;
+
     if (!message){
       message = this.cannotHolder.replace(/{{action}}/ig, this._current.value);
     }
@@ -222,6 +263,8 @@ module.exports = Rectangle.extend({
       this.setCommand(this.default);
     }
 
+    this.inventory.current = null;
+    this.lastRequestOf = null;
     this.hideHoverMessage();
   }
 
