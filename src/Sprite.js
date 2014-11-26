@@ -38,10 +38,14 @@ var Sprite = module.exports = Drawable.extend({
         throw new Error('Cannot create a shape for this Sprite without a size');
       }
 
-      options.shape = new Rectangle({
+      this.shape = new Rectangle({
         position: new Point(),
         size: this.size
       });
+
+      if (options){
+        options.shape = this.shape;
+      }
     }
   },
 

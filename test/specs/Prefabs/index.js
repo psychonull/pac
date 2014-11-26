@@ -14,6 +14,11 @@ describe('Prefabs', function(){
     expect(pac.prefabs.Command.prototype).to.be.an.instanceof(pac.Text);
   });
 
+  it('must expose pac.prefabs.Inventory', function(){
+    expect(pac.prefabs.Inventory).to.be.a('function');
+    expect(pac.prefabs.Inventory.prototype).to.be.an.instanceof(pac.Rectangle);
+  });
+
   it('must expose pac.prefabs.WalkableArea', function(){
     expect(pac.prefabs.WalkableArea).to.be.a('function');
     expect(pac.prefabs.WalkableArea.prototype)
@@ -28,6 +33,7 @@ describe('Prefabs', function(){
 
   require('./Command');
   require('./CommandBar');
+  require('./Inventory');
   require('./WalkableArea');
   require('./DialogueManager');
   require('./DialogueOptionsBar');
