@@ -8,6 +8,8 @@ var Scene = require('../../../../src/Scene');
 var CommandBar = require('../../../../src/prefabs/CommandBar');
 var Command = require('../../../../src/actions/Command');
 
+var Inventory = require('../../../../src/prefabs/Inventory');
+
 var Hoverable = require('../../../../src/actions/Hoverable');
 var Clickable = require('../../../../src/actions/Clickable');
 
@@ -19,6 +21,30 @@ chai.use(sinonChai);
 
 var TestObj = pac.Sprite.extend({
   texture: 'testTexture'
+});
+
+var inventory = new Inventory({
+
+  position: new Point(200, 200),
+  size: { width: 500, height: 100 },
+
+  maxItems: 4,
+
+  style: {
+
+    itemsPerRow: 2,
+
+    position: new Point(10, 20),
+    margin: { x: 10, y: 5 },
+    size: { width: 200, height: 40 },
+
+    holder: {
+      stroke: '#fff',
+      fill: '#000',
+    }
+
+  },
+
 });
 
 var commandBar = new CommandBar({
@@ -33,6 +59,12 @@ var commandBar = new CommandBar({
     'push': 'Push',
     'pull': 'Pull'
   },
+
+  inventory: inventory,
+  inventoryCommands: {
+    'use': 'with'
+  },
+
   current: 'use',
   style: {
     position: new Point(10, 20),
@@ -272,6 +304,184 @@ describe('Command', function(){
     commandBar.showHoverMessage.restore();
     commandBar.hideHoverMessage.restore();
     commandBar.showCannotMessage.restore();
+  });
+
+});
+
+describe('Commands at Inventory', function(){
+
+  var scene2;
+  before(function(){
+    // reset command bar to test with inventory
+    commandBar.onEnterScene();
+
+    scene2 = new Scene({
+      name: 'Scene02',
+      size: { width: 500, height: 600 }
+    });
+
+    scene2.game = fakeGame;
+  });
+
+  it('must fire onCommand events with inventory', function(){
+
+    sinon.spy(commandBar, 'showHoverMessage');
+    sinon.spy(commandBar, 'hideHoverMessage');
+    sinon.spy(commandBar, 'showCannotMessage');
+
+    var invCalled = 0;
+    var sceneCalled = 0;
+
+    var ObjInventory = TestObj.extend({
+      onCommand: {
+        use: function(withObj){
+          invCalled++;
+          expect(withObj).to.be.equal('inventoryObj');
+          expect(this.name).to.be.equal('inventoryObj2');
+        },
+        push: function(){
+
+        }
+      }
+
+    });
+
+    var ObjScene = TestObj.extend({
+      onCommand: {
+        use: function(withObj){
+          expect(withObj).to.be.equal('inventoryObj');
+          sceneCalled++;
+        },
+        push: function(){
+
+        }
+      }
+
+    });
+
+    var objInv = new ObjInventory({
+      name: 'inventoryObj',
+      shape: new Rectangle(),
+      actions: [ new Command() ]
+    });
+
+    var objInv2 = new ObjInventory({
+      name: 'inventoryObj2',
+      shape: new Rectangle(),
+      actions: [ new Command() ]
+    });
+
+    var objSce = new ObjScene({
+      name: 'sceneObj',
+      shape: new Rectangle(),
+      actions: [ new Command() ]
+    });
+
+    scene2.addObject(inventory);
+    scene2.addObject(commandBar);
+    scene2.addObject(objSce);
+
+    inventory.add(objInv);
+    inventory.add(objInv2);
+
+    scene2._update(dt);
+    scene2._update(dt);
+
+    expect(invCalled).to.be.equal(0);
+    expect(sceneCalled).to.be.equal(0);
+
+    // remove hover and click from actions to test only command
+    function clearHoverAndClick(obj){
+      var hoverable = obj.actions.at(0);
+      var clickable = obj.actions.at(1);
+      obj.actions.remove(hoverable).remove(clickable);
+    }
+
+    clearHoverAndClick(objInv);
+    clearHoverAndClick(objInv2);
+    clearHoverAndClick(objSce);
+
+    //start test cicle
+
+    objInv.isHover = true;
+    objInv.isClicked = true;
+    scene2._update(dt);
+
+    expect(inventory.current).to.be.equal(objInv.name);
+
+    expect(commandBar.showHoverMessage).to.have.been.calledWith('inventoryObj');
+    expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
+
+    expect(invCalled).to.be.equal(0); //must not call use of invObj
+
+    objInv.isHover = false;
+    objInv.isClicked = false;
+    scene2._update(dt);
+
+    // must keep the message on hide
+    expect(commandBar.hideHoverMessage).to.have.been.called;
+    expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
+
+    objSce.isHover = true;
+    objSce.isClicked = false;
+    scene2._update(dt);
+
+    expect(commandBar.showHoverMessage).to.have.been.calledWith('sceneObj');
+    expect(commandBar.messageBox.value)
+      .to.be.equal('Use inventoryObj with sceneObj');
+
+    objSce.isHover = true;
+    objSce.isClicked = true;
+    scene2._update(dt);
+
+    expect(sceneCalled).to.be.equal(1);
+    expect(invCalled).to.be.equal(0);
+
+    objSce.isHover = false;
+    objSce.isClicked = false;
+    scene2._update(dt);
+
+    expect(inventory.current).to.be.null;
+
+    ///////////////////////////////////////////////////
+    ///// TEST between Inventory objects
+
+    objInv.isHover = true;
+    objInv.isClicked = true;
+    scene2._update(dt);
+
+    expect(inventory.current).to.be.equal(objInv.name);
+
+    expect(commandBar.showHoverMessage).to.have.been.calledWith('inventoryObj');
+    expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
+
+    expect(invCalled).to.be.equal(0); //must not call use of invObj
+
+    objInv.isHover = false;
+    objInv.isClicked = false;
+    scene2._update(dt);
+
+    // must keep the message on hide
+    expect(commandBar.hideHoverMessage).to.have.been.called;
+    expect(commandBar.messageBox.value).to.be.equal('Use inventoryObj with');
+
+    objInv2.isHover = true;
+    objInv2.isClicked = false;
+    scene2._update(dt);
+
+    expect(commandBar.showHoverMessage)
+      .to.have.been.calledWith('inventoryObj2');
+    expect(commandBar.messageBox.value)
+      .to.be.equal('Use inventoryObj with inventoryObj2');
+
+    objInv2.isHover = true;
+    objInv2.isClicked = true;
+    scene2._update(dt);
+
+    expect(invCalled).to.be.equal(1); // must call second object
+
+    scene2.objects.clear();
+
   });
 
 });

@@ -19,6 +19,13 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
+var fakeInventory = {
+  current: null,
+  has: function(){},
+  add: function(){},
+  remove: function(){}
+};
+
 var commandBarOpts = {
   position: new Point(200, 200),
   size: { width: 500, height: 100 },
@@ -31,10 +38,16 @@ var commandBarOpts = {
     fill: '#fff',
   },
 
+  inventory: fakeInventory,
+  inventoryCommands: {
+    'use': 'with',
+    'give': 'to'
+  },
+
   commands: {
     'use': 'Use',
     'walkto': 'Walk To',
-    'push': 'Push',
+    'give': 'Push',
     'talkto': 'Talk To'
   },
 
@@ -61,7 +74,7 @@ var commandBarOpts = {
 
     grid: [
       ['use',  'walkto'],
-      ['push', 'talkto']
+      ['give', 'talkto']
     ],
   },
 
@@ -70,7 +83,7 @@ var commandBarOpts = {
 var gridPositions = {
   'use': { x: 10, y: 5 },
   'walkto': { x: 220, y: 5 },
-  'push': { x: 10, y: 50 },
+  'give': { x: 10, y: 50 },
   'talkto': { x: 220, y: 50 }
 };
 
@@ -100,6 +113,9 @@ describe('CommandBar', function(){
     expect(cbar.messageBox.fill).to.be.equal('#fff');
     expect(cbar.messageBox.position.x).to.be.equal(210);
     expect(cbar.messageBox.position.y).to.be.equal(220);
+
+    expect(cbar.inventory.current).to.be.null;
+    expect(cbar.inventoryCommands).to.be.ok;
 
     expect(cbar.current).to.be.equal('use');
     expect(cbar.children).to.be.instanceof(GameObjectList);

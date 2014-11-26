@@ -22,6 +22,9 @@ module.exports = Rectangle.extend({
   commands: {},
   current: null,
 
+  inventory: null,
+  inventoryCommands: { },
+
   messageBox: { },
   style: { },
 
@@ -32,7 +35,9 @@ module.exports = Rectangle.extend({
       'cannotHolder',
       'commands',
       'messageBox',
-      'current'
+      'current',
+      'inventory',
+      'inventoryCommands'
     ];
 
     function setProp(prop){
@@ -146,6 +151,7 @@ module.exports = Rectangle.extend({
   },
 
   setCommand: function(commandName){
+
     if (commandName === this.current){
       return;
     }
@@ -168,11 +174,34 @@ module.exports = Rectangle.extend({
     return false;
   },
 
-  showHoverMessage: function(message){
-    this.messageBox.value = this._current.value + ' ' + message;
+  _getJoin: function(){
+    if (this.inventory && this.inventory.current){
+      var invCmds = this.inventoryCommands;
+      return invCmds[this.current];
+    }
+
+    return null;
+  },
+
+  showHoverMessage: function(objName){
+    var cmdValue = this._current.value,
+      cmdCode = this.current,
+      join = this._getJoin();
+
+    var message = join ? objName + ' ' + join : objName;
+
+    if (join && this.inventory.current !== objName){
+      message = this.inventory.current + ' ' + join + ' ' + objName;
+    }
+
+    this.messageBox.value = cmdValue + ' ' + message;
   },
 
   hideHoverMessage: function(){
+    if (this._getJoin()){
+      return;
+    }
+
     this.messageBox.value = '';
   },
 

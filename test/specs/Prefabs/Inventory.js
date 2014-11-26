@@ -25,11 +25,6 @@ var inventoryOpts = {
 
   maxItems: 4,
 
-  commands: {
-    'use': 'with',
-    'give': 'to'
-  },
-
   style: {
 
     itemsPerRow: 2,

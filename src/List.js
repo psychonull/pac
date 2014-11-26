@@ -157,6 +157,7 @@ var List = module.exports = Emitter.extend({
       this.length -= removed.length;
       this.emit('remove', removed[0]);
     }
+    return this;
   },
 
   clear: function(){
