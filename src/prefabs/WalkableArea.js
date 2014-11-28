@@ -73,7 +73,15 @@ module.exports = Drawable.extend({
 
     var cancelCommand = false;
     if (command && this.commands.indexOf(command) > -1){
+
       cancelCommand = true;
+
+      // if the object has a command for this action
+      // do not cancel the command
+      if (obj.onCommand && obj.onCommand.hasOwnProperty(command) &&
+        typeof obj.onCommand[command] === 'function'){
+          cancelCommand = false;
+      }
     }
 
     var toPos = obj.position;
