@@ -49,7 +49,7 @@ module.exports = Action.extend({
   update: function(dt) {
     this.elapsed += dt;
     if(this.elapsed >= this.duration ||
-        this.actions.owner.game.inputs.cursor.isDown){
+        (this.actions.owner.game.inputs.cursor.isDown && this.elapsed > 1)){
       this.isFinished = true;
     }
   }
