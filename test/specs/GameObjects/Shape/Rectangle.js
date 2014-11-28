@@ -79,6 +79,64 @@ describe('Rectangle', function(){
       expect(outsideOffset).to.be.false;
     });
 
+    it ('#getPoints', function(){
+
+      var rect = new Rectangle({
+        position: new Point(10, 50),
+        size: { width: 100, height: 50 }
+      });
+
+      var points = rect.getPoints();
+      expect(points.length).to.be.equal(4);
+
+      var ps = [
+        { x: 10, y: 50 },
+        { x: 110, y: 50 },
+        { x: 110, y: 100 },
+        { x: 10, y: 100 },
+      ];
+
+      ps.forEach(function(p, i){
+        expect(points[i].x).to.be.equal(p.x);
+        expect(points[i].y).to.be.equal(p.y);
+      });
+
+      var offset = new Point(10, 20);
+
+      points = rect.getPoints(offset);
+      expect(points.length).to.be.equal(4);
+
+      ps = [
+        { x: 20, y: 70 },
+        { x: 120, y: 70 },
+        { x: 120, y: 120 },
+        { x: 20, y: 120 },
+      ];
+
+      ps.forEach(function(p, i){
+        expect(points[i].x).to.be.equal(p.x);
+        expect(points[i].y).to.be.equal(p.y);
+      });
+
+    });
+
+    it ('#nearestPoint', function(){
+
+      var rect = new Rectangle({
+        position: new Point(50, 80),
+        size: { width: 130, height: 100 }
+      });
+
+      var nearest = rect.nearestPoint(new Point(150, 10));
+      expect(Math.round(nearest.x)).to.be.equal(150);
+      expect(Math.round(nearest.y)).to.be.equal(80);
+
+      nearest = rect.nearestPoint(new Point(150, 10), new Point(50, 20));
+      expect(Math.round(nearest.x)).to.be.equal(150);
+      expect(Math.round(nearest.y)).to.be.equal(100);
+
+    });
+
   });
 
 });

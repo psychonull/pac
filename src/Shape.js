@@ -18,6 +18,10 @@ module.exports = Drawable.extend({
 
   isPointInside: function(point, offset){
     throw new Error('Must Implement Shape.isPointInside()');
-  }
+  },
+
+  nearestPoint: function(point, offset){
+    throw new Error('Must Implement Shape.nearestPoint()');
+  },
 
 });

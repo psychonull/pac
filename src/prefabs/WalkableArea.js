@@ -6,6 +6,7 @@ var GameObjectList = require('../GameObjectList');
 var Clickable = require('../actions/Clickable');
 var Command = require('../actions/Command');
 var WalkTo = require('../actions/WalkTo');
+var Point = require('../Point');
 
 module.exports = Drawable.extend({
 
@@ -48,7 +49,7 @@ module.exports = Drawable.extend({
     this.moveWalkers(pos);
   },
 
-  moveWalkers: function(toPos){
+  moveWalkers: function(toPos, nearness){
 
     this.walkers.each(function(walker){
 
@@ -59,10 +60,35 @@ module.exports = Drawable.extend({
       walker.actions.pushFront(new WalkTo({
         target: toPos,
         velocity: walker.velocity,
-        pivot: walker.feet
+        pivot: walker.feet,
+        nearness: nearness || 1
       }));
 
     });
+  },
+
+  moveWalkersToObject: function(obj, nearness, command){
+
+    var cancelCommand = false;
+    if (command && this.commands.indexOf(command) > -1){
+      cancelCommand = true;
+    }
+
+    var toPos = obj.position;
+
+    if (obj.shape && obj.shape.size){
+      var size = new Point(obj.shape.size.width/2, obj.shape.size.height);
+      toPos = toPos.add(size);
+    }
+
+    if (!this.shape.isPointInside(toPos, this.position)){
+      // is outside the walkable area
+      toPos = this.shape.nearestPoint(toPos, this.position);
+    }
+
+    this.moveWalkers(toPos, nearness);
+
+    return cancelCommand;
   },
 
   addWalker: function(walker){

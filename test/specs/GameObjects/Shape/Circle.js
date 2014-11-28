@@ -77,6 +77,22 @@ describe('Circle', function(){
       expect(outsideOffset).to.be.false;
     });
 
+    it ('#nearestPoint', function(){
+      var circle = new Circle({
+        position: new Point(50, 50),
+        radius: 30
+      });
+
+      var nearest = circle.nearestPoint(new Point(150, 10));
+      expect(Math.round(nearest.x)).to.be.equal(78);
+      expect(Math.round(nearest.y)).to.be.equal(39);
+
+      nearest = circle.nearestPoint(new Point(150, 10), new Point(10, 20));
+      expect(Math.round(nearest.x)).to.be.equal(85);
+      expect(Math.round(nearest.y)).to.be.equal(53);
+
+    });
+
   });
 
 });

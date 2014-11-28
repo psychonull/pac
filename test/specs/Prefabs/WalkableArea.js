@@ -9,6 +9,9 @@ var Clickable = require('../../../src/actions/Clickable');
 var Command = require('../../../src/actions/Command');
 var WalkTo = require('../../../src/actions/WalkTo');
 
+var Sprite = require('../../../src/Sprite');
+var Drawable = require('../../../src/Drawable');
+
 var WalkableArea = require('../../../src/prefabs/WalkableArea');
 
 var chai = require('chai');
@@ -248,6 +251,182 @@ describe('WalkableArea', function(){
       expect(act.pivot.y).to.be.equal(fakeWalker.feet.y);
 
       WalkableArea.prototype.moveWalkers.restore();
+    });
+
+  });
+
+  describe('#moveWalkersToObject', function(){
+
+    var TestObjSp;
+    var TestObjDr;
+    var walkableOpts;
+
+    before(function(){
+
+      TestObjSp = Sprite.extend({
+        texture: 'testTexture'
+      });
+
+      TestObjDr = Drawable.extend();
+
+      walkableOpts = {
+        position: new Point(100, 100),
+      };
+
+    });
+
+    it('must have the function', function(){
+      var opts = _.clone(walkableOpts, true);
+
+      opts.shape = new Rectangle({
+        position: new pac.Point(100, 100),
+        size: { width: 200, height: 300 }
+      });
+
+      var warea = new WalkableArea(_.clone(opts, true));
+
+      expect(warea.moveWalkersToObject).to.be.a('function');
+    });
+
+    it('must call #moveWalkers with a position of object', function(){
+      var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
+
+      var opts = _.clone(walkableOpts, true);
+
+      opts.shape = new Rectangle({
+        position: new pac.Point(100, 100),
+        size: { width: 200, height: 300 }
+      });
+
+      opts.commands = ['walkto'];
+
+      var warea = new WalkableArea(opts);
+      warea.game = _.clone(fakeGame);
+
+      var pos = new Point(250, 250);
+      var distance = 5;
+
+      var testObj = new TestObjDr({
+        position: pos
+      });
+
+      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+
+      expect(cancel).to.be.false;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+      expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
+
+      warea.moveWalkers.reset();
+
+      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
+
+      expect(cancel).to.be.true;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+      expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
+
+      WalkableArea.prototype.moveWalkers.restore();
+
+    });
+
+    it('must call #moveWalkers with a FEET position by Shape', function(){
+      var spyCall;
+      var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
+
+      var opts = _.clone(walkableOpts, true);
+
+      opts.shape = new Rectangle({
+        position: new pac.Point(100, 100),
+        size: { width: 200, height: 300 }
+      });
+
+      opts.commands = ['walkto'];
+
+      var warea = new WalkableArea(opts);
+      warea.game = _.clone(fakeGame);
+
+      var pos = new Point(250, 250);
+      var distance = 5;
+      var shape = new Rectangle({ size: { width: 50, height: 50 }});
+
+      var testObj = new TestObjSp({
+        position: pos,
+        shape: shape
+      });
+
+      var psize = new Point(shape.size.width/2, shape.size.height);
+      var p = pos.add(psize);
+
+      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+
+      expect(cancel).to.be.false;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+
+      spyCall = warea.moveWalkers.getCall(0);
+      expect(spyCall.args[0].x).to.be.equal(p.x);
+      expect(spyCall.args[0].y).to.be.equal(p.y);
+
+      warea.moveWalkers.reset();
+
+      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
+
+      expect(cancel).to.be.true;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+
+      spyCall = warea.moveWalkers.getCall(0);
+      expect(spyCall.args[0].x).to.be.equal(p.x);
+      expect(spyCall.args[0].y).to.be.equal(p.y);
+
+      WalkableArea.prototype.moveWalkers.restore();
+    });
+
+    it('must call #moveWalkers with a point inside the area', function(){
+      var spyCall;
+      var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
+
+      var opts = _.clone(walkableOpts, true);
+
+      opts.shape = new Rectangle({
+        position: new pac.Point(100, 100),
+        size: { width: 200, height: 300 }
+      });
+
+      opts.commands = ['walkto'];
+
+      var warea = new WalkableArea(opts);
+      warea.game = _.clone(fakeGame);
+
+      var pos = new Point(50, 20);
+      var distance = 5;
+      var shape = new Rectangle({ size: { width: 50, height: 50 }});
+
+      // is outside of the area
+      var testObj = new TestObjSp({
+        position: pos,
+        shape: shape
+      });
+
+      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+
+      expect(cancel).to.be.false;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+
+      spyCall = warea.moveWalkers.getCall(0);
+      expect(spyCall.args[0].x).to.be.equal(200);
+      expect(spyCall.args[0].y).to.be.equal(200);
+
+      warea.moveWalkers.reset();
+
+      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
+
+      expect(cancel).to.be.true;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+
+      spyCall = warea.moveWalkers.getCall(0);
+      expect(spyCall.args[0].x).to.be.equal(200);
+      expect(spyCall.args[0].y).to.be.equal(200);
+
+      WalkableArea.prototype.moveWalkers.restore();
+
     });
 
   });

@@ -23,6 +23,11 @@ describe('Shape', function(){
         var shape = new Shape();
         shape.isPointInside();
       }).to.throw('Must Implement Shape.isPointInside()');
+
+      expect(function(){
+        var shape = new Shape();
+        shape.nearestPoint();
+      }).to.throw('Must Implement Shape.nearestPoint()');
     });
 
     it ('must create with defaults', function(){

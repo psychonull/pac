@@ -7,6 +7,7 @@ var Rectangle = require('../../../../src/Rectangle');
 var Scene = require('../../../../src/Scene');
 var CommandBar = require('../../../../src/prefabs/CommandBar');
 var Command = require('../../../../src/actions/Command');
+var WalkableArea = require('../../../../src/prefabs/WalkableArea');
 
 var Inventory = require('../../../../src/prefabs/Inventory');
 
@@ -58,7 +59,8 @@ var commandBar = new CommandBar({
     'use': 'Use',
     'push': 'Push',
     'pull': 'Pull',
-    'give': 'Give'
+    'give': 'Give',
+    'walkto': 'Walk To'
   },
 
   inventory: inventory,
@@ -93,8 +95,12 @@ var fakeGame = {
     }
   },
 
-  findOne: function(){
-    return commandBar;
+  findOne: function(name){
+    if (name === 'CommandBar'){
+      return commandBar;
+    }
+
+    return null;
   }
 };
 
@@ -193,8 +199,11 @@ describe('Command', function(){
 
     scene.addObject(commandBar);
     scene.addObject(obj);
+
     scene._update(dt);
     scene._update(dt);
+
+    expect(cmdAction.walkableArea).to.be.null;
 
     expect(useCalled).to.be.equal(0);
     expect(pushCalled).to.be.equal(0);
@@ -749,6 +758,159 @@ describe('Commands at Inventory', function(){
 
     scene2.objects.clear();
 
+  });
+
+});
+
+describe('Command with WalkableArea', function(){
+
+  var scene3;
+  var walkableArea;
+  before(function(){
+
+    walkableArea = new WalkableArea({
+      position: new Point(200, 200),
+      shape: new Rectangle({
+        position: new pac.Point(0,0),
+        size: { width: 200, height: 100 }
+      }),
+      commands: [ 'walkto' ]
+    });
+
+    var fakeGameWalkable = {
+      inputs: {
+        cursor: {
+          isDown: false,
+          position: new Point()
+        }
+      },
+
+      findOne: function(name){
+        if (name === 'CommandBar'){
+          return commandBar;
+        }
+        if (name === 'WalkableArea'){
+          return walkableArea;
+        }
+
+        return null;
+      }
+    };
+
+    // reset command bar to test with inventory
+    commandBar.onEnterScene();
+
+    scene3 = new Scene({
+      name: 'Scene03',
+      size: { width: 500, height: 600 }
+    });
+
+    scene3.game = fakeGameWalkable;
+  });
+
+  it('must fire onCommand events with a walkableArea', function(){
+
+    sinon.spy(walkableArea, 'moveWalkersToObject');
+
+    var calledUse = 0;
+    var calledWalkTo = 0;
+    var ObjScene = TestObj.extend({
+      onCommand: {
+        use: function(){
+          calledUse++;
+        },
+        walkto: function(){
+          calledWalkTo++;
+        }
+      }
+    });
+
+    var cmd = new Command();
+
+    var obj = new ObjScene({
+      name: 'sceneObj',
+      shape: new Rectangle(),
+      actions: [ cmd ]
+    });
+
+    scene3.addObject(commandBar);
+    scene3.addObject(obj);
+
+    scene3._update(dt);
+    scene3._update(dt);
+
+    // remove hover and click from actions to test only command
+    function clearHoverAndClick(obj){
+      var hoverable = obj.actions.at(0);
+      var clickable = obj.actions.at(1);
+      obj.actions.remove(hoverable).remove(clickable);
+    }
+
+    clearHoverAndClick(obj);
+
+    obj.isHover = true;
+    obj.isClicked = false;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).not.to.have.been.called;
+    expect(cmd.walkingTo).to.be.false;
+    expect(calledUse).to.be.equal(0);
+
+    obj.isHover = true;
+    obj.isClicked = true;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).to.have.been.calledWith(obj);
+    expect(cmd.walkingTo).to.be.true;
+    expect(calledUse).to.be.equal(0);
+
+    walkableArea.moveWalkersToObject.reset();
+
+    obj.isHover = false;
+    obj.isClicked = false;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).not.to.have.been.called;
+    expect(cmd.walkingTo).to.be.false;
+    expect(calledUse).to.be.equal(1);
+
+    // Check cancel commands
+
+    commandBar.setCommand('walkto');
+    walkableArea.moveWalkersToObject.reset();
+
+    scene3._update(dt);
+
+    obj.isHover = true;
+    obj.isClicked = false;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).not.to.have.been.called;
+    expect(cmd.walkingTo).to.be.false;
+    expect(cmd.cancelCommand).to.be.false;
+    expect(calledWalkTo).to.be.equal(0);
+
+    obj.isHover = true;
+    obj.isClicked = true;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).to.have.been.calledWith(obj);
+    expect(cmd.walkingTo).to.be.true;
+    expect(cmd.cancelCommand).to.be.true;
+    expect(calledWalkTo).to.be.equal(0);
+
+    walkableArea.moveWalkersToObject.reset();
+
+    obj.isHover = false;
+    obj.isClicked = false;
+    scene3._update(dt);
+
+    expect(walkableArea.moveWalkersToObject).not.to.have.been.called;
+    expect(cmd.walkingTo).to.be.false;
+    expect(cmd.cancelCommand).to.be.false;
+    expect(calledWalkTo).to.be.equal(0);
+
+    scene3.objects.clear();
   });
 
 });

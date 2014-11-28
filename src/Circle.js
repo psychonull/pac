@@ -19,6 +19,17 @@ module.exports = Shape.extend({
     }
 
     return point.subtract(pos).length() <= this.radius;
-  }
+  },
+
+  nearestPoint: function(point, offset){
+    var pos = this.position;
+
+    if (offset){
+      pos = pos.add(offset);
+    }
+
+    var near = point.subtract(pos).normalize(this.radius);
+    return near.add(pos);
+  },
 
 });

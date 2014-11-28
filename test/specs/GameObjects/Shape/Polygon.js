@@ -85,6 +85,26 @@ describe('Polygon', function(){
       expect(path).to.eql([0,0,1,1,2,1]);
     });
 
+    it ('#nearestPoint', function(){
+
+      var poly = new Polygon([
+        new Point(30, 50),
+        new Point(120, 70),
+        new Point(130, 140),
+        new Point(80, 210),
+        new Point(50, 170)
+      ]);
+
+      var nearest = poly.nearestPoint(new Point(90, 10));
+      expect(Math.round(nearest.x)).to.be.equal(79);
+      expect(Math.round(nearest.y)).to.be.equal(61);
+
+      nearest = poly.nearestPoint(new Point(90, 10), new Point(50, 20));
+      expect(Math.round(nearest.x)).to.be.equal(80);
+      expect(Math.round(nearest.y)).to.be.equal(70);
+
+    });
+
     it('#isConcave', function(){
       var convex = new Polygon([0,0 , 0,2 , 2,2 , 2,0]);
 
