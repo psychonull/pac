@@ -244,6 +244,15 @@ var PixiRenderer = module.exports = Renderer.extend({
     }
     text.visible = obj.visible;
 
+    if(obj.wrapToScreen && obj.wordWrap){
+      if(obj.position.x + obj.wordWrap > this.size.width){
+        text.position.x = this.size.width - obj.wordWrap;
+      }
+      else if(obj.position.x < 0){
+        text.position = 0;
+      }
+    }
+
   },
 
   _getPixiObjectByCID: function(cid, container){
