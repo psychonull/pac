@@ -8,6 +8,8 @@ var Command = require('../actions/Command');
 var WalkTo = require('../actions/WalkTo');
 var Point = require('../Point');
 
+var WaitForWalker = require('../actions/WaitForWalker');
+
 module.exports = Drawable.extend({
 
   name: 'WalkableArea',
@@ -85,6 +87,15 @@ module.exports = Drawable.extend({
       // is outside the walkable area
       toPos = this.shape.nearestPoint(toPos, this.position);
     }
+
+    /* START - NOT TESTED */
+    var walker = this.walkers.get(0);
+    if (obj.actions && walker){
+      obj.actions.pushFront(new WaitForWalker({
+        walker: walker
+      }));
+    }
+    /* END - NOT TESTED */
 
     this.moveWalkers(toPos, nearness);
 

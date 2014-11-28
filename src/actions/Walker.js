@@ -21,8 +21,6 @@ module.exports = Action.extend({
     if (!this.walkableArea){
       this.isFinished = true;
       return;
-      //throw new Error('A WalkableArea with name [' + this.area +
-      //  '] was not found.');
     }
 
     if (!this.feet){

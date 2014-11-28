@@ -3,6 +3,8 @@ var Action = require('../Action');
 var Hoverable = require('./Hoverable');
 var Clickable = require('./Clickable');
 
+var WaitForWalker = require('../actions/WaitForWalker');
+
 module.exports = Action.extend({
 
   requires: [ Hoverable, Clickable ],
@@ -50,6 +52,10 @@ module.exports = Action.extend({
   },
 
   _onCommandFired: function(obj, command){
+
+    if (this.actions.has(WaitForWalker)){
+      return;
+    }
 
     if (!this.walkingTo && this._walkto(obj, command)){
       this.walkingTo = true;
