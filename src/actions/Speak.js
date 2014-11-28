@@ -25,7 +25,7 @@ module.exports = Action.extend({
     this.elapsed = 0;
     var owner = this.actions.owner;
     owner.speakerText.value = this.text;
-    if(owner.speakerText.wordWrap){
+    if(owner.speakerText.wordWrap && !owner.speakerText.avoidAutoWrap){
       if(this.text.length < 50){
         owner.speakerText.wordWrap = 120;
       }
