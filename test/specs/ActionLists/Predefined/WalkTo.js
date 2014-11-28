@@ -124,6 +124,8 @@ describe('WalkTo', function(){
       expect(obj.position.y).to.be.equal(position.y);
     }
 
+    walkto.update(dt);
+
     expect(walkto.isFinished).to.be.true;
 
     var lenToTarget = position.add(pivot).subtract(target).length();
