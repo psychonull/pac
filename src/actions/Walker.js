@@ -4,6 +4,8 @@ var Point = require('../Point');
 
 module.exports = Action.extend({
 
+  name: 'Walker',
+
   init: function(options) {
     this.area = (options && options.area) || 'WalkableArea';
     this.velocity = (options && options.velocity) || 10;

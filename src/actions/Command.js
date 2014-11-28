@@ -7,6 +7,8 @@ module.exports = Action.extend({
 
   requires: [ Hoverable, Clickable ],
 
+  name: 'Command',
+
   init: function() { },
 
   onStart: function() {
@@ -79,7 +81,7 @@ module.exports = Action.extend({
 
     if (this.walkableArea && !obj.isInInventory){
       this.cancelCommand =
-        this.walkableArea.moveWalkersToObject(obj, 1, command);
+        this.walkableArea.moveWalkersToObject(obj, 30, command);
 
       return true;
     }

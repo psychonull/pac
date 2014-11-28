@@ -6,6 +6,8 @@ var Command = require('./Command');
 
 module.exports = Action.extend({
 
+  name: 'Dialoguer',
+
   requires: [Command],
   options: null,
   command: 'talkto',

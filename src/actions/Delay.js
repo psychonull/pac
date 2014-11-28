@@ -3,6 +3,8 @@ var Action = require('../Action');
 
 module.exports = Action.extend({
 
+  name: 'Delay',
+
   init: function(duration){
     this.isBlocking = true;
 

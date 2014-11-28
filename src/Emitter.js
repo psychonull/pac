@@ -7,6 +7,7 @@ var Emitter = module.exports = Base.extend({
   constructor: function(){
     EventEmitter.call(this);
     Emitter.__super__.constructor.apply(this, arguments);
+    this.setMaxListeners(100);
   },
 
   init: function(){ }

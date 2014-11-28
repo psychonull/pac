@@ -4,6 +4,8 @@ var Point = require('../Point');
 
 module.exports = Action.extend({
 
+  name: 'WalkTo',
+
   init: function(options) {
     this.target = options && options.target;
 
@@ -34,6 +36,11 @@ module.exports = Action.extend({
   },
 
   update: function(dt) {
+    if (this.target.subtract(this.offset).length() <= this.nearness){
+      this.isFinished = true;
+      return;
+    }
+
     var obj = this.actions.owner;
 
     var m = this.velocity * dt;
@@ -45,11 +52,6 @@ module.exports = Action.extend({
     //TODO: check parseInt (wont work nice on a big scale)
     //obj.position.x = parseInt(obj.position.x, 10);
     //obj.position.y = parseInt(obj.position.y, 10);
-
-    if (this.target.subtract(this.offset).length() <= this.nearness){
-      this.isFinished = true;
-    }
-
   }
 
 });

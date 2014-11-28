@@ -5,6 +5,8 @@ var Text = require('../Text');
 
 module.exports = Action.extend({
 
+  name: 'Speaker',
+
   textOptions: {},
   offset: new Point(),
   smartPosition: true,

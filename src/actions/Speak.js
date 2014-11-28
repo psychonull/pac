@@ -6,6 +6,8 @@ var Speaker = require('./Speaker');
 
 module.exports = Action.extend({
 
+  name: 'Speak',
+
   requires: [Speaker],
 
   text: '',
