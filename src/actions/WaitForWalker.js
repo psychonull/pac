@@ -11,7 +11,13 @@ module.exports = Action.extend({
 
   onStart: function() {
     this.walkStopListener = this._onWalkStop.bind(this);
-    this.walker.on('walk:stop', this.walkStopListener);
+
+    if (!this.walker.walkingTo){
+      this.isFinished = true;
+    }
+    else {
+      this.walker.on('walk:stop', this.walkStopListener);
+    }
   },
 
   _onWalkStop: function(targetReached){

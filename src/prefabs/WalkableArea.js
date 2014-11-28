@@ -88,6 +88,8 @@ module.exports = Drawable.extend({
       toPos = this.shape.nearestPoint(toPos, this.position);
     }
 
+    this.moveWalkers(toPos, nearness);
+
     /* START - NOT TESTED */
     var walker = this.walkers.get(0);
     if (obj.actions && walker){
@@ -96,8 +98,6 @@ module.exports = Drawable.extend({
       }));
     }
     /* END - NOT TESTED */
-
-    this.moveWalkers(toPos, nearness);
 
     return cancelCommand;
   },

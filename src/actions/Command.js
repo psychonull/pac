@@ -136,6 +136,10 @@ module.exports = Action.extend({
     else {
       this.commandBar.showCannotMessage(obj);
     }
+
+    if (obj.name !== 'WalkableArea'){
+      this.commandBar.resetCommand();
+    }
   }
 
 });
