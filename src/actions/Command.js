@@ -31,6 +31,10 @@ module.exports = Action.extend({
   onEnd: function() { },
 
   update: function(dt) {
+    if (!this.commandBar.active){
+      return;
+    }
+
     var obj = this.actions.owner;
     var command = this.commandBar.current;
 
