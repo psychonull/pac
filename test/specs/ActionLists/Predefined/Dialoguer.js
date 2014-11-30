@@ -2,7 +2,7 @@
 var pac = require('../../../../src/pac');
 var _ = require('../../../../src/utils');
 var Dialoguer = require('../../../../src/actions/Dialoguer');
-var Command = require('../../../../src/actions/Command');
+var Commander = require('../../../../src/actions/Commander');
 var DialogueManager = require('../../../../src/prefabs/DialogueManager');
 
 var chai = require('chai');
@@ -31,9 +31,9 @@ describe('Dialoguer', function(){
     expect(dialoguer.isRunning).to.be.false;
   });
 
-  it('must require Command', function(){
+  it('must require Commander', function(){
     expect(Dialoguer.prototype.requires).to.have.length(1);
-    expect(Dialoguer.prototype.requires[0]).to.equal(Command);
+    expect(Dialoguer.prototype.requires[0]).to.equal(Commander);
   });
 
   describe('#onStart', function(){

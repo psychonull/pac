@@ -11,8 +11,8 @@ var List = module.exports = Emitter.extend({
 
   init: function(items, options){
 
-    if (items && !Array.isArray(items)){
-      throw new Error('invalid argument, expected an array');
+    if (items && !Array.isArray(items) && (!(items instanceof List)) ){
+      throw new Error('invalid argument, expected an array or List');
     }
 
     this._items = [];
@@ -20,7 +20,10 @@ var List = module.exports = Emitter.extend({
 
     this.comparator = (options && options.comparator) || this.comparator;
 
-    if (items && items.length > 0){
+    if (items instanceof List){
+      items.each(this._set.bind(this));
+    }
+    else if (items && items.length > 0){
       items.forEach(this._set.bind(this));
     }
   },

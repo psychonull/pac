@@ -377,6 +377,53 @@ describe('CommandBar', function(){
     expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey 2');
   });
 
+  it('must allow to show inventory join messages', function(){
+
+    var cbar = new CommandBar(_.clone(commandBarOpts, true));
+
+    var fakeObj = {
+      cid: '123456789',
+      name: 'Crazy Monkey'
+    };
+
+    var fakeObj2 = {
+      cid: '987654321',
+      name: 'Crazy Monkey 2'
+    };
+
+    cbar.setCommand('use');
+
+    cbar.showHoverMessage(fakeObj);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
+
+    cbar.inventory.current = 'Crazy Monkey';
+
+    cbar.showHoverMessage(fakeObj);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey with');
+
+    cbar.showHoverMessage(fakeObj2);
+    expect(cbar.messageBox.value)
+      .to.be.equal('Use Crazy Monkey with Crazy Monkey 2');
+
+    cbar.inventory.current = null;
+  });
+
+  it('must allow to reset a command', function(){
+
+    var cbar = new CommandBar(_.clone(commandBarOpts, true));
+
+    expect(cbar.resetCommand).to.be.a('function');
+
+    expect(cbar._current.command).to.be.equal('use');
+
+    cbar.setCommand('talkto');
+    expect(cbar._current.command).to.be.equal('talkto');
+
+    cbar.resetCommand();
+
+    expect(cbar._current.command).to.be.equal('use');
+  });
+
   it('must allow to be reset onEnterScene', function(){
 
     var cbar = new CommandBar(_.clone(commandBarOpts, true));

@@ -1,112 +1,26 @@
 
-var Action = require('../Action');
-var Hoverable = require('./Hoverable');
-var Clickable = require('./Clickable');
+var BaseCommand = require('./BaseCommand');
+//var WalkableArea = require('../prefabs/WalkableArea');
 
-module.exports = Action.extend({
-
-  requires: [ Hoverable, Clickable ],
+var Command = module.exports = BaseCommand.extend({
 
   name: 'Command',
 
-  init: function() { },
+  init: function() {
+    Command.__super__.init.apply(this, arguments);
+  },
 
   onStart: function() {
-    var game = this.actions.owner.game;
-
-    this.commandBar = game.findOne('CommandBar');
-    if (!this.commandBar){
-      throw new Error('A CommandBar was not found.');
-    }
-
-    this.walkableArea = game.findOne('WalkableArea');
-
-    this.isHovering = false;
-    this.walkingTo = false;
-    this.cancelCommand = false;
+    Command.__super__.onStart.apply(this, arguments);
   },
 
   onEnd: function() { },
 
   update: function(dt) {
     var obj = this.actions.owner;
-    var command = this.commandBar.current;
+    var command = this.command;
 
-    if (obj.isHover && !this.isHovering){
-      this.isHovering = true;
-      this.commandBar.showHoverMessage(obj);
-    }
-
-    if (obj.isClicked || this.walkingTo){
-      this._onCommandFired(obj, command);
-      return;
-    }
-
-    if (!obj.isHover && this.isHovering){
-      this.isHovering = false;
-      this.commandBar.hideHoverMessage(obj);
-    }
-
-  },
-
-  _onCommandFired: function(obj, command){
-
-    if (!this.walkingTo && this._walkto(obj, command)){
-      this.walkingTo = true;
-      return;
-    }
-
-    if (this.walkingTo && this.cancelCommand){
-      this.walkingTo = false;
-      this.cancelCommand = false;
-      return;
-    }
-
-    this.walkingTo = false;
-
-    if (obj.isInInventory){
-      var join = this._onInventoryCommand(obj, command);
-      if (join) { return; } //made a join nothing else to do
-    }
-
-    this._runCommand(obj, command);
-  },
-
-  _walkto: function(obj, command){
-    this.cancelCommand = false;
-
-    if (obj.name === 'WalkableArea'){
-      return;
-    }
-
-    if (this.walkableArea && !obj.isInInventory){
-      this.cancelCommand =
-        this.walkableArea.moveWalkersToObject(obj, 30, command);
-
-      return true;
-    }
-  },
-
-  _onInventoryCommand: function(obj, command){
-    var inventory = this.commandBar.inventory,
-      invCommands = this.commandBar.inventoryCommands;
-
-    if (inventory && !inventory.current &&
-      invCommands && invCommands.hasOwnProperty(command)){
-
-      inventory.current = obj.name;
-      this.commandBar.showHoverMessage(obj);
-      return true;
-    }
-
-    return false;
-  },
-
-  _runCommand: function(obj, command){
-
-    if (obj.onCommand &&
-      obj.onCommand.hasOwnProperty(command) &&
-      typeof obj.onCommand[command] === 'function'){
+    if (this.hasCommand()){
 
       var cannot;
       var inventory = this.commandBar.inventory;
@@ -119,13 +33,23 @@ module.exports = Action.extend({
         cannot = obj.onCommand[command].call(obj);
       }
 
-      if (cannot){
+      if (cannot) {
         this.commandBar.showCannotMessage(obj, cannot);
       }
+
     }
     else {
       this.commandBar.showCannotMessage(obj);
     }
-  }
+
+    // TODO: how to make this work with Browserify Circular Dependency?
+    //if (!(obj instanceof WalkableArea)){
+
+    if (this.walkableArea && obj.name !== this.walkableArea.name){
+      this.commandBar.resetCommand();
+    }
+
+    this.isFinished = true;
+  },
 
 });

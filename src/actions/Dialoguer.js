@@ -2,13 +2,13 @@
 var Action = require('../Action');
 var _ = require('../utils');
 var DialogueManager = require('../prefabs/DialogueManager');
-var Command = require('./Command');
+var Commander = require('./Commander');
 
 module.exports = Action.extend({
 
   name: 'Dialoguer',
 
-  requires: [Command],
+  requires: [ Commander ],
   options: null,
   command: 'talkto',
 

@@ -55,6 +55,17 @@ describe('List', function(){
       expect(list._items.length).to.be.equal(2);
     });
 
+    it('must allow to create from a List', function(){
+      var listFrom = new List([ new TestItem(), new TestItem() ]);
+      var list = new List(listFrom);
+
+      expect(list.length).to.be.equal(2);
+      expect(list._items.length).to.be.equal(2);
+
+      listFrom.clear();
+      expect(list.length).to.be.equal(2);
+    });
+
     it('must allow to create from an array of generic jsons', function(){
       var arr = [ { test: 1 }, { test: 2 }, { test: 3 } ];
 
@@ -73,7 +84,7 @@ describe('List', function(){
 
       expect(function(){
         var list = new TestList({});
-      }).to.throw('invalid argument, expected an array');
+      }).to.throw('invalid argument, expected an array or List');
 
     });
 

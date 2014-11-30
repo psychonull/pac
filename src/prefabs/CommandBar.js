@@ -258,10 +258,14 @@ module.exports = Rectangle.extend({
 
   update: function(dt) {},
 
-  onEnterScene: function(){
+  resetCommand: function(){
     if (this.default){
       this.setCommand(this.default);
     }
+  },
+
+  onEnterScene: function(){
+    this.resetCommand();
 
     this.inventory.current = null;
     this.lastRequestOf = null;

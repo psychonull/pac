@@ -19,9 +19,18 @@ describe('Predefined', function(){
     expect(pac.actions.Delay.prototype).to.be.an.instanceof(pac.Action);
   });
 
-  it('must expose pac.actions.Command Action', function(){
+  it('must expose Command Actions', function(){
+    expect(pac.actions.Commander).to.be.a('function');
     expect(pac.actions.Command).to.be.a('function');
+    expect(pac.actions.InventoryCommand).to.be.a('function');
+    expect(pac.actions.WalkerCommand).to.be.a('function');
+
+    expect(pac.actions.Commander.prototype).to.be.an.instanceof(pac.Action);
     expect(pac.actions.Command.prototype).to.be.an.instanceof(pac.Action);
+    expect(pac.actions.InventoryCommand.prototype)
+      .to.be.an.instanceof(pac.Action);
+    expect(pac.actions.WalkerCommand.prototype)
+      .to.be.an.instanceof(pac.Action);
   });
 
   it('must expose pac.actions.Walker Action', function(){
@@ -47,7 +56,10 @@ describe('Predefined', function(){
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
+  require('./Commander.js');
   require('./Command.js');
+  require('./InventoryCommand.js');
+  require('./WalkerCommand.js');
   require('./Walker.js');
   require('./WalkTo.js');
   require('./Speaker.js');

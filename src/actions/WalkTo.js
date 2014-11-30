@@ -26,22 +26,29 @@ module.exports = Action.extend({
     this.dir = this.target.subtract(this.offset).normalize();
 
     obj.walkingTo = new Point(this.dir);
+    obj.targetReached = false;
     obj.emit('walk:start');
   },
 
   onEnd: function() {
     var obj = this.actions.owner;
     obj.walkingTo = null;
-    obj.emit('walk:stop');
+    obj.emit('walk:stop', obj.targetReached);
+    obj.targetReached = false;
   },
 
   update: function(dt) {
-    if (this.target.subtract(this.offset).length() <= this.nearness){
+    var obj = this.actions.owner;
+
+    if (obj.targetReached){
       this.isFinished = true;
       return;
     }
 
-    var obj = this.actions.owner;
+    if (this.target.subtract(this.offset).length() <= this.nearness){
+      obj.targetReached = true;
+      return;
+    }
 
     var m = this.velocity * dt;
     var move = new pac.Point(m * this.dir.x, m * this.dir.y);

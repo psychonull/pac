@@ -6,7 +6,7 @@ var GameObject = require('../../../src/GameObject');
 var GameObjectList = require('../../../src/GameObjectList');
 
 var Clickable = require('../../../src/actions/Clickable');
-var Command = require('../../../src/actions/Command');
+var Commander = require('../../../src/actions/Commander');
 var WalkTo = require('../../../src/actions/WalkTo');
 
 var Sprite = require('../../../src/Sprite');
@@ -99,7 +99,7 @@ describe('WalkableArea', function(){
 
     expect(warea.commands).to.be.equal(opts.commands);
     expect(warea.actions.length).to.be.equal(1);
-    expect(warea.actions.at(0)).to.be.instanceof(Command);
+    expect(warea.actions.at(0)).to.be.instanceof(Commander);
 
     expect(warea.onCommand).to.be.a('object');
     expect(warea.onCommand.walkto).to.be.a('function');
@@ -153,6 +153,28 @@ describe('WalkableArea', function(){
 
       warea.addWalker(fakeWalker);
       expect(warea.walkers.length).to.be.equal(1);
+
+      warea.clearWalkers();
+      expect(warea.walkers.length).to.be.equal(0);
+    });
+
+  });
+
+  describe('#getWalker', function(){
+
+    it('must allow remove a walker', function(){
+
+      var opts = _.clone(walkableOpts, true);
+      var warea = new WalkableArea(opts);
+
+      expect(warea.getWalker).to.be.a('function');
+      expect(warea.walkers.length).to.be.equal(0);
+
+      warea.addWalker(fakeWalker);
+      expect(warea.walkers.length).to.be.equal(1);
+
+      var found = warea.getWalker();
+      expect(found).to.be.equal(fakeWalker);
 
       warea.clearWalkers();
       expect(warea.walkers.length).to.be.equal(0);
@@ -214,7 +236,7 @@ describe('WalkableArea', function(){
 
       warea.addWalker(fakeWalker);
 
-      // Fired by Command Action [walkto]
+      // Fired by Commander Action [walkto]
       warea.onCommand.walkto();
 
       expect(warea.moveWalkers).to.have.been.calledOnce;
@@ -233,7 +255,7 @@ describe('WalkableArea', function(){
 
       spy.reset();
 
-      // Fired by Command Action [lookat]
+      // Fired by Commander Action [lookat]
       warea.onCommand.lookat();
 
       expect(warea.moveWalkers).to.have.been.calledOnce;
@@ -321,6 +343,46 @@ describe('WalkableArea', function(){
       cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
 
       expect(cancel).to.be.true;
+      expect(warea.moveWalkers).to.have.been.calledOnce;
+      expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
+
+      WalkableArea.prototype.moveWalkers.restore();
+
+    });
+
+    it('must allow to call commands not allowed if they are specify',
+      function(){
+
+      var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
+
+      var opts = _.clone(walkableOpts, true);
+
+      opts.shape = new Rectangle({
+        position: new pac.Point(100, 100),
+        size: { width: 200, height: 300 }
+      });
+
+      opts.commands = ['walkto'];
+
+      var warea = new WalkableArea(opts);
+      warea.game = _.clone(fakeGame);
+
+      var pos = new Point(250, 250);
+      var distance = 5;
+
+      var testObj = new TestObjDr({
+        position: pos
+      });
+
+      testObj.onCommand = {
+        walkto: function(){
+          // something
+        }
+      };
+
+      var cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
+
+      expect(cancel).to.be.false;
       expect(warea.moveWalkers).to.have.been.calledOnce;
       expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
 

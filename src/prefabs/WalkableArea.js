@@ -4,7 +4,7 @@ var Drawable = require('../Drawable');
 var GameObjectList = require('../GameObjectList');
 
 var Clickable = require('../actions/Clickable');
-var Command = require('../actions/Command');
+var Commander = require('../actions/Commander');
 var WalkTo = require('../actions/WalkTo');
 var Point = require('../Point');
 
@@ -30,7 +30,7 @@ module.exports = Drawable.extend({
 
   _buildActions: function(){
     if (this.commands && this.commands.length > 0){
-      this.actions = [ new Command() ];
+      this.actions = [ new Commander() ];
 
       this.onCommand = { };
       this.commands.forEach(function(cmd){
@@ -72,6 +72,13 @@ module.exports = Drawable.extend({
     var cancelCommand = false;
     if (command && this.commands.indexOf(command) > -1){
       cancelCommand = true;
+
+      // if the object has a command for this action
+      // do not cancel the command
+      if (obj.onCommand && obj.onCommand.hasOwnProperty(command) &&
+        typeof obj.onCommand[command] === 'function'){
+          cancelCommand = false;
+      }
     }
 
     var toPos = obj.position;
@@ -101,6 +108,10 @@ module.exports = Drawable.extend({
 
   clearWalkers: function(){
     this.walkers.clear();
+  },
+
+  getWalker: function(){
+    return this.walkers.get(0);
   }
 
 });

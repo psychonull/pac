@@ -88,8 +88,9 @@ describe('WalkTo', function(){
       expect(this.walkingTo.y).to.be.equal(walkto.dir.y);
     });
 
-    obj.on('walk:stop', function(){
+    obj.on('walk:stop', function(targetReached){
       walkStop++;
+      expect(targetReached).to.be.true;
       expect(obj.walkingTo).to.be.null;
     });
 
@@ -104,6 +105,8 @@ describe('WalkTo', function(){
 
     expect(obj.walkingTo.x).to.be.equal(walkto.dir.x);
     expect(obj.walkingTo.y).to.be.equal(walkto.dir.y);
+
+    expect(obj.targetReached).to.be.false;
 
     // updates for move to finish
     var dt = 0.16;
@@ -126,6 +129,12 @@ describe('WalkTo', function(){
 
     walkto.update(dt);
 
+    expect(obj.targetReached).to.be.true;
+    expect(walkto.isFinished).to.be.false;
+
+    walkto.update(dt);
+
+    expect(obj.targetReached).to.be.true;
     expect(walkto.isFinished).to.be.true;
 
     var lenToTarget = position.add(pivot).subtract(target).length();
@@ -134,6 +143,7 @@ describe('WalkTo', function(){
     // onEnd call
     walkto.onEnd();
 
+    expect(obj.targetReached).to.be.false;
     expect(obj.walkingTo).to.be.null;
 
     expect(walkStart).to.be.equal(1);

@@ -62,8 +62,12 @@ var Sprite = module.exports = Drawable.extend({
 
   updateAnimations: function(dt) {
     if (this.animations){
+
       this.animations.update(dt);
-      this.frame = this.animations.current.frame;
+
+      if (this.animations.current){
+        this.frame = this.animations.current.frame;
+      }
     }
   }
 
