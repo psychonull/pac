@@ -2,7 +2,7 @@
 var Stage = require('../../../../../src/Stage');
 var Layer = require('../../../../../src/Layer');
 var MapList = require('../../../../../src/MapList');
-var Drawable = require('../../../../../src/Drawable');
+var GameObject = require('../../../../../src/GameObject');
 
 var expect = require('chai').expect;
 
@@ -17,7 +17,7 @@ describe('Constructor', function(){
 
     var defaultLayer = stage.get('default');
     expect(defaultLayer).to.be.an.instanceof(Layer);
-    expect(defaultLayer.childType).to.be.equal(Drawable);
+    expect(defaultLayer.childType).to.be.equal(GameObject);
   });
 
 });

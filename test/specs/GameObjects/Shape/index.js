@@ -1,6 +1,6 @@
 
 var pac = require('../../../../src/pac');
-var Drawable = require('../../../../src/Drawable');
+var GameObject = require('../../../../src/GameObject');
 var Shape = require('../../../../src/Shape');
 
 var chai = require('chai');
@@ -12,8 +12,8 @@ describe('Shape', function(){
     expect(pac.Shape).to.be.a('function');
   });
 
-  it('must be a Drawable', function(){
-    expect(pac.Shape.prototype).to.be.an.instanceof(Drawable);
+  it('must be a GameObject', function(){
+    expect(pac.Shape.prototype).to.be.an.instanceof(GameObject);
   });
 
   describe('Constructor', function(){

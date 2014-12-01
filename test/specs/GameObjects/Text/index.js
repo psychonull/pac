@@ -1,6 +1,6 @@
 
 var pac = require('../../../../src/pac');
-var Drawable = require('../../../../src/Drawable');
+var GameObject = require('../../../../src/GameObject');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -11,8 +11,8 @@ describe('Text', function(){
     expect(pac.Text).to.be.a('function');
   });
 
-  it('must be an Drawable', function(){
-    expect(pac.Text.prototype).to.be.an.instanceof(Drawable);
+  it('must be an GameObject', function(){
+    expect(pac.Text.prototype).to.be.an.instanceof(GameObject);
   });
 
   require('./constructor.js');

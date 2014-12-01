@@ -1,5 +1,5 @@
 
-var Drawable = require('../Drawable');
+var GameObject = require('../GameObject');
 
 var GameObjectList = require('../GameObjectList');
 
@@ -8,7 +8,7 @@ var Commander = require('../actions/Commander');
 var WalkTo = require('../actions/WalkTo');
 var Point = require('../Point');
 
-module.exports = Drawable.extend({
+module.exports = GameObject.extend({
 
   name: 'WalkableArea',
   shape: null,
@@ -25,7 +25,7 @@ module.exports = Drawable.extend({
     this._buildActions();
     this.walkers = new GameObjectList();
 
-    Drawable.apply(this, arguments);
+    GameObject.apply(this, arguments);
   },
 
   _buildActions: function(){

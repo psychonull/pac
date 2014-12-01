@@ -1,7 +1,7 @@
 
-var Drawable = require('./Drawable');
+var GameObject = require('./GameObject');
 
-module.exports = Drawable.extend({
+module.exports = GameObject.extend({
 
   name: 'Shape',
   fill: null,
@@ -13,7 +13,7 @@ module.exports = Drawable.extend({
     this.stroke = (options && options.stroke) || this.stroke;
     this.lineWidth = (options && options.lineWidth) || this.lineWidth;
 
-    Drawable.apply(this, arguments);
+    GameObject.apply(this, arguments);
   },
 
   isPointInside: function(point, offset){

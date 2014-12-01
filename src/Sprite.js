@@ -1,9 +1,9 @@
 
-var Drawable = require('./Drawable');
+var GameObject = require('./GameObject');
 var Point = require('./Point');
 var Rectangle = require('./Rectangle');
 
-var Sprite = module.exports = Drawable.extend({
+var Sprite = module.exports = GameObject.extend({
 
   name: 'Sprite',
   position: null,
@@ -27,7 +27,7 @@ var Sprite = module.exports = Drawable.extend({
     this._createHitBox(options);
     this._initAnimations(options);
 
-    Drawable.apply(this, arguments);
+    GameObject.apply(this, arguments);
   },
 
   _createHitBox: function(options){

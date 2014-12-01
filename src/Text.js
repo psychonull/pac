@@ -1,9 +1,9 @@
 
-var Drawable = require('./Drawable');
+var GameObject = require('./GameObject');
 var Point = require('./Point');
 var _ = require('./utils');
 
-var Text = module.exports = Drawable.extend({
+var Text = module.exports = GameObject.extend({
 
   name: 'Text',
   value: '',
@@ -25,7 +25,7 @@ var Text = module.exports = Drawable.extend({
       _.extend(this, _.pick(args.options, optionsWhitelist));
     }
 
-    Drawable.apply(this, [args.options]);
+    GameObject.apply(this, [args.options]);
   },
 
   _extractConstructorArgs: function(args){

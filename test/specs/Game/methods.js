@@ -5,7 +5,7 @@ var Renderer = require('../../../src/Renderer');
 
 var GameObjectList = require('../../../src/GameObjectList');
 var GameObject = require('../../../src/GameObject');
-var Drawable = require('../../../src/Drawable');
+var GameObject = require('../../../src/GameObject');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -170,19 +170,19 @@ describe('Objects', function(){
       expect(scenes.scene2.objects.length).to.be.equal(0);
 
       game.addObject([
-        new Drawable({ name: 'obj1', layer: 'game' }),
-        new Drawable({ name: 'obj2', layer: 'game' })
+        new GameObject({ name: 'obj1', layer: 'game' }),
+        new GameObject({ name: 'obj2', layer: 'game' })
       ]);
 
       scenes.scene1.addObject([
-        new Drawable({ name: 'obj1', layer: 'scene1' }),
-        new Drawable({ name: 'obj2', layer: 'scene1' }),
-        new Drawable({ name: 'obj3', layer: 'scene1' })
+        new GameObject({ name: 'obj1', layer: 'scene1' }),
+        new GameObject({ name: 'obj2', layer: 'scene1' }),
+        new GameObject({ name: 'obj3', layer: 'scene1' })
       ]);
 
       scenes.scene2.addObject([
-        new Drawable({ name: 'obj2', layer: 'scene2' }),
-        new Drawable({ name: 'obj4', layer: 'scene2' })
+        new GameObject({ name: 'obj2', layer: 'scene2' }),
+        new GameObject({ name: 'obj4', layer: 'scene2' })
       ]);
 
       expect(game.objects.length).to.be.equal(2);

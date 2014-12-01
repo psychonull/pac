@@ -1,10 +1,14 @@
 
 var List = require('./List');
-var GameObject = require('./GameObject');
 
-module.exports = List.extend({
+var GameObjectList = module.exports = List.extend({
 
-  childType: GameObject,
+  //childType: require('./GameObject'),
+
+  init: function(){
+    this.childType = require('./GameObject');
+    GameObjectList.__super__.init.apply(this, arguments);
+  },
 
   update: function(dt){
 
