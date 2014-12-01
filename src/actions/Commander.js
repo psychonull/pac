@@ -7,8 +7,6 @@ var Command = require('./Command');
 var InventoryCommand = require('./InventoryCommand');
 var WalkerCommand = require('./WalkerCommand');
 
-//var WalkableArea = require('../prefabs/WalkableArea');
-
 module.exports = Action.extend({
 
   requires: [ Hoverable, Clickable ],
@@ -58,10 +56,9 @@ module.exports = Action.extend({
       return;
     }
 
-    // TODO: how to make this work with Browserify Circular Dependency?
-    //if (this.walkableArea && !(obj instanceof WalkableArea)){
+    if (this.walkableArea &&
+      !(obj instanceof require('../prefabs/WalkableArea'))){
 
-    if (this.walkableArea && obj.name !== this.walkableArea.name){
       var cancelCommand =
         this.walkableArea.moveWalkersToObject(obj, 30, command);
 

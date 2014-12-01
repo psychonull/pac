@@ -42,10 +42,7 @@ var Command = module.exports = BaseCommand.extend({
       this.commandBar.showCannotMessage(obj);
     }
 
-    // TODO: how to make this work with Browserify Circular Dependency?
-    //if (!(obj instanceof WalkableArea)){
-
-    if (this.walkableArea && obj.name !== this.walkableArea.name){
+    if (!(obj instanceof require('../prefabs/WalkableArea'))){
       this.commandBar.resetCommand();
     }
 
