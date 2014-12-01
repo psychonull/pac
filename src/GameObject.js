@@ -14,9 +14,10 @@ var GameObject = module.exports = Emitter.extend({
   zIndex: 0,
 
   shape: null,
-  visible: true,
 
   active: true,
+  visible: true,
+
   actions: null,
 
   // hierarchy
@@ -25,21 +26,8 @@ var GameObject = module.exports = Emitter.extend({
   localPosition: null,
 
   constructor: function(options){
-    this.name = (options && options.name) || this.name;
-
-    this._initDrawable(options);
-
-    this.active = (options && options.active) || this.active;
-    this.actions = (options && options.actions) || this.actions;
-
-    if (this.actions){
-
-      if (Array.isArray(this.actions)){
-        this.actions = new ActionList(this.actions);
-      }
-
-      this.actions.owner = this;
-    }
+    this._initProperties(options);
+    this._initActions(options);
 
     this.children = new GameObjectList();
     this.children.on('add', this._initChild.bind(this));
@@ -47,7 +35,9 @@ var GameObject = module.exports = Emitter.extend({
     Emitter.apply(this, arguments);
   },
 
-  _initDrawable: function(opts){
+  _initProperties: function(opts){
+    this.name = (opts && opts.name) || this.name;
+
     this.position = (opts && opts.position) || this.position || new Point();
     this.position = new Point(this.position);
 
@@ -63,7 +53,21 @@ var GameObject = module.exports = Emitter.extend({
 
     props.forEach(setProp.bind(this));
 
+    this.active = (opts && opts.active === false) ? false : this.active;
     this.visible = (opts && opts.visible === false) ? false : this.visible;
+  },
+
+  _initActions: function(options){
+    this.actions = (options && options.actions) || this.actions;
+
+    if (this.actions){
+
+      if (Array.isArray(this.actions)){
+        this.actions = new ActionList(this.actions);
+      }
+
+      this.actions.owner = this;
+    }
   },
 
   _initChild: function(child){

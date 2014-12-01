@@ -103,12 +103,17 @@ describe('GameObject', function(){
     var obj3 = new TestObj({
       name: 'TestObj',
       layer: 'middle',
-      zIndex: 10
+      zIndex: 10,
+      active: false,
+      visible: false
     });
 
     expect(obj3.name).to.be.equal('TestObj');
     expect(obj3.layer).to.be.equal('middle');
     expect(obj3.zIndex).to.be.equal(10);
+
+    expect(obj3.active).to.be.equal(false);
+    expect(obj3.visible).to.be.equal(false);
   });
 
   it('must allow to create with a shape', function(){
