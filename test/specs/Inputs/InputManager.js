@@ -6,6 +6,8 @@ var MapList = require('../../../src/MapList');
 var Input = require('../../../src/Input');
 var MouseInput = require('../../../src/MouseInput');
 
+var Stage = require('../../../src/Stage');
+var Sprite = require('../../../src/Sprite');
 var Point = require('../../../src/Point');
 
 var chai = require('chai');
@@ -133,6 +135,122 @@ describe('InputManager', function(){
       expect(mouse.disable).to.have.been.called;
     });
 
+  });
+
+  describe('Stages', function(){
+
+    it('must support layers on creation', function(){
+
+      var manager = InputManager.create(MouseInput, {
+        container: document.createElement('canvas'),
+        enabled: true,
+        layers: [ 'background', 'front' ]
+      });
+
+      expect(manager.clickStage).to.be.instanceof(Stage);
+      expect(manager.hoverStage).to.be.instanceof(Stage);
+    });
+
+    describe('register', function(){
+
+      var manager;
+
+      var objBg1;
+      var objBg2;
+      var objFr1;
+      var objFr2;
+
+      before(function(){
+
+        manager = InputManager.create(MouseInput, {
+          container: document.createElement('canvas'),
+          enabled: true,
+          layers: [ 'background', 'front' ]
+        });
+
+        var TestObj = Sprite.extend({
+          texture: 'testTexture'
+        });
+
+        objBg1 = new TestObj({ layer: 'background', zIndex: 1 });
+        objBg2 = new TestObj({ layer: 'background', zIndex: 2 });
+        objFr1 = new TestObj({ layer: 'front', zIndex: 1 });
+        objFr2 = new TestObj({ layer: 'front', zIndex: 2 });
+
+      });
+
+      it('must register an object for click', function(){
+        expect(manager.register).to.be.a('function');
+
+        sinon.spy(manager.clickStage, 'addObjects');
+        sinon.spy(manager.hoverStage, 'addObjects');
+
+        var clickObjects = [objBg1, objBg2, objFr1, objFr2];
+        var hoverObjects = [objBg1, objBg2, objFr1, objFr2];
+
+        manager.register('click', clickObjects);
+
+        expect(manager.clickStage.addObjects)
+          .to.have.been.calledWith(clickObjects);
+        expect(manager.hoverStage.addObjects).to.not.have.been.called;
+
+        manager.clickStage.addObjects.reset();
+
+        manager.register('hover', hoverObjects);
+
+        expect(manager.hoverStage.addObjects)
+          .to.have.been.calledWith(hoverObjects);
+        expect(manager.clickStage.addObjects).to.not.have.been.called;
+
+        manager.clickStage.addObjects.restore();
+        manager.hoverStage.addObjects.restore();
+      });
+
+      it('must set isClicked for registered objects', function(){
+        var dt = 0.16;
+
+        sinon.spy(manager.clickStage, 'clearLayer');
+
+        var clickObjects = [objFr1, objBg1, objFr2, objBg2];
+
+        manager._down = false;
+        manager.update(dt);
+
+        manager.clickStage.clearLayer.reset();
+
+        manager._down = true;
+        manager.update(dt);
+
+        manager.clickStage.clearLayer.reset();
+
+        manager.register('click', clickObjects);
+        expect(manager.clickStage.getFrontObject()).to.be.equal(objFr2);
+
+        manager.update(dt);
+
+        manager.clickStage.clearLayer.reset();
+
+        expect(objBg1.isClicked).to.be.undefined;
+        expect(objBg2.isClicked).to.be.undefined;
+        expect(objFr1.isClicked).to.be.undefined;
+        expect(objFr2.isClicked).to.be.true;
+
+        manager.update(dt);
+
+        expect(manager.clickStage.clearLayer).to.have.been.called;
+
+        expect(objBg1.isClicked).to.be.undefined;
+        expect(objBg2.isClicked).to.be.undefined;
+        expect(objFr1.isClicked).to.be.undefined;
+        expect(objFr2.isClicked).to.be.false;
+
+        manager.clickStage.clearLayer.restore();
+
+      });
+
+      it('must set isHover for registered objects');
+
+    });
   });
 
 });

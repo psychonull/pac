@@ -177,6 +177,7 @@ describe('CommandBar', function(){
   it('must interact with hover and click events on commands', function(){
     var fakeGame = {
       inputs: {
+        register: function(){},
         cursor: {
           isDown: false,
           position: new Point()
@@ -190,6 +191,15 @@ describe('CommandBar', function(){
 
     var cbar = new CommandBar(_.clone(commandBarOpts, true));
     cbar.game = fakeGame;
+
+    var commandWalkTo = null;
+    var commandUse = null;
+
+    cbar.children.each(function(cmd){
+      if (cmd.command === 'walkto'){
+        commandWalkTo = cmd;
+      }
+    });
 
     var emitted = 0;
     cbar.on('command', function(command){
@@ -225,6 +235,8 @@ describe('CommandBar', function(){
       cpos.y+cbar.position.y+30);
     cursor.isDown = true;
 
+    commandWalkTo.emit('click');
+
     cbar.updateHierarchy(0.16);
     cbar.updateActions(0.16);
 
@@ -240,6 +252,7 @@ describe('CommandBar', function(){
   it('must change command styles on hover and click', function(){
     var fakeGame = {
       inputs: {
+        register: function(){},
         cursor: {
           isDown: false,
           position: new Point()
@@ -309,6 +322,8 @@ describe('CommandBar', function(){
       cpos.x+cbar.position.x+30,
       cpos.y+cbar.position.y+30);
     cursor.isDown = true;
+
+    commandWalkTo.isClicked = true;
 
     cbar.updateHierarchy(0.16);
     cbar.updateActions(0.16);

@@ -1,5 +1,5 @@
 
-var pac = require('../../../../../src/pac');
+var pac = require('../../../src/pac');
 var expect = require('chai').expect;
 
 describe('Stage', function(){

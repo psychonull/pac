@@ -16,16 +16,19 @@ module.exports = Action.extend({
   onEnd: function() { },
 
   update: function(dt) {
-    var obj = this.actions.owner;
-    var cursor = obj.game.inputs.cursor;
+    var obj = this.actions.owner,
+      inputs = obj.game.inputs,
+      cursor = inputs.cursor;
 
-    obj.isClicked = false;
+    if (obj.isClicked){
+      obj.emit('click');
+      return;
+    }
 
     if (obj.active && cursor.isDown &&
       obj.shape.isPointInside(cursor.position, obj.position)) {
 
-        obj.isClicked = true;
-        obj.emit('click');
+        inputs.register('click', obj);
     }
   }
 

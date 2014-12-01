@@ -90,6 +90,7 @@ var Game = module.exports = Gameloop.extend({
 
     options = options || {};
     options.container = this.renderer.viewport;
+    options.layers = this.renderer.layers;
 
     this.inputs = EngineComponents.Inputs.create(_inputs, options);
   },

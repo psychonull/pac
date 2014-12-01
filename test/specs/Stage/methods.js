@@ -1,8 +1,8 @@
 
-var Stage = require('../../../../../src/Stage');
-var GameObject = require('../../../../../src/GameObject');
-var Layer = require('../../../../../src/Layer');
-var GameObjectList = require('../../../../../src/GameObjectList');
+var Stage = require('../../../src/Stage');
+var GameObject = require('../../../src/GameObject');
+var Layer = require('../../../src/Layer');
+var GameObjectList = require('../../../src/GameObjectList');
 
 var expect = require('chai').expect;
 
@@ -199,6 +199,47 @@ describe('Methods', function(){
 
       stage.ready();
       expect(emitted).to.be.equal(3);
+
+    });
+
+  });
+
+  describe('#getFrontObject', function(){
+
+    it('must return an object with the highest zIndex at the last layer',
+      function(){
+
+      var layers = ['testLayer1', 'testLayer2', 'testLayer3'];
+
+      var stage = Stage.create(layers);
+
+      var objects = [
+        // testLayer1
+        new TestObject({ layer: 'testLayer1', zIndex: 2 }),
+        new TestObject({ layer: 'testLayer1', zIndex: 1 }),
+
+        // testLayer2
+        new TestObject({ name: 'this one', layer: 'testLayer2', zIndex: 8 }),
+        new TestObject({ layer: 'testLayer2', zIndex: 6 }),
+      ];
+
+      var objectsDefault = [
+        // default layer
+        new TestObject({ name: 'this default one', zIndex: 5 }),
+        new TestObject({ zIndex: 2 }),
+        new TestObject({ zIndex: 4 }),
+      ];
+
+      stage.addObjects(objects.concat(objectsDefault));
+
+      var obj = stage.getFrontObject();
+      expect(obj.name).to.be.equal('this default one');
+
+      stage.clearLayer();
+      stage.addObjects(objects);
+
+      obj = stage.getFrontObject();
+      expect(obj.name).to.be.equal('this one');
 
     });
 

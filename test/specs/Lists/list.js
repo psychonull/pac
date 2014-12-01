@@ -557,6 +557,23 @@ describe('List', function(){
 
     });
 
+    describe('#last', function(){
+
+      it('must return a the last item', function(){
+
+        var list = new TestList([
+          new TestItem(),
+          new TestItem({ name: 'named' }),
+          new TestItem({ test: true })
+        ]);
+
+        var result = list.last();
+        expect(result).to.be.equal(list.at(2));
+
+      });
+
+    });
+
   });
 
 });

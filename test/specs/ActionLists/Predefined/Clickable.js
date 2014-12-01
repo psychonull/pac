@@ -8,6 +8,9 @@ var Clickable = require('../../../../src/actions/Clickable');
 
 var chai = require('chai');
 var expect = chai.expect;
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 
 var TestObj = Sprite.extend({
   texture: 'testTexture'
@@ -15,6 +18,7 @@ var TestObj = Sprite.extend({
 
 var fakeGame = {
   inputs: {
+    register: function() {},
     cursor: {
       isDown: false,
       position: new Point()
@@ -39,7 +43,9 @@ describe('Clickable', function(){
     }).to.throw('Clickable Action requires a [shape] on the Object');
   });
 
-  it('must emit an event on its owner when it is clicked', function(){
+  it('must emit register to inputs when is clicked', function(){
+
+    sinon.spy(fakeGame.inputs, 'register');
 
     var obj = new TestObj({
       position: new Point(200, 200),
@@ -50,51 +56,48 @@ describe('Clickable', function(){
 
     obj.game = fakeGame;
 
-    function validate(){
+    var emitted = 0;
+    obj.on('click', function(){
+      emitted++;
+    });
 
-      var emitted = 0;
-      obj.on('click', function(){
-        emitted++;
-      });
+    obj.isClicked = false;
+    expect(emitted).to.be.equal(0);
 
-      obj.updateActions();
-      expect(emitted).to.be.equal(0);
-      expect(obj.isClicked).to.be.false;
+    // Click inside
+    fakeGame.inputs.cursor.position = new Point(250, 250);
+    fakeGame.inputs.cursor.isDown = true;
 
-      // Click inside
-      fakeGame.inputs.cursor.position = new Point(250, 250);
-      fakeGame.inputs.cursor.isDown = true;
+    obj.updateActions();
 
-      obj.updateActions();
-      expect(emitted).to.be.equal(1);
-      expect(obj.isClicked).to.be.true;
+    expect(fakeGame.inputs.register).to.have.been.calledWith('click', obj);
 
-      fakeGame.inputs.cursor.isDown = false;
+    obj.isClicked = true; // simulate a click from input manager
+    fakeGame.inputs.register.reset();
 
-      obj.updateActions();
-      expect(emitted).to.be.equal(1);
-      expect(obj.isClicked).to.be.false;
+    obj.updateActions();
 
-      // Click outside
-      fakeGame.inputs.cursor.position = new Point(350, 350);
-      fakeGame.inputs.cursor.isDown = true;
+    expect(fakeGame.inputs.register).to.not.have.been.called;
+    expect(emitted).to.be.equal(1);
 
-      obj.updateActions();
-      expect(emitted).to.be.equal(1);
-      expect(obj.isClicked).to.be.false;
-    }
+    emitted = 0;
+    fakeGame.inputs.register.reset();
+    obj.isClicked = false;
 
-    validate();
+    // Click outside
+    fakeGame.inputs.cursor.position = new Point(350, 350);
+    fakeGame.inputs.cursor.isDown = true;
 
-    obj.shape = new Circle({ radius: 100 });
-    validate();
+    obj.updateActions();
+    expect(emitted).to.be.equal(0);
+    expect(fakeGame.inputs.register).to.not.have.been.called;
 
-    obj.shape = new Polygon([ 0,0 , 100,0 , 100,100, 0,100 ]);
-    validate();
-
+    fakeGame.inputs.register.restore();
   });
 
-  it('must NOT emit an event when is NOT active', function(){
+  it('must NOT register to inputs when is NOT active', function(){
+
+    sinon.spy(fakeGame.inputs, 'register');
 
     var obj = new TestObj({
       position: new Point(200, 200),
@@ -104,44 +107,34 @@ describe('Clickable', function(){
     });
 
     obj.game = fakeGame;
-
-    function validate(){
-
-      var emitted = 0;
-      obj.on('click', function(){
-        emitted++;
-      });
-
-      obj.updateActions();
-      expect(emitted).to.be.equal(0);
-      expect(obj.isClicked).to.be.false;
-
-      // Click inside
-      fakeGame.inputs.cursor.position = new Point(250, 250);
-      fakeGame.inputs.cursor.isDown = true;
-
-      obj.updateActions();
-      expect(emitted).to.be.equal(0);
-      expect(obj.isClicked).to.be.false;
-
-      fakeGame.inputs.cursor.isDown = false;
-
-      obj.updateActions();
-      expect(emitted).to.be.equal(0);
-      expect(obj.isClicked).to.be.false;
-
-      // Click outside
-      fakeGame.inputs.cursor.position = new Point(350, 350);
-      fakeGame.inputs.cursor.isDown = true;
-
-      obj.updateActions();
-      expect(emitted).to.be.equal(0);
-      expect(obj.isClicked).to.be.false;
-    }
-
     obj.active = false;
-    validate();
 
+    var emitted = 0;
+    obj.on('click', function(){
+      emitted++;
+    });
+
+    obj.isClicked = false;
+    expect(emitted).to.be.equal(0);
+
+    // Click inside
+    fakeGame.inputs.cursor.position = new Point(250, 250);
+    fakeGame.inputs.cursor.isDown = true;
+
+    obj.updateActions();
+
+    expect(fakeGame.inputs.register).to.not.have.been.called;
+    expect(emitted).to.be.equal(0);
+
+    // Click outside
+    fakeGame.inputs.cursor.position = new Point(350, 350);
+    fakeGame.inputs.cursor.isDown = true;
+
+    obj.updateActions();
+    expect(emitted).to.be.equal(0);
+    expect(fakeGame.inputs.register).to.not.have.been.called;
+
+    fakeGame.inputs.register.restore();
   });
 
 });

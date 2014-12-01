@@ -192,6 +192,10 @@ var List = module.exports = Emitter.extend({
     }
 
     return _.find(this._items, search);
+  },
+
+  last: function(){
+    return _.last(this._items);
   }
 
 });

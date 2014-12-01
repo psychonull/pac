@@ -33,15 +33,7 @@ var Renderer = module.exports = EngineComponent.extend({
   },
 
   _createStage: function(){
-    var layers = {};
-
-    if (this.layers){
-      this.layers.forEach(function(layer){
-        layers[layer] = new Layer();
-      });
-    }
-
-    this.stage = new Stage(layers);
+    this.stage = Stage.create(this.layers);
 
     this.stage.on('layerFill', this.onLayerFill.bind(this));
     this.stage.on('layerClear', this.onLayerClear.bind(this));

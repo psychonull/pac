@@ -4,6 +4,8 @@ var Layer = require('./Layer');
 var GameObject = require('./GameObject');
 var List = require('./List');
 
+var _ = require('./utils');
+
 var Stage = module.exports = MapList.extend({
 
   childType: Layer,
@@ -20,6 +22,13 @@ var Stage = module.exports = MapList.extend({
 
     this.on('add', this._initLayer.bind(this));
     this.each(this._initLayer.bind(this));
+
+    this.layers = (options && options.layers) || [];
+    if (this.layers.length === 0){
+      this.each(function(layer, name){
+        this.layers.push(name);
+      }, this);
+    }
   },
 
   _initLayer: function(layer, name){
@@ -95,6 +104,37 @@ var Stage = module.exports = MapList.extend({
     });
 
     return this;
+  },
+
+  getFrontObject: function(){
+    var found = null;
+
+    _.forEachRight(this.layers, function(name){
+
+      if (!found){
+        found = this.get(name).last();
+        if (found){
+          return false;
+        }
+      }
+
+    }, this);
+
+    return found;
+  }
+
+}, {
+
+  create: function(layersArr){
+    var layers = {};
+
+    if (layersArr){
+      layersArr.forEach(function(layer){
+        layers[layer] = new Layer();
+      });
+    }
+
+    return new Stage(layers);
   }
 
 });

@@ -5,6 +5,8 @@ var Input = require('./Input');
 var MouseInput = require('./MouseInput');
 var Point = require('./Point');
 
+var Stage = require('./Stage');
+
 var InputManager = module.exports = MapList.extend({
 
   childType: Input,
@@ -23,6 +25,13 @@ var InputManager = module.exports = MapList.extend({
 
     this.on('add', this._attachEvents.bind(this));
     this.each(this._attachEvents.bind(this));
+
+    this._initStages((options && options.layers) || []);
+  },
+
+  _initStages: function(layers){
+    this.clickStage = Stage.create(layers);
+    this.hoverStage = Stage.create(layers);
   },
 
   _attachEvents: function(input, type){
@@ -44,6 +53,16 @@ var InputManager = module.exports = MapList.extend({
 
   update: function(dt){
     this.cursor.isDown = this._down;
+
+    if (this.clearClick){
+      this._clearClicked();
+      this.clearClick = false;
+    }
+
+    if (this.prevDown){
+      this._setClicked();
+      this.clearClick = true;
+    }
 
     if (this.prevDown && this.cursor.isDown){
       this.prevDown = this.cursor.isDown = this._down = false;
@@ -68,6 +87,35 @@ var InputManager = module.exports = MapList.extend({
     this.each(function(input){
       input.disable();
     });
+  },
+
+  _setClicked: function(){
+    var objClicked = this.clickStage.getFrontObject();
+
+    if (objClicked){
+      objClicked.isClicked = true;
+      this.lastClicked = objClicked;
+    }
+  },
+
+  _clearClicked: function(){
+    if (this.lastClicked){
+      this.lastClicked.isClicked = false;
+      this.lastClicked = null;
+    }
+
+    this.clickStage.clearLayer();
+  },
+
+  register: function(event, objects){
+    switch(event){
+      case 'click':
+        this.clickStage.addObjects(objects);
+        break;
+      case 'hover':
+        this.hoverStage.addObjects(objects);
+        break;
+    }
   }
 
 }, {
@@ -90,7 +138,7 @@ var InputManager = module.exports = MapList.extend({
       });
     }
 
-    return new InputManager(data);
+    return new InputManager(data, options);
   }
 
 });
