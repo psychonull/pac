@@ -1,7 +1,7 @@
 
 var ActionList = require('../../../../src/ActionList');
 var Action = require('../../../../src/Action');
-var Drawable = require('../../../../src/Drawable');
+var GameObject = require('../../../../src/GameObject');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -10,7 +10,7 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-var Monkey = Drawable.extend();
+var Monkey = GameObject.extend();
 
 var WalkRight = Action.extend({
 

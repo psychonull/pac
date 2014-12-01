@@ -17,7 +17,7 @@ var MockRenderer = pac.Renderer.extend({
   render: function(){ }
 });
 
-var MonkeyX = pac.Drawable.extend({
+var MonkeyX = pac.GameObject.extend({
 
   update: function(dt){
     this.position.x += dt;
@@ -25,7 +25,7 @@ var MonkeyX = pac.Drawable.extend({
 
 });
 
-var MonkeyY = pac.Drawable.extend({
+var MonkeyY = pac.GameObject.extend({
 
   update: function(dt){
     this.position.y += dt;
@@ -47,7 +47,7 @@ var MonkeyAction = pac.Action.extend({
 
 });
 
-var MonkeyActioner = pac.Drawable.extend();
+var MonkeyActioner = pac.GameObject.extend();
 
 var Scene1 = pac.Scene.extend({
 

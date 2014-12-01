@@ -10,7 +10,6 @@ var Commander = require('../../../src/actions/Commander');
 var WalkTo = require('../../../src/actions/WalkTo');
 
 var Sprite = require('../../../src/Sprite');
-var Drawable = require('../../../src/Drawable');
 
 var WalkableArea = require('../../../src/prefabs/WalkableArea');
 
@@ -289,7 +288,7 @@ describe('WalkableArea', function(){
         texture: 'testTexture'
       });
 
-      TestObjDr = Drawable.extend();
+      TestObjDr = GameObject.extend();
 
       walkableOpts = {
         position: new Point(100, 100),

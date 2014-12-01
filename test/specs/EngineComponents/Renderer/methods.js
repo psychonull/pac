@@ -1,6 +1,6 @@
 
 var pac = require('../../../../src/pac');
-var Drawable = require('../../../../src/Drawable');
+var GameObject = require('../../../../src/GameObject');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -17,7 +17,7 @@ var TestRenderer = pac.Renderer.extend({
 
 });
 
-var TestObject = Drawable.extend();
+var TestObject = GameObject.extend();
 
 describe('Methods', function(){
 

@@ -6,7 +6,6 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var GameObject = require('../../../src/GameObject');
-var Drawable = require('../../../src/Drawable');
 
 var TestItem = GameObject.extend({
 
@@ -20,15 +19,15 @@ var TestList = List.extend({
   childType: TestItem
 });
 
-var TestSort = Drawable.extend();
+var TestSort = GameObject.extend();
 
 var TestSortListASC = TestList.extend({
-  childType: Drawable,
+  childType: GameObject,
   comparator: 'zIndex'
 });
 
 var TestSortListDESC = TestList.extend({
-  childType: Drawable,
+  childType: GameObject,
   comparator: '-zIndex'
 });
 

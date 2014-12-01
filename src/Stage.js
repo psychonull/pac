@@ -1,7 +1,7 @@
 
 var MapList = require('./MapList');
 var Layer = require('./Layer');
-var Drawable = require('./Drawable');
+var GameObject = require('./GameObject');
 var List = require('./List');
 
 var Stage = module.exports = MapList.extend({
@@ -40,7 +40,7 @@ var Stage = module.exports = MapList.extend({
 
   _addToLayer: function(obj){
 
-    if (!(obj instanceof Drawable)){
+    if (!(obj instanceof GameObject)){
       return;
     }
 

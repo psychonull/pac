@@ -1,7 +1,6 @@
 
 var Point = require('../../../src/Point');
 var GameObject = require('../../../src/GameObject');
-var Drawable = require('../../../src/Drawable');
 var Scene = require('../../../src/Scene');
 
 var chai = require('chai');
@@ -11,7 +10,7 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-var Monkey = Drawable.extend({
+var Monkey = GameObject.extend({
 
   title: '',
 
@@ -131,7 +130,7 @@ describe('#findOne', function(){
     var found = scene.findOne('Chubaka');
     expect(found).to.be.equal(monkeys[0]);
 
-    found = scene.findOne('Drawable');
+    found = scene.findOne('GameObject');
     expect(found).to.be.equal(monkeys[1]);
 
     found = scene.findOne({ title: 'ChubakaTitle' });
@@ -164,7 +163,7 @@ describe('#find', function(){
     var found = scene.find('Chubaka');
     expect(found.length).to.be.equal(1);
 
-    found = scene.find('Drawable');
+    found = scene.find('GameObject');
     expect(found.length).to.be.equal(1);
 
     found = scene.find({ title: 'ChubakaTitle' });

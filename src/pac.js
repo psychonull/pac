@@ -18,7 +18,6 @@ module.exports = {
   Point: require('./Point'),
 
   GameObject: require('./GameObject'),
-  Drawable: require('./Drawable'),
   Sprite: require('./Sprite'),
   Text: require('./Text'),
 
