@@ -2,6 +2,7 @@
 module.exports = {
   Delay: require('./Delay'),
   Animate: require('./Animate'),
+  Execute: require('./Execute'),
 
   // Input
   Clickable: require('./Clickable'),
