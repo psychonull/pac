@@ -21,14 +21,17 @@ describe('Speak', function(){
     var speak = new Speak();
     expect(speak.text).to.equal('');
     expect(speak.duration).to.equal(2);
+    expect(speak.minDuration).to.equal(1);
     expect(speak.after).to.be.null;
     speak = new Speak({
       text: 'Hola camarada',
       duration: 600,
+      minDuration: 2,
       after: onAfter
     });
     expect(speak.text).to.equal('Hola camarada');
     expect(speak.duration).to.equal(600);
+    expect(speak.minDuration).to.equal(2);
     expect(speak.after).to.equal(onAfter);
   });
 
@@ -73,6 +76,17 @@ describe('Speak', function(){
       var speak = new Speak({
         duration: 10
       });
+      speak.actions = {
+        owner: {
+          game: {
+            inputs: {
+              cursor: {
+                isDown: false
+              }
+            }
+          }
+        }
+      };
       speak.elapsed = 0;
 
       expect(speak.isFinished).to.be.false;
@@ -82,6 +96,31 @@ describe('Speak', function(){
       speak.update(8);
       expect(speak.isFinished).to.be.true;
     });
+    it('must mark itself as finished if minDuration passed and click',
+      function(){
+        var speak = new Speak({
+          duration: 10,
+          minDuration: 3
+        });
+        speak.actions = {
+          owner: {
+            game: {
+              inputs: {
+                cursor: {
+                  isDown: true
+                }
+              }
+            }
+          }
+        };
+        speak.elapsed = 0;
+        expect(speak.isFinished).to.be.false;
+        speak.update(2);
+        expect(speak.isFinished).to.be.false;
+        speak.update(1.2);
+        expect(speak.isFinished).to.be.true;
+      }
+    );
   });
 
   describe('#onEnd', function(){

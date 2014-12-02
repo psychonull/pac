@@ -29,9 +29,11 @@ module.exports = Action.extend({
       owner.onCommand = {};
     }
     owner.onCommand[this.command] = _.bind(this.onDialogueCommand, this);
-    owner.dialogue.on('end', _.bind(function(){
-      this.isRunning = false;
-    }, this));
+    owner.dialogue.on('end', _.bind(this.onDialogueEnd, this));
+  },
+
+  onDialogueEnd: function(){
+    this.isRunning = false;
   },
 
   onEnd: function() {
