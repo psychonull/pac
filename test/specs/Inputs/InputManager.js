@@ -248,6 +248,27 @@ describe('InputManager', function(){
 
       });
 
+      it('must set deadClick if no objct was registered', function(){
+        var dt = 0.16;
+
+        manager._down = false;
+        manager.update(dt);
+
+        manager._down = true;
+        manager.update(dt);
+
+        expect(manager.deadClick).to.be.false;
+
+        manager.update(dt);
+
+        expect(manager.deadClick).to.be.true;
+
+        manager._down = false;
+        manager.update(dt);
+
+        expect(manager.deadClick).to.be.false;
+      });
+
       it('must set isHover for registered objects');
 
     });

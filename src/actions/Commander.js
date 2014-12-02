@@ -13,7 +13,14 @@ module.exports = Action.extend({
 
   name: 'Commander',
 
-  init: function() { },
+  init: function(options) {
+    if (typeof options === 'number'){
+      this.nearness = options;
+    }
+    else {
+      this.nearness = options && options.nearness || this.nearness || 30;
+    }
+  },
 
   onStart: function() {
     var game = this.actions.owner.game;
@@ -59,10 +66,9 @@ module.exports = Action.extend({
     if (this.walkableArea &&
       !(obj instanceof require('../prefabs/WalkableArea'))){
 
-      var cancelCommand =
-        this.walkableArea.moveWalkersToObject(obj, 30, command);
+      this.walkableArea.moveWalkersToObject(obj, this.nearness);
 
-      if (!cancelCommand){
+      if (this._runCommand(obj, command)){
         this.actions.pushFront(new WalkerCommand(command));
       }
     }
@@ -70,6 +76,26 @@ module.exports = Action.extend({
       this.actions.pushFront(new Command(command));
     }
 
+  },
+
+  _runCommand: function(obj, command){
+    var runCommand = true;
+
+    if (this.isWalkableCommand(command)){
+      runCommand = this.hasCommand(obj, command);
+    }
+
+    return runCommand;
+  },
+
+  isWalkableCommand: function(command){
+    return (this.walkableArea.commands &&
+      this.walkableArea.commands.indexOf(command) > -1);
+  },
+
+  hasCommand: function(obj, command){
+    return (obj.onCommand && obj.onCommand.hasOwnProperty(command) &&
+      typeof obj.onCommand[command] === 'function');
   }
 
 });

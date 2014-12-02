@@ -22,6 +22,7 @@ var InputManager = module.exports = MapList.extend({
     this._down = false;
     this.prevDown = false;
     this._up = false;
+    this.deadClick = false;
 
     this.on('add', this._attachEvents.bind(this));
     this.each(this._attachEvents.bind(this));
@@ -57,6 +58,7 @@ var InputManager = module.exports = MapList.extend({
     if (this.clearClick){
       this._clearClicked();
       this.clearClick = false;
+      this.deadClick = false;
     }
 
     if (this.prevDown){
@@ -95,6 +97,9 @@ var InputManager = module.exports = MapList.extend({
     if (objClicked){
       objClicked.isClicked = true;
       this.lastClicked = objClicked;
+    }
+    else {
+      this.deadClick = true;
     }
   },
 

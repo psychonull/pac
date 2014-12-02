@@ -36,6 +36,7 @@ var commandbar = {
 
 var walkablearea = {
   name: 'WalkableArea',
+  commands: ['walkto'],
   moveWalkersToObject: function(){},
   getWalker: function(){
     return {
@@ -103,6 +104,7 @@ describe('Commander', function(){
       expect(cmdAction.requires.length).to.be.equal(2);
       expect(cmdAction.requires[0]).to.be.equal(Hoverable);
       expect(cmdAction.requires[1]).to.be.equal(Clickable);
+      expect(cmdAction.nearness).to.be.equal(30);
 
       obj.updateActions(dt);
       obj.updateActions(dt);
@@ -285,7 +287,7 @@ describe('Commander', function(){
 
       sinon.spy(walkablearea, 'moveWalkersToObject');
 
-      var commander = new Commander();
+      var commander = new Commander(5);
 
       var obj = new TestObj({
         shape: true,
@@ -305,7 +307,7 @@ describe('Commander', function(){
       commander.onClick(obj, 'use');
 
       expect(walkablearea.moveWalkersToObject)
-        .to.have.been.calledWith(obj, 30, 'use');
+        .to.have.been.calledWith(obj, 5);
 
       obj.updateActions(dt);
       expect(obj.actions.has(WalkerCommand)).to.be.true;
@@ -319,7 +321,7 @@ describe('Commander', function(){
 
     it ('must NOT create a WalkerCommand Action if is a cancel', function(){
 
-      var commander = new Commander();
+      var commander = new Commander({ nearness: 10 });
 
       var obj = new TestObj({
         shape: true,
@@ -328,9 +330,7 @@ describe('Commander', function(){
 
       var cancelWalkableArea = {
         name: 'WalkableArea',
-        moveWalkersToObject: function(){
-          return true;
-        },
+        moveWalkersToObject: function(){ },
         getWalker: function(){
           return {
             name: 'Walker',
@@ -370,7 +370,7 @@ describe('Commander', function(){
       commander.onClick(obj, 'use');
 
       expect(cancelWalkableArea.moveWalkersToObject)
-        .to.have.been.calledWith(obj, 30, 'use');
+        .to.have.been.calledWith(obj, 10);
 
       obj.updateActions(dt);
       expect(obj.actions.has(WalkerCommand)).to.be.false;

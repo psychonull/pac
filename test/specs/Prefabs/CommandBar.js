@@ -423,6 +423,36 @@ describe('CommandBar', function(){
     cbar.inventory.current = null;
   });
 
+  it('must reset inventory join if changes command', function(){
+
+    var cbar = new CommandBar(_.clone(commandBarOpts, true));
+
+    var fakeObj = {
+      cid: '123456789',
+      name: 'Crazy Monkey'
+    };
+
+    var fakeObj2 = {
+      cid: '987654321',
+      name: 'Crazy Monkey 2'
+    };
+
+    cbar.setCommand('use');
+
+    cbar.showHoverMessage(fakeObj);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey');
+
+    cbar.inventory.current = 'Crazy Monkey';
+
+    cbar.showHoverMessage(fakeObj);
+    expect(cbar.messageBox.value).to.be.equal('Use Crazy Monkey with');
+
+    cbar.setCommand('talkto');
+    expect(cbar.messageBox.value).to.be.equal('');
+    expect(cbar.inventory.current).to.be.null;
+
+  });
+
   it('must allow to reset a command', function(){
 
     var cbar = new CommandBar(_.clone(commandBarOpts, true));

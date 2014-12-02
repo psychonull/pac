@@ -67,20 +67,7 @@ module.exports = GameObject.extend({
     });
   },
 
-  moveWalkersToObject: function(obj, nearness, command){
-
-    var cancelCommand = false;
-    if (command && this.commands.indexOf(command) > -1){
-      cancelCommand = true;
-
-      // if the object has a command for this action
-      // do not cancel the command
-      if (obj.onCommand && obj.onCommand.hasOwnProperty(command) &&
-        typeof obj.onCommand[command] === 'function'){
-          cancelCommand = false;
-      }
-    }
-
+  moveWalkersToObject: function(obj, nearness){
     var toPos = obj.position;
 
     if (obj.shape && obj.shape.size){
@@ -94,8 +81,6 @@ module.exports = GameObject.extend({
     }
 
     this.moveWalkers(toPos, nearness);
-
-    return cancelCommand;
   },
 
   addWalker: function(walker){

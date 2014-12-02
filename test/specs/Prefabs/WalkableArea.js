@@ -331,57 +331,8 @@ describe('WalkableArea', function(){
         position: pos
       });
 
-      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+      warea.moveWalkersToObject(testObj, distance);
 
-      expect(cancel).to.be.false;
-      expect(warea.moveWalkers).to.have.been.calledOnce;
-      expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
-
-      warea.moveWalkers.reset();
-
-      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
-
-      expect(cancel).to.be.true;
-      expect(warea.moveWalkers).to.have.been.calledOnce;
-      expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
-
-      WalkableArea.prototype.moveWalkers.restore();
-
-    });
-
-    it('must allow to call commands not allowed if they are specify',
-      function(){
-
-      var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
-
-      var opts = _.clone(walkableOpts, true);
-
-      opts.shape = new Rectangle({
-        position: new pac.Point(100, 100),
-        size: { width: 200, height: 300 }
-      });
-
-      opts.commands = ['walkto'];
-
-      var warea = new WalkableArea(opts);
-      warea.game = _.clone(fakeGame);
-
-      var pos = new Point(250, 250);
-      var distance = 5;
-
-      var testObj = new TestObjDr({
-        position: pos
-      });
-
-      testObj.onCommand = {
-        walkto: function(){
-          // something
-        }
-      };
-
-      var cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
-
-      expect(cancel).to.be.false;
       expect(warea.moveWalkers).to.have.been.calledOnce;
       expect(warea.moveWalkers).to.have.been.calledWith(pos, distance);
 
@@ -417,9 +368,8 @@ describe('WalkableArea', function(){
       var psize = new Point(shape.size.width/2, shape.size.height);
       var p = pos.add(psize);
 
-      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+      warea.moveWalkersToObject(testObj, distance);
 
-      expect(cancel).to.be.false;
       expect(warea.moveWalkers).to.have.been.calledOnce;
 
       spyCall = warea.moveWalkers.getCall(0);
@@ -428,9 +378,8 @@ describe('WalkableArea', function(){
 
       warea.moveWalkers.reset();
 
-      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
+      warea.moveWalkersToObject(testObj, distance);
 
-      expect(cancel).to.be.true;
       expect(warea.moveWalkers).to.have.been.calledOnce;
 
       spyCall = warea.moveWalkers.getCall(0);
@@ -466,20 +415,8 @@ describe('WalkableArea', function(){
         shape: shape
       });
 
-      var cancel = warea.moveWalkersToObject(testObj, distance, 'push');
+      warea.moveWalkersToObject(testObj, distance);
 
-      expect(cancel).to.be.false;
-      expect(warea.moveWalkers).to.have.been.calledOnce;
-
-      spyCall = warea.moveWalkers.getCall(0);
-      expect(spyCall.args[0].x).to.be.equal(200);
-      expect(spyCall.args[0].y).to.be.equal(200);
-
-      warea.moveWalkers.reset();
-
-      cancel = warea.moveWalkersToObject(testObj, distance, 'walkto');
-
-      expect(cancel).to.be.true;
       expect(warea.moveWalkers).to.have.been.calledOnce;
 
       spyCall = warea.moveWalkers.getCall(0);

@@ -168,6 +168,8 @@ module.exports = Rectangle.extend({
       this._current = cmd;
 
       this._setCommandStyle(cmd, this.style.active);
+      this.resetBar();
+
       return true;
     }
 
@@ -256,7 +258,12 @@ module.exports = Rectangle.extend({
 
   init: function() {},
 
-  update: function(dt) {},
+  update: function(dt) {
+    if (this.game.inputs.deadClick){
+      this.resetCommand();
+      this.resetBar();
+    }
+  },
 
   resetCommand: function(){
     if (this.default){
@@ -264,12 +271,15 @@ module.exports = Rectangle.extend({
     }
   },
 
-  onEnterScene: function(){
-    this.resetCommand();
-
+  resetBar: function(){
     this.inventory.current = null;
     this.lastRequestOf = null;
     this.hideHoverMessage();
+  },
+
+  onEnterScene: function(){
+    this.resetCommand();
+    this.resetBar();
   }
 
 });

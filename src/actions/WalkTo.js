@@ -25,7 +25,10 @@ module.exports = Action.extend({
     this.offset = obj.position.add(this.pivot);
     this.dir = this.target.subtract(this.offset).normalize();
 
-    obj.walkingTo = new Point(this.dir);
+    if (this.target.subtract(this.offset).length() > this.nearness){
+      obj.walkingTo = new Point(this.dir);
+    }
+
     obj.targetReached = false;
     obj.emit('walk:start');
   },
