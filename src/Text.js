@@ -13,6 +13,7 @@ var Text = module.exports = GameObject.extend({
   strokeThickness: 0,
   wordWrap: 0,
   isBitmapText: false,
+  wrapToScreen: false,
 
   constructor: function(arg0, arg1){
     var args = this._extractConstructorArgs(arguments);
@@ -21,7 +22,7 @@ var Text = module.exports = GameObject.extend({
 
     if(args.options){
       var optionsWhitelist = ['font', 'fill', 'stroke',
-        'strokeThickness', 'wordWrap', 'isBitmapText', 'tint'];
+        'strokeThickness', 'wordWrap', 'isBitmapText', 'tint', 'wrapToScreen'];
       _.extend(this, _.pick(args.options, optionsWhitelist));
     }
 
