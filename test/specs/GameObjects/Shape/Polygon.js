@@ -2,6 +2,7 @@
 var Shape = require('../../../../src/Shape');
 var Polygon = require('../../../../src/Polygon');
 var Point = require('../../../../src/Point');
+var Rectangle = require('../../../../src/Rectangle');
 
 var expect = require('chai').expect;
 
@@ -115,6 +116,31 @@ describe('Polygon', function(){
       );
 
       expect(concave.isConcave()).to.be.true;
+    });
+
+    it ('#getBounds', function(){
+
+      var poly = new Polygon([
+        new Point(30, 50),
+        new Point(120, 70),
+        new Point(130, 140),
+        new Point(80, 210),
+        new Point(50, 170)
+      ]);
+
+      var bounds = poly.getBounds();
+      expect(bounds).to.be.instanceof(Rectangle);
+      expect(Math.round(bounds.position.x)).to.be.equal(30);
+      expect(Math.round(bounds.position.y)).to.be.equal(50);
+      expect(Math.round(bounds.size.width)).to.be.equal(100);
+      expect(Math.round(bounds.size.height)).to.be.equal(160);
+
+      bounds = poly.getBounds(new Point(50, 50));
+      expect(Math.round(bounds.position.x)).to.be.equal(80);
+      expect(Math.round(bounds.position.y)).to.be.equal(100);
+      expect(Math.round(bounds.size.width)).to.be.equal(100);
+      expect(Math.round(bounds.size.height)).to.be.equal(160);
+
     });
 
   });

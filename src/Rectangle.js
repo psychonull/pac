@@ -2,7 +2,7 @@
 var Shape = require('./Shape');
 var Point = require('./Point');
 
-module.exports = Shape.extend({
+var Rectangle = module.exports = Shape.extend({
 
   name: 'Rectangle',
   size: { width: 50, height: 50 },
@@ -62,6 +62,37 @@ module.exports = Shape.extend({
       new Point(pos.x + size.width, pos.y + size.height),
       new Point(pos.x, pos.y + size.height)
     ];
+  },
+
+  getBounds: function(offset){
+    var pos = this.position;
+
+    if (offset){
+      pos = pos.add(offset);
+    }
+
+    return new Rectangle({ position: pos, size: this.size });
+  },
+
+  getCenter: function(){
+    var pos = this.position;
+    var size = this.size;
+
+    return new Point(pos.x + size.width/2, pos.y + size.height/2);
+  },
+
+  getHead: function(){
+    var pos = this.position;
+    var size = this.size;
+
+    return new Point(pos.x + size.width/2, pos.y);
+  },
+
+  getFeet: function(){
+    var pos = this.position;
+    var size = this.size;
+
+    return new Point(pos.x + size.width/2, pos.y + size.height);
   },
 
   // TODO: move this away from Rectangle Class

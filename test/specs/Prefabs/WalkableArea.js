@@ -340,7 +340,7 @@ describe('WalkableArea', function(){
 
     });
 
-    it('must call #moveWalkers with a FEET position by Shape', function(){
+    it('must call #moveWalkers with a CENTER position by Shape', function(){
       var spyCall;
       var spy = sinon.spy(WalkableArea.prototype, 'moveWalkers');
 
@@ -356,7 +356,7 @@ describe('WalkableArea', function(){
       var warea = new WalkableArea(opts);
       warea.game = _.clone(fakeGame);
 
-      var pos = new Point(250, 250);
+      var pos = new Point(250, 275);
       var distance = 5;
       var shape = new Rectangle({ size: { width: 50, height: 50 }});
 
@@ -365,8 +365,7 @@ describe('WalkableArea', function(){
         shape: shape
       });
 
-      var psize = new Point(shape.size.width/2, shape.size.height);
-      var p = pos.add(psize);
+      var p = shape.getBounds(pos).getCenter();
 
       warea.moveWalkersToObject(testObj, distance);
 

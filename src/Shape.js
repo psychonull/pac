@@ -24,4 +24,8 @@ module.exports = GameObject.extend({
     throw new Error('Must Implement Shape.nearestPoint()');
   },
 
+  getBounds: function(offset){
+    throw new Error('Must Implement Shape.getBounds()');
+  },
+
 });

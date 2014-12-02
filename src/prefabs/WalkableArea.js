@@ -70,9 +70,8 @@ module.exports = GameObject.extend({
   moveWalkersToObject: function(obj, nearness){
     var toPos = obj.position;
 
-    if (obj.shape && obj.shape.size){
-      var size = new Point(obj.shape.size.width/2, obj.shape.size.height);
-      toPos = toPos.add(size);
+    if (obj.shape){
+      toPos = obj.shape.getBounds(toPos).getCenter();
     }
 
     if (!this.shape.isPointInside(toPos, this.position)){

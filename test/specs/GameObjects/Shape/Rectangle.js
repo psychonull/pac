@@ -137,6 +137,70 @@ describe('Rectangle', function(){
 
     });
 
+    it ('#getBounds', function(){
+
+      var rect = new Rectangle({
+        position: new Point(50, 80),
+        size: { width: 130, height: 100 }
+      });
+
+      var bounds = rect.getBounds();
+      expect(bounds).to.be.instanceof(Rectangle);
+      expect(Math.round(bounds.position.x)).to.be.equal(50);
+      expect(Math.round(bounds.position.y)).to.be.equal(80);
+      expect(Math.round(bounds.size.width)).to.be.equal(130);
+      expect(Math.round(bounds.size.height)).to.be.equal(100);
+
+      bounds = rect.getBounds(new Point(50, 20));
+      expect(Math.round(bounds.position.x)).to.be.equal(100);
+      expect(Math.round(bounds.position.y)).to.be.equal(100);
+      expect(Math.round(bounds.size.width)).to.be.equal(130);
+      expect(Math.round(bounds.size.height)).to.be.equal(100);
+
+    });
+
+    it ('#getCenter', function(){
+
+      var rect = new Rectangle({
+        position: new Point(50, 80),
+        size: { width: 130, height: 100 }
+      });
+
+      var center = rect.getCenter();
+      expect(center).to.be.instanceof(Point);
+      expect(Math.round(center.x)).to.be.equal(115);
+      expect(Math.round(center.y)).to.be.equal(130);
+
+    });
+
+    it ('#getHead', function(){
+
+      var rect = new Rectangle({
+        position: new Point(50, 80),
+        size: { width: 130, height: 100 }
+      });
+
+      var point = rect.getHead();
+      expect(point).to.be.instanceof(Point);
+      expect(Math.round(point.x)).to.be.equal(115);
+      expect(Math.round(point.y)).to.be.equal(80);
+
+    });
+
+    it ('#getFeet', function(){
+
+      var rect = new Rectangle({
+        position: new Point(50, 80),
+        size: { width: 130, height: 100 }
+      });
+
+      var point = rect.getFeet();
+      expect(point).to.be.instanceof(Point);
+      expect(Math.round(point.x)).to.be.equal(115);
+      expect(Math.round(point.y)).to.be.equal(180);
+
+    });
+
   });
 
 });

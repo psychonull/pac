@@ -3,6 +3,8 @@ var Shape = require('../../../../src/Shape');
 var Circle = require('../../../../src/Circle');
 var Point = require('../../../../src/Point');
 
+var Rectangle = require('../../../../src/Rectangle');
+
 var expect = require('chai').expect;
 
 describe('Circle', function(){
@@ -90,6 +92,28 @@ describe('Circle', function(){
       nearest = circle.nearestPoint(new Point(150, 10), new Point(10, 20));
       expect(Math.round(nearest.x)).to.be.equal(85);
       expect(Math.round(nearest.y)).to.be.equal(53);
+
+    });
+
+    it ('#getBounds', function(){
+
+      var circle = new Circle({
+        position: new Point(50, 50),
+        radius: 30
+      });
+
+      var bounds = circle.getBounds();
+      expect(bounds).to.be.instanceof(Rectangle);
+      expect(Math.round(bounds.position.x)).to.be.equal(20);
+      expect(Math.round(bounds.position.y)).to.be.equal(20);
+      expect(Math.round(bounds.size.width)).to.be.equal(60);
+      expect(Math.round(bounds.size.height)).to.be.equal(60);
+
+      bounds = circle.getBounds(new Point(50, 50));
+      expect(Math.round(bounds.position.x)).to.be.equal(70);
+      expect(Math.round(bounds.position.y)).to.be.equal(70);
+      expect(Math.round(bounds.size.width)).to.be.equal(60);
+      expect(Math.round(bounds.size.height)).to.be.equal(60);
 
     });
 

@@ -3,6 +3,7 @@ var Shape = require('./Shape');
 var Point = require('./Point');
 var _ = require('./utils');
 var inside = require('point-in-polygon');
+var Rectangle = require('./Rectangle');
 
 module.exports = Shape.extend({
 
@@ -113,6 +114,41 @@ module.exports = Shape.extend({
     }
 
     return closest;
+  },
+
+  getBounds: function(offset){
+    /*jshint maxcomplexity:10 */
+
+    var max = {
+      x: Number.NEGATIVE_INFINITY,
+      y: Number.NEGATIVE_INFINITY,
+    };
+
+    var min = {
+      x: Number.POSITIVE_INFINITY,
+      y: Number.POSITIVE_INFINITY,
+    };
+
+    for (var i=0; i<this.points.length; i++){
+      var p = this.points[i];
+
+      if (p.x > max.x) max.x = p.x;
+      if (p.x < min.x) min.x = p.x;
+
+      if (p.y > max.y) max.y = p.y;
+      if (p.y < min.y) min.y = p.y;
+    }
+
+    var pos = new Point(min.x, min.y);
+
+    if (offset){
+      pos = pos.add(offset);
+    }
+
+    return new Rectangle({
+      position: pos,
+      size: { width: max.x - min.x, height: max.y - min.y }
+    });
   },
 
   // TODO: move this away from Polygon Class

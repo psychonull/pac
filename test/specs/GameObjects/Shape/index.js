@@ -28,6 +28,11 @@ describe('Shape', function(){
         var shape = new Shape();
         shape.nearestPoint();
       }).to.throw('Must Implement Shape.nearestPoint()');
+
+      expect(function(){
+        var shape = new Shape();
+        shape.getBounds();
+      }).to.throw('Must Implement Shape.getBounds()');
     });
 
     it ('must create with defaults', function(){

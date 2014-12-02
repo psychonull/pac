@@ -37,8 +37,8 @@ module.exports = Action.extend({
 
   _findFeet: function(obj){
 
-    if (obj.shape && obj.shape.size){
-      this.feet = new Point(obj.shape.size.width/2, obj.shape.size.height);
+    if (obj.shape){
+      this.feet = obj.shape.getBounds().getFeet();
       return;
     }
 
