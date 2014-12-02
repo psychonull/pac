@@ -3,7 +3,6 @@ var pac = require('../../../../src/pac');
 var expect = require('chai').expect;
 
 describe('Predefined', function(){
-
   it('must expose pac.actions.Clickable Action', function(){
     expect(pac.actions.Clickable).to.be.a('function');
     expect(pac.actions.Clickable.prototype).to.be.an.instanceof(pac.Action);
@@ -53,6 +52,11 @@ describe('Predefined', function(){
     expect(pac.actions.Dialoguer.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.Animate Action', function(){
+    expect(pac.actions.Animate).to.be.a('function');
+    expect(pac.actions.Animate.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
@@ -65,5 +69,6 @@ describe('Predefined', function(){
   require('./Speaker.js');
   require('./Speak.js');
   require('./Dialoguer.js');
+  require('./Animate.js');
 
 });
