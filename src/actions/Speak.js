@@ -12,11 +12,13 @@ module.exports = Action.extend({
 
   text: '',
   duration: 2,
+  minDuration: 1,
   after: null,
 
   init: function(options) {
     this.text = (options && options.text) || this.text;
     this.duration = (options && options.duration) || this.duration;
+    this.minDuration = (options && options.minDuration) || this.minDuration;
     this.after = (options && options.after) || this.after;
   },
 
@@ -36,7 +38,9 @@ module.exports = Action.extend({
 
   update: function(dt) {
     this.elapsed += dt;
-    if(this.elapsed >= this.duration){
+    if(this.elapsed >= this.duration ||
+      (this.actions.owner.game.inputs.cursor.isDown &&
+          this.elapsed > this.minDuration)){
       this.isFinished = true;
     }
   }
