@@ -110,20 +110,51 @@ describe('Dialoguer', function(){
     it('must subscribe to the dialogueManager end',
       function(){
         sinon.spy(DialogueManager.prototype, 'on');
+        var fn = function(){};
+        sinon.stub(_, 'bind').returns(fn);
 
         dialoguer.onStart();
+        expect(_.bind).to.have.been
+          .calledWith(dialoguer.onDialogueEnd, dialoguer);
+
         expect(dialoguer.actions.owner.dialogue.on)
-          .to.have.been.calledWith('end');
-        dialoguer.isRunning = true;
-
-        dialoguer.actions.owner.dialogue.emit('end');
-
-        expect(dialoguer.isRunning).to.be.false;
+          .to.have.been.calledWith('end', fn);
 
         DialogueManager.prototype.on.restore();
+        _.bind.restore();
       }
     );
 
+
+  });
+
+  describe('#onDialogueEnd', function(){
+    var dialoguer,
+    owner = {
+    };
+
+    beforeEach(function(){
+      dialoguer = new Dialoguer({
+        characters: {
+          player: owner
+        },
+        dialogue: [],
+        dialogueOptionsBar: {
+          showOptions: function(){}
+        }
+      });
+      dialoguer.actions = {
+        owner: owner
+      };
+      dialoguer.actions.owner.dialogue = {};
+      dialoguer.actions.owner.onCommand = { talkto: function(){} };
+    });
+
+    it('must set isRunning to false', function(){
+      dialoguer.isRunning = true;
+      dialoguer.onDialogueEnd();
+      expect(dialoguer.isRunning).to.be.false;
+    });
 
   });
 
