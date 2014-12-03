@@ -11,6 +11,7 @@ var DialogueManager = Emitter.extend({
   currentDialogue: null,
   currentIndex: -1,
   dialogueOptionsBar: null,
+  speakClass: Speak,
 
   constructor: function(options){
     if(options){
@@ -34,6 +35,7 @@ var DialogueManager = Emitter.extend({
     this.characters = dialogue.characters;
     this.dialogueOptionsBar = dialogue.dialogueOptionsBar;
     this.currentIndex = -1;
+    this.speakClass = dialogue.speakClass || this.speakClass;
   },
 
   say: function(dialogueUnit){
@@ -48,7 +50,7 @@ var DialogueManager = Emitter.extend({
     else {
       text = dialogueUnit.value;
     }
-    owner.actions.pushBack(new Speak({
+    owner.actions.pushBack(new this.speakClass({
       text: text,
       after: _.bind(this.next, this)
     }));

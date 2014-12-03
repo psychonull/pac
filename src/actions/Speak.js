@@ -3,6 +3,7 @@ var Action = require('../Action');
 var Point = require('../Point');
 var Text = require('../Text');
 var Speaker = require('./Speaker');
+var _ = require('../utils');
 
 module.exports = Action.extend({
 
@@ -16,16 +17,19 @@ module.exports = Action.extend({
   after: null,
 
   init: function(options) {
-    this.text = (options && options.text) || this.text;
-    this.duration = (options && options.duration) || this.duration;
-    this.minDuration = (options && options.minDuration) || this.minDuration;
-    this.after = (options && options.after) || this.after;
+    _.extend(this,
+      _.pick(options, ['text', 'duration', 'minDuration',
+            'after', 'durationOffsetFn', 'wordWrapCorrectionFn'])
+            );
+
+    this.duration += this.durationOffsetFn(this.text);
   },
 
   onStart: function() {
     this.elapsed = 0;
     var owner = this.actions.owner;
     owner.speakerText.value = this.text;
+    this.wordWrapCorrectionFn(owner.speakerText);
   },
 
   onEnd: function() {
@@ -34,6 +38,14 @@ module.exports = Action.extend({
     if(this.after){
       this.after(this);
     }
+  },
+
+  durationOffsetFn: function(textValue){
+    return 0;
+  },
+
+  wordWrapCorrectionFn: function(text){
+    return;
   },
 
   update: function(dt) {
