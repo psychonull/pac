@@ -9,7 +9,7 @@ module.exports = Action.extend({
 
   field: null,
   to: null,
-  duration: 1000,
+  duration: 1,
   easing: 'Linear.None',
 
   delay: 0,
@@ -75,7 +75,7 @@ module.exports = Action.extend({
 
     this.tween =
       new TWEEN.Tween(this.tweenedObj)
-      .to(this.to, this.duration)
+      .to(this.to, this.duration*1000)
       .easing(this.easing);
 
     this.configureTween();
@@ -91,7 +91,7 @@ module.exports = Action.extend({
 
   configureTween: function(){
     if (this.delay){
-      this.tween.delay(this.delay);
+      this.tween.delay(this.delay*1000);
     }
 
     if (this.repeat){

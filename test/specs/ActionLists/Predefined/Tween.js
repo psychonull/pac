@@ -20,9 +20,9 @@ describe('Tween', function(){
       var opts = {
         field: 'position',
         to: { x: 500 },
-        duration: 2000,
+        duration: 2,
         easing: 'Elastic.InOut',
-        delay: 500,
+        delay: 0.5,
         repeat: 2,
         yoyo: true,
         isBlocking: true
@@ -48,7 +48,7 @@ describe('Tween', function(){
       tween = new Tween(opts);
 
       expect(tween.isBlocking).to.be.false;
-      expect(tween.duration).to.be.equal(1000);
+      expect(tween.duration).to.be.equal(1);
       expect(tween.easing).to.be.equal(TWEEN.Easing.Linear.None);
     });
 
@@ -57,7 +57,7 @@ describe('Tween', function(){
       var opts = {
         field: 'position',
         to: { x: 500 },
-        duration: 2000,
+        duration: 2,
         easing: 'Elastic.InOut'
       };
 
@@ -116,7 +116,7 @@ describe('Tween', function(){
     it('must create a Tween onStart', function(){
 
       // main object
-      var tweenAct = new Tween({ x: 200 }, 1000);
+      var tweenAct = new Tween({ x: 200 }, 1);
 
       var obj = new TestObj({
         actions: [ tweenAct ]
@@ -149,7 +149,7 @@ describe('Tween', function(){
 
     it('must remove the Tween onEnd', function(){
 
-      var tweenAct = new Tween({ x: 200 }, 1000);
+      var tweenAct = new Tween({ x: 200 }, 1);
 
       var obj = new TestObj({
         actions: [ tweenAct ]
@@ -173,7 +173,7 @@ describe('Tween', function(){
       var dt = 0.2;
 
       var obj = new TestObj({
-        actions: [ new Tween({ alpha: 150 }, 600) ]
+        actions: [ new Tween({ alpha: 150 }, 0.6) ]
       });
 
       obj.alpha = 0;
@@ -200,7 +200,7 @@ describe('Tween', function(){
 
       var obj = new TestObj({
         position: new pac.Point(0, 100),
-        actions: [ new Tween('position', { x: 300 }, 600) ]
+        actions: [ new Tween('position', { x: 300 }, 0.6) ]
       });
 
       expect(obj.actions.length).to.be.equal(1);
@@ -221,6 +221,9 @@ describe('Tween', function(){
 
     it('must run a repeat', function(){
 
+      // Doesn't work as expected.
+      // Check why TWEEN is not firing onComplete callback
+
       var dt = 0.2;
       var repeat = 1;
 
@@ -229,7 +232,7 @@ describe('Tween', function(){
         actions: [ new Tween({
           field: 'position',
           to: { x: 300 },
-          duration: 600,
+          duration: 0.6,
           repeat: repeat
         }) ]
       });
@@ -256,6 +259,7 @@ describe('Tween', function(){
 
       obj.updateActions(dt);
       expect(obj.actions.length).to.be.equal(0);
+
     });
 
     it('must run a yoyo', function(){
@@ -267,7 +271,7 @@ describe('Tween', function(){
         actions: [ new Tween({
           field: 'position',
           to: { x: 300 },
-          duration: 600,
+          duration: 0.6,
           yoyo: true
         }) ]
       });
@@ -314,13 +318,13 @@ describe('Tween', function(){
           new Tween({
             field: 'position',
             to: { x: 200 },
-            duration: 400,
+            duration: 0.4,
             isBlocking: true
           }),
           new Tween({
             field: 'position',
             to: { y: 200 },
-            duration: 400
+            duration: 0.4
           })
         ]
       });
@@ -353,12 +357,12 @@ describe('Tween', function(){
           new Tween({
             field: 'position',
             to: { x: 200 },
-            duration: 400
+            duration: 0.4
           }),
           new Tween({
             field: 'position',
             to: { y: 200 },
-            duration: 400
+            duration: 0.4
           })
         ]
       });
