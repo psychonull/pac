@@ -50,6 +50,12 @@ describe('Tween', function(){
       expect(tween.isBlocking).to.be.false;
       expect(tween.duration).to.be.equal(1);
       expect(tween.easing).to.be.equal(TWEEN.Easing.Linear.None);
+
+      // custom easing
+
+      opts.easing = function(k) { return k++; };
+      tween = new Tween(opts);
+      expect(tween.easing).to.be.equal(opts.easing);
     });
 
     it('must be created with defaults by parameters', function(){

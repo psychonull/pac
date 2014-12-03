@@ -24,7 +24,9 @@ module.exports = Action.extend({
       throw new Error('Tween Action: Expected [to] parameter');
     }
 
-    this.easing = this.getEasing(this.easing);
+    if (typeof this.easing === 'string'){
+      this.easing = this.getEasing(this.easing);
+    }
   },
 
   _init: function(){
