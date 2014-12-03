@@ -63,6 +63,11 @@ describe('Predefined', function(){
     expect(pac.actions.Execute.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.Tween Action', function(){
+    expect(pac.actions.Tween).to.be.a('function');
+    expect(pac.actions.Tween.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
@@ -77,5 +82,6 @@ describe('Predefined', function(){
   require('./Dialoguer.js');
   require('./Animate.js');
   require('./Execute.js');
+  require('./Tween.js');
 
 });

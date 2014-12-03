@@ -3,6 +3,8 @@ var Emitter = require('./Emitter');
 
 module.exports = Emitter.extend({
 
+  name: 'Action',
+
   isFinished: false,
   isBlocking: false,
   actions: null,

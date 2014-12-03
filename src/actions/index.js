@@ -3,6 +3,7 @@ module.exports = {
   Delay: require('./Delay'),
   Animate: require('./Animate'),
   Execute: require('./Execute'),
+  Tween: require('./Tween'),
 
   // Input
   Clickable: require('./Clickable'),
