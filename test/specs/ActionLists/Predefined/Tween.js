@@ -221,9 +221,6 @@ describe('Tween', function(){
 
     it('must run a repeat', function(){
 
-      // Doesn't work as expected.
-      // Check why TWEEN is not firing onComplete callback
-
       var dt = 0.2;
       var repeat = 1;
 
