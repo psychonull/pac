@@ -98,13 +98,15 @@ describe('DialogueManager', function(){
           var data = [],
             characters = {},
             dialogueOptionsBar = {};
+          var MySpeak = Speak.extend({});
 
           sinon.spy(DialogueManager, 'transformConfig');
 
           dialogue.setDialogue({
             characters: characters,
             dialogue: data,
-            dialogueOptionsBar: dialogueOptionsBar
+            dialogueOptionsBar: dialogueOptionsBar,
+            speakClass: MySpeak
           });
 
           expect(DialogueManager.transformConfig).to.have.been.calledWith(data);
@@ -113,6 +115,7 @@ describe('DialogueManager', function(){
           expect(dialogue.characters).to.equal(characters);
           expect(dialogue.currentIndex).to.equal(-1);
           expect(dialogue.dialogueOptionsBar).to.equal(dialogueOptionsBar);
+          expect(dialogue.speakClass).to.equal(MySpeak);
         }
       );
     });
@@ -152,6 +155,29 @@ describe('DialogueManager', function(){
           expect(player.actions.at(0).text).to.equal('xD');
           expect(_.bind).to.have.been
             .calledWith(DialogueManager.prototype.next, dialogue);
+          expect(player.actions.at(0).after).to.equal(expectedFn);
+
+          _.bind.restore();
+        }
+      );
+
+      it('must add a custom Speak Class with the values passed',
+        function(){
+          var expectedFn = function(){};
+          sinon.stub(_, 'bind').returns(expectedFn);
+          var MySpeak = Speak.extend({});
+          dialogue.speakClass = MySpeak;
+
+          dialogue.say({
+            value: 'xD',
+            owner: 'player'
+          });
+
+          expect(player.actions.length).to.equal(1);
+          expect(player.actions.at(0)).to.be.an.instanceof(MySpeak);
+          expect(player.actions.at(0).text).to.equal('xD');
+          expect(_.bind).to.have.been
+          .calledWith(DialogueManager.prototype.next, dialogue);
           expect(player.actions.at(0).after).to.equal(expectedFn);
 
           _.bind.restore();

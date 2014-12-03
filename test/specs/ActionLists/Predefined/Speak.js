@@ -35,6 +35,19 @@ describe('Speak', function(){
     expect(speak.after).to.equal(onAfter);
   });
 
+  it('must add to the duration the value returned from durationOffsetFn',
+    function(){
+      var speak = new Speak({
+        text: '...',
+        duration: 600,
+        minDuration: 2,
+        durationOffsetFn: sinon.stub().returns(1)
+      });
+      expect(speak.durationOffsetFn).to.have.been.calledWith('...');
+      expect(speak.duration).to.equal(601);
+    }
+  );
+
   describe('#onStart', function(){
 
     it('must set elapsed to 0', function(){
@@ -67,6 +80,24 @@ describe('Speak', function(){
         speak.onStart();
 
         expect(speak.actions.owner.speakerText.value).to.equal('aloja');
+    });
+
+    it('must call the wordWrapCorrectionFn', function(){
+      var speak = new Speak({
+        text: 'aloja',
+        wordWrapCorrectionFn: sinon.stub()
+      });
+      speak.actions = {
+        owner: {
+          speakerText: {
+            value: ''
+          }
+        }
+      };
+      speak.onStart();
+
+      expect(speak.wordWrapCorrectionFn).to.have.been
+        .calledWith(speak.actions.owner.speakerText);
     });
 
   });
