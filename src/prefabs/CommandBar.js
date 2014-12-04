@@ -218,7 +218,7 @@ module.exports = Rectangle.extend({
 
     var message = join ? name + ' ' + join : name;
 
-    if (join && this.inventory.current !== name){
+    if (join && this.inventory && this.inventory.current !== name){
       message = this.inventory.current + ' ' + join + ' ' + name;
     }
 
@@ -272,7 +272,10 @@ module.exports = Rectangle.extend({
   },
 
   resetBar: function(){
-    this.inventory.current = null;
+    if (this.inventory){
+      this.inventory.current = null;
+    }
+
     this.lastRequestOf = null;
     this.hideHoverMessage();
   },

@@ -49,24 +49,34 @@ var NativeRenderer = module.exports = Renderer.extend({
     this.backImage = null;
   },
 
+  onAddObject: function(obj, layer){
+    this._createObject(obj);
+  },
+
+  onRemoveObject: function(obj, layer){
+    // Nothing to do for Naive implementation
+  },
+
   onLayerFill: function(layer){
 
     this.stage.get(layer).each(function(obj, index){
-
-      if(obj instanceof Sprite){
-        var textures = this.game.cache.images;
-
-        var texture = textures.get(obj.texture);
-        obj.image = texture.raw();
-        obj.frames = texture.frames;
-      }
-
+      this._createObject(obj);
     }, this);
 
   },
 
   onLayerClear: function(layer){
     // Nothing to do for Naive implementation
+  },
+
+  _createObject: function(obj){
+    if(obj instanceof Sprite){
+      var textures = this.game.cache.images;
+
+      var texture = textures.get(obj.texture);
+      obj.image = texture.raw();
+      obj.frames = texture.frames;
+    }
   },
 
   render: function () {

@@ -58,6 +58,14 @@ var PixiRenderer = module.exports = Renderer.extend({
     this.pixiBack.removeChildren();
   },
 
+  _createLayer: function(name){
+    var pixiLayer = new PIXI.DisplayObjectContainer();
+    this.pixiStage.addChild(pixiLayer);
+    pixiLayer.scale.x = pixiLayer.scale.y = this.scale;
+    pixiLayer.layer = name;
+    this.pixiLayers[name] = pixiLayer;
+  },
+
   _buildLayers: function(){
 
     // build PIXI layers in the order of this.layers
@@ -69,25 +77,37 @@ var PixiRenderer = module.exports = Renderer.extend({
       this.layers.forEach(function(name){
 
         if (name !== 'default') { // skip default if is there
-
-          var pixiLayer = new PIXI.DisplayObjectContainer();
-          this.pixiStage.addChild(pixiLayer);
-          pixiLayer.scale.x = pixiLayer.scale.y = this.scale;
-          pixiLayer.layer = name;
-          this.pixiLayers[name] = pixiLayer;
+          this._createLayer(name);
         }
-
       }, this);
     }
 
     // Add 'default' Layer always last since is always at front of all
+    this._createLayer('default');
+  },
 
-    var pixiLayerDefault = new PIXI.DisplayObjectContainer();
-    this.pixiStage.addChild(pixiLayerDefault);
-    pixiLayerDefault.scale.x = pixiLayerDefault.scale.y = this.scale;
-    pixiLayerDefault.layer = 'default';
-    this.pixiLayers['default'] = pixiLayerDefault;
+  addChild: function(child, parent, index){
+    if (index >= 0){
+      parent.addChildAt(child, index);
+    }
+    else {
+      parent.addChild(child);
+    }
+  },
 
+  onAddObject: function(obj, layer){
+    var idx = this.stage.get(layer).indexOf(obj);
+    var pixiLayer = this.pixiLayers[layer];
+
+    this._createPixiObject(obj, pixiLayer, idx);
+    this._createChildren(obj, pixiLayer);
+  },
+
+  onRemoveObject: function(obj, layer){
+    var pixiLayer = this.pixiLayers[layer];
+
+    this._clearPixiObjectChildren(obj, pixiLayer);
+    this._removePixiObject(obj, pixiLayer);
   },
 
   onLayerFill: function(layer){
@@ -96,25 +116,9 @@ var PixiRenderer = module.exports = Renderer.extend({
 
       var pixiLayer = this.pixiLayers[layer];
       this._createPixiObject(obj, pixiLayer);
+      this._createChildren(obj, pixiLayer);
 
-      if (obj.children){
-        obj.children.each(function(child){
-          this._createPixiObject(child, pixiLayer);
-        }, this);
-        //HACK
-        obj.children.on('add', _.bind(function(c){
-          this._createPixiObject(c, pixiLayer);
-        }, this));
-        obj.children.on('remove', _.bind(function(c){
-          this._removePixiObject(c, pixiLayer);
-        }, this));
-        obj.children.on('clear', _.bind(function(){
-          //TODO: obj.children is already cleared here so this doesnt work
-          //this._clearPixiObjectChildren(obj, pixiLayer);
-        }, this));
-      }
     },this);
-
   },
 
   onLayerClear: function(layer){
@@ -125,7 +129,7 @@ var PixiRenderer = module.exports = Renderer.extend({
 
   },
 
-  _createPixiObject: function(obj, parent){
+  _createPixiObject: function(obj, parent, index){
     var textures = this.game.cache.images;
 
     if(obj instanceof Sprite){
@@ -139,7 +143,8 @@ var PixiRenderer = module.exports = Renderer.extend({
       this._setSpriteProperties(obj, sprite);
       sprite.cid = obj.cid;
 
-      parent.addChild(sprite);
+      this.addChild(sprite, parent, index);
+      //parent.addChild(sprite);
     }
     else if (obj instanceof Text){
       var text;
@@ -152,7 +157,8 @@ var PixiRenderer = module.exports = Renderer.extend({
       this._setTextProperties(obj, text);
       text.cid = obj.cid;
 
-      parent.addChild(text);
+      this.addChild(text, parent, index);
+      //parent.addChild(text);
     }
     else if (obj instanceof Shape){
       var graphics = new PIXI.Graphics();
@@ -166,20 +172,47 @@ var PixiRenderer = module.exports = Renderer.extend({
         this._setObjectProperties(obj, shape);
         shape.cid = obj.cid;
 
-        parent.addChild(shape);
+        this.addChild(shape, parent, index);
+        //parent.addChild(shape);
       }
     }
 
-    this._drawDebug(obj, parent);
+    this._drawDebug(obj, parent, index);
+  },
+
+  _createChildren: function(obj, pixiLayer){
+    if (obj.children){
+
+      obj.children.each(function(child){
+        this._createPixiObject(child, pixiLayer);
+      }, this);
+
+      //HACK
+      obj.children.on('add', _.bind(function(c){
+        this._createPixiObject(c, pixiLayer);
+      }, this));
+
+      obj.children.on('remove', _.bind(function(c){
+        this._removePixiObject(c, pixiLayer);
+      }, this));
+
+      obj.children.on('clear', _.bind(function(){
+        //TODO: obj.children is already cleared here so this doesnt work
+        //this._clearPixiObjectChildren(obj, pixiLayer);
+      }, this));
+    }
   },
 
   _removePixiObject: function(obj, parent){
-    var pixiObj = _.find(parent.children, {cid: obj.cid});
+    var pixiObj = this._getPixiObjectByCID(obj.cid, parent);
+
     if(pixiObj){
       parent.removeChild(pixiObj);
     }
+
     if(pac.DEBUG && obj.shape){
-      var debugPixiObj = _.find(parent.children, {cid: obj.shape.cid});
+      var debugPixiObj = this._getPixiObjectByCID(obj.shape.cid, parent);
+
       if(debugPixiObj){
         parent.removeChild(debugPixiObj);
       }
@@ -256,17 +289,8 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
   _getPixiObjectByCID: function(cid, container){
-
     //TODO: Change this with a local Associative Array by CID
-
-    for (var i = container.children.length - 1; i >= 0; i--) {
-      var pixiObj = container.children[i];
-      if (pixiObj.cid === cid){
-        return pixiObj;
-      }
-    }
-
-    return null;
+    return _.find(container.children, { cid: cid });
   },
 
   _updateProperties: function(){
@@ -409,7 +433,7 @@ var PixiRenderer = module.exports = Renderer.extend({
   },
 
 
-  _drawDebug: function(obj, container){
+  _drawDebug: function(obj, container, index){
 
     if (pac.DEBUG && obj.shape){
       var shape = obj.shape;
@@ -436,7 +460,8 @@ var PixiRenderer = module.exports = Renderer.extend({
 
       if (draw){
         draw.cid = shape.cid;
-        container.addChild(draw);
+        this.addChild(draw, container, index);
+        //container.addChild(draw);
       }
     }
   }
