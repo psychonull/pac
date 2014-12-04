@@ -29,17 +29,29 @@ var Stage = module.exports = MapList.extend({
         this.layers.push(name);
       }, this);
     }
+
+    this.isReady = false;
   },
 
   _initLayer: function(layer, name){
 
     var self = this;
 
-    /*
     layer.on('add', function(obj){
-      (function(_name){ self.emit('addToLayer', obj, _name); })(name);
+      (function(_name){
+        if (self.isReady){
+          self.emit('addToLayer', obj, _name);
+        }
+      })(name);
     });
-    */
+
+    layer.on('remove', function(obj){
+      (function(_name){
+        if (self.isReady){
+          self.emit('removeFromLayer', obj, _name);
+        }
+      })(name);
+    });
 
     layer.on('clear', function(obj){
       (function(_name){ self.emit('layerClear', _name); })(name);
@@ -66,6 +78,8 @@ var Stage = module.exports = MapList.extend({
     this.each(function(layer, name){
       this.emit('layerFill', name);
     }, this);
+
+    this.isReady = true;
   },
 
   addObjects: function(){
@@ -85,6 +99,17 @@ var Stage = module.exports = MapList.extend({
     return this;
   },
 
+  removeObject: function(obj){
+    if (!obj) return;
+
+    if (obj.layer && this.hasKey(obj.layer)){
+      this.get(obj.layer).remove(obj);
+    }
+    else {
+      this.get(this.defaultName).remove(obj);
+    }
+  },
+
   clearLayer: function(layerName){
 
     if (layerName){
@@ -96,6 +121,8 @@ var Stage = module.exports = MapList.extend({
 
       return this;
     }
+
+    this.isReady = false;
 
     this.each(function(layer){
       if (layer.length > 0){

@@ -30,7 +30,7 @@ describe('Methods', function(){
 
       var objTest = new TestObject();
       var objTestLayered = new TestObject({ layer: 'testLayer1' });
-/*
+
       var emitted = 0;
       stage.on('addToLayer', function(obj, layer){
         emitted++;
@@ -42,7 +42,7 @@ describe('Methods', function(){
           expect(layer).to.be.equal(obj.layer);
         }
       });
-*/
+
       stage.addObjects([ objTest, objTestLayered ]);
 
       var layer0 = stage.get('default');
@@ -57,7 +57,12 @@ describe('Methods', function(){
 
       expect(layer2.length).to.be.equal(0);
 
-      //expect(emitted).to.be.equal(2);
+      expect(emitted).to.be.equal(0);
+
+      stage.ready();
+      var objTest2 = new TestObject();
+      stage.addObjects(objTest2);
+      expect(emitted).to.be.equal(1);
 
       layer0.clear();
       layer1.clear();
@@ -76,12 +81,7 @@ describe('Methods', function(){
       var objTestLayered = new TestObject({ layer: 'testLayer1' });
 
       list.add([ objTest, testGM, objTestLayered ]);
-/*
-      var emitted = 0;
-      stage.on('addToLayer', function(obj, layer){
-        emitted++;
-      });
-*/
+
       stage.addObjects(list);
 
       var layer0 = stage.get('default');
@@ -96,11 +96,47 @@ describe('Methods', function(){
 
       expect(layer2.length).to.be.equal(0);
 
-      //expect(emitted).to.be.equal(2);
-
       layer0.clear();
       layer1.clear();
       layer2.clear();
+    });
+
+  });
+
+  describe('#removeObject', function(){
+
+    it ('must remove objects from a layer', function(){
+
+      var objTest = new TestObject();
+      var objTestLayered = new TestObject({ layer: 'testLayer1' });
+
+      var emitted = 0;
+      stage.on('removeFromLayer', function(obj, layer){
+        emitted++;
+
+        if (!obj.layer) {
+          expect(layer).to.be.equal('default');
+        }
+        else {
+          expect(layer).to.be.equal(obj.layer);
+        }
+      });
+
+      stage.addObjects([ objTest, objTestLayered ]);
+
+      var layer0 = stage.get('default');
+      var layer1 = stage.get('testLayer1');
+      var layer2 = stage.get('testLayer2');
+
+      stage.ready();
+
+      stage.removeObject(objTest);
+      stage.removeObject(objTestLayered);
+      expect(emitted).to.be.equal(2);
+
+      emitted = 0;
+      stage.clearLayer();
+      expect(emitted).to.be.equal(0);
     });
 
   });
@@ -164,6 +200,8 @@ describe('Methods', function(){
       expect(layer2.length).to.be.equal(0);
       expect(emitted).to.be.equal(2);
 
+      expect(stage.isReady).to.be.equal(false);
+
     });
 
   });
@@ -199,6 +237,8 @@ describe('Methods', function(){
 
       stage.ready();
       expect(emitted).to.be.equal(3);
+
+      expect(stage.isReady).to.be.equal(true);
 
     });
 
