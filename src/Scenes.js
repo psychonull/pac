@@ -45,7 +45,7 @@ var Scenes = module.exports = MapList.extend({
     this.emit('enter', targetScene);
 
     if(previousScene){
-      previousScene.objects.clear();
+      previousScene.clear();
     }
   },
 

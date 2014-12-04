@@ -18,6 +18,7 @@ var Scene = module.exports = Emitter.extend({
 
     this.objects = new GameObjectList();
     this.objects.on('add', this._initObject.bind(this));
+    this.objects.on('remove', this._clearObject.bind(this));
 
     Emitter.apply(this, arguments);
   },
@@ -27,8 +28,19 @@ var Scene = module.exports = Emitter.extend({
     obj.scene = this;
   },
 
+  _clearObject: function(obj){
+    if (obj.scene === this){
+      obj.scene = null;
+    }
+  },
+
   addObject: function(toAdd){
     this.objects.add(toAdd);
+    return this;
+  },
+
+  removeObject: function(toRemove){
+    this.objects.remove(toRemove);
     return this;
   },
 
@@ -38,6 +50,12 @@ var Scene = module.exports = Emitter.extend({
 
   find: function(search){
     return this.objects.find(search);
+  },
+
+  clear: function(){
+    this.objects
+      .each(this._clearObject.bind(this))
+      .clear();
   },
 
   _update: function(dt){

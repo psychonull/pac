@@ -109,6 +109,98 @@ describe('#addObject', function(){
 
 });
 
+describe('#removeObject', function(){
+
+  it('must exist removeObject method', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    expect(scene.removeObject).to.be.a('function');
+  });
+
+  it('must allow to removeObject a GameObject', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+
+    var monkey = new Monkey();
+
+    scene.addObject(monkey);
+
+    expect(scene.objects.length).to.be.equal(1);
+    expect(scene.objects.get(monkey.cid)).to.be.instanceof(Monkey);
+    expect(monkey.scene).to.be.equal(scene);
+    expect(monkey.game).to.be.equal(fakeGame);
+
+    scene.removeObject(monkey);
+
+    expect(scene.objects.length).to.be.equal(0);
+    expect(monkey.scene).to.be.equal(null);
+    expect(monkey.game).to.be.equal(fakeGame);
+  });
+
+});
+
+describe('#clear', function(){
+
+  it('must exist clear method', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    expect(scene.clear).to.be.a('function');
+  });
+
+  it('must allow to clear an Scene', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    var scene2 = new Scene({
+      name: 'test2',
+      size: { width: 200, height: 300 }
+    });
+
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+    scene2.game = fakeGame;
+
+    var monkey = new Monkey();
+    var monkey2 = new Monkey();
+    var monkey3 = new Monkey();
+
+    scene.addObject([ monkey, monkey2, monkey3 ]);
+    scene2.addObject(monkey3);
+
+    expect(scene.objects.length).to.be.equal(3);
+    expect(scene2.objects.length).to.be.equal(1);
+
+    expect(monkey3.scene).to.be.equal(scene2);
+
+    scene.clear();
+
+    expect(scene.objects.length).to.be.equal(0);
+    expect(scene2.objects.length).to.be.equal(1);
+
+    expect(monkey.scene).to.be.equal(null);
+    expect(monkey2.scene).to.be.equal(null);
+    expect(monkey3.scene).to.be.equal(scene2);
+
+    expect(monkey.game).to.be.equal(fakeGame);
+    expect(monkey2.game).to.be.equal(fakeGame);
+    expect(monkey3.game).to.be.equal(fakeGame);
+  });
+
+});
+
 describe('#findOne', function(){
 
   it('must return the first object found by a query or name', function(){
