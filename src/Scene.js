@@ -26,12 +26,16 @@ var Scene = module.exports = Emitter.extend({
   _initObject: function(obj){
     obj.game = this.game;
     obj.scene = this;
+
+    this.emit('addObject', obj);
   },
 
   _clearObject: function(obj){
     if (obj.scene === this){
       obj.scene = null;
     }
+
+    this.emit('removeObject', obj);
   },
 
   addObject: function(toAdd){

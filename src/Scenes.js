@@ -15,6 +15,9 @@ var Scenes = module.exports = MapList.extend({
 
     this.on('add', this._initScene.bind(this));
     this.each(this._initScene.bind(this));
+
+    this.eventAddObj = this._addObject.bind(this);
+    this.eventRemoveObj = this._removeObject.bind(this);
   },
 
   _initScene: function(scene, name){
@@ -35,6 +38,11 @@ var Scenes = module.exports = MapList.extend({
     }
 
     if(previousScene){
+
+      previousScene
+        .removeListener('addObject', this.eventAddObj)
+        .removeListener('removeObject', this.eventRemoveObj);
+
       previousScene.onExit(targetScene);
       this.emit('exit', previousScene);
     }
@@ -47,6 +55,18 @@ var Scenes = module.exports = MapList.extend({
     if(previousScene){
       previousScene.clear();
     }
+
+    targetScene
+      .on('addObject', this.eventAddObj)
+      .on('removeObject', this.eventRemoveObj);
+  },
+
+  _addObject: function(obj){
+    this.emit('addObject', obj);
+  },
+
+  _removeObject: function(obj){
+    this.emit('removeObject', obj);
   },
 
   update: function(dt){

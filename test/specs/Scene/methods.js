@@ -107,6 +107,33 @@ describe('#addObject', function(){
 
   });
 
+  it('must must fire [addObject] event', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+
+    var monkey = new Monkey();
+    var monkey2 = new Monkey();
+
+    var fired = 0;
+    scene.on('addObject', function(obj){
+      fired++;
+
+      var isValid = (obj === monkey || obj === monkey2);
+      expect(isValid).to.be.true;
+
+      expect(obj.game).to.be.equal(fakeGame);
+      expect(obj.scene).to.be.equal(scene);
+    });
+
+    scene.addObject([ monkey, monkey2 ]);
+    expect(fired).to.be.equal(2);
+  });
+
 });
 
 describe('#removeObject', function(){
@@ -143,6 +170,36 @@ describe('#removeObject', function(){
     expect(scene.objects.length).to.be.equal(0);
     expect(monkey.scene).to.be.equal(null);
     expect(monkey.game).to.be.equal(fakeGame);
+  });
+
+  it('must must fire [removeObject] event', function(){
+    var scene = new Scene({
+      name: 'test',
+      size: { width: 200, height: 300 }
+    });
+
+    var fakeGame = { test: true };
+    scene.game = fakeGame;
+
+    var monkey = new Monkey();
+    var monkey2 = new Monkey();
+
+    var fired = 0;
+    scene.on('removeObject', function(obj){
+      fired++;
+
+      var isValid = (obj === monkey || obj === monkey2);
+      expect(isValid).to.be.true;
+
+      expect(obj.game).to.be.equal(fakeGame);
+      expect(obj.scene).to.be.equal(null);
+    });
+
+    scene.addObject([ monkey, monkey2 ]);
+
+    scene.removeObject(monkey2);
+    scene.removeObject(monkey);
+    expect(fired).to.be.equal(2);
   });
 
 });

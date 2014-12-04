@@ -224,10 +224,68 @@ describe('#switch', function(){
       expect(passed.at(1).cid).to.be.equal(sharedCID);
       expect(passed.at(0).cid).to.be.equal(sharedCID2);
 
+      scenes
+        .removeAllListeners('enter')
+        .removeAllListeners('exit');
+
       sceneX.onEnter.restore();
       sceneX.onExit.restore();
       sceneY.onEnter.restore();
       sceneY.onExit.restore();
+  });
+
+  it('must emit "addObject" and "removeObject" events only in the current',
+    function(){
+
+      expect(scenes.current.name).to.equal('y');
+
+      var calledAdd = 0;
+      var calledRemove = 0;
+
+      scenes.on('addObject', function(obj){
+        expect(obj.scene.name).to.be.equal(scenes.current.name);
+        calledAdd++;
+      });
+
+      scenes.on('removeObject', function(obj){
+        expect(obj.scene).to.be.equal(null);
+        calledRemove++;
+      });
+
+      var newObjA = new GameObject();
+      var newObjB = new GameObject();
+      sceneY.addObject([ newObjA, newObjB ]);
+      expect(calledAdd).to.be.equal(2);
+
+      sceneY.removeObject(newObjA);
+      expect(calledRemove).to.be.equal(1);
+
+      calledAdd = 0;
+      calledRemove = 0;
+
+      scenes.switch('x');
+
+      expect(calledAdd).to.be.equal(0);
+      expect(calledRemove).to.be.equal(0);
+
+      // check event at old scene
+      var newObjX = new GameObject();
+      sceneY.addObject(newObjX);
+      expect(calledAdd).to.be.equal(0);
+
+      sceneY.removeObject(newObjX);
+      expect(calledRemove).to.be.equal(0);
+
+      // check events on new switched scene
+      var newObjC = new GameObject();
+      var newObjD = new GameObject();
+      sceneX.addObject([ newObjC, newObjD ]);
+      expect(calledAdd).to.be.equal(2);
+
+      sceneX.removeObject(newObjC);
+      sceneX.removeObject(newObjD);
+      expect(calledRemove).to.be.equal(2);
+
   });
 
 });
