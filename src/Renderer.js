@@ -35,14 +35,20 @@ var Renderer = module.exports = EngineComponent.extend({
   _createStage: function(){
     this.stage = Stage.create(this.layers);
 
-    this.stage.on('layerFill', this.onLayerFill.bind(this));
-    this.stage.on('layerClear', this.onLayerClear.bind(this));
+    this.stage
+      .on('layerFill', this.onLayerFill.bind(this))
+      .on('layerClear', this.onLayerClear.bind(this))
+      .on('addToLayer', this.onAddObject.bind(this))
+      .on('removeFromLayer', this.onRemoveObject.bind(this));
   },
 
   init: function(game, options) { },
 
   setBackTexture: function(texture){ },
   clearBackTexture: function(){ },
+
+  onAddObject: function(obj, layer){ },
+  onRemoveObject: function(obj, layer){ },
 
   onLayerFill: function(layer){
     throw new Error('Must override renderer.onLayerFill()');

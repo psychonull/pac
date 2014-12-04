@@ -41,6 +41,56 @@ describe('Methods', function(){
     TestRenderer.prototype.onLayerFill.restore();
   });
 
+  it('must call onAddObject when a stage object is added ONLY if is ready',
+    function(){
+
+    sinon.spy(TestRenderer.prototype, 'onAddObject');
+
+    var renderer = new TestRenderer();
+    expect(renderer.onAddObject).to.be.a('function');
+
+    var testObj = new TestObject();
+    renderer.stage.addObjects(testObj);
+
+    expect(renderer.onAddObject).to.not.have.been.called;
+
+    renderer.stage.ready();
+
+    var testObj2 = new TestObject();
+    renderer.stage.addObjects(testObj2);
+
+    expect(renderer.onAddObject).to.have.been.calledOnce;
+    expect(renderer.onAddObject).to.have.been.calledWith(testObj2, 'default');
+
+    TestRenderer.prototype.onAddObject.restore();
+  });
+
+  it('must call onRemoveObject when a stage object is removed ONLY if is ready',
+    function(){
+
+    sinon.spy(TestRenderer.prototype, 'onRemoveObject');
+
+    var renderer = new TestRenderer();
+    expect(renderer.onRemoveObject).to.be.a('function');
+
+    var testObj = new TestObject();
+    var testObj2 = new TestObject();
+    renderer.stage.addObjects([ testObj, testObj2 ]);
+    renderer.stage.removeObject(testObj2);
+
+    expect(renderer.onRemoveObject).to.not.have.been.called;
+
+    renderer.stage.ready();
+
+    renderer.stage.removeObject(testObj);
+
+    expect(renderer.onRemoveObject).to.have.been.calledOnce;
+    expect(renderer.onRemoveObject)
+      .to.have.been.calledWith(testObj, 'default');
+
+    TestRenderer.prototype.onRemoveObject.restore();
+  });
+
   it('must call onLayerClear method when the stage is cleared', function(){
 
     sinon.spy(TestRenderer.prototype, 'onLayerClear');

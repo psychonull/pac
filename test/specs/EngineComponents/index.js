@@ -8,7 +8,7 @@ describe('Engine Components', function(){
     expect(pac.EngineComponent).to.be.equal(undefined);
   });
 
-  require('./Renderer/index.js');
-  require('./Loader/index.js');
+  require('./Renderer');
+  require('./Loader');
 
 });
