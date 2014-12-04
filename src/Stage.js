@@ -80,6 +80,8 @@ var Stage = module.exports = MapList.extend({
     }, this);
 
     this.isReady = true;
+
+    return this;
   },
 
   addObjects: function(){
@@ -108,6 +110,8 @@ var Stage = module.exports = MapList.extend({
     else {
       this.get(this.defaultName).remove(obj);
     }
+
+    return this;
   },
 
   clearLayer: function(layerName){

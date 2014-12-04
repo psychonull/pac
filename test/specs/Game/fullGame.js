@@ -12,6 +12,8 @@ var MockRenderer = pac.Renderer.extend({
   init: function(){
     this.viewport = document.createElement('canvas');
   },
+  onAddObject: function(obj, layer){ },
+  onRemoveObject: function(obj, layer){ },
   onLayerFill: function(layer){ },
   onLayerClear: function(layer){ },
   render: function(){ }
@@ -34,6 +36,10 @@ var MonkeyY = pac.GameObject.extend({
 });
 
 var MonkeySprite = pac.Sprite.extend({
+  texture: 'monkey'
+});
+
+var Dummy = pac.Sprite.extend({
   texture: 'monkey'
 });
 
@@ -252,6 +258,10 @@ describe('Full Draw', function(){
 
     sinon.spy(MockRenderer.prototype, 'setBackTexture');
     sinon.spy(MockRenderer.prototype, 'clearBackTexture');
+
+    sinon.spy(MockRenderer.prototype, 'onAddObject');
+    sinon.spy(MockRenderer.prototype, 'onRemoveObject');
+
     var spyLayerFill = sinon.spy(MockRenderer.prototype, 'onLayerFill');
     sinon.spy(MockRenderer.prototype, 'onLayerClear');
 
@@ -339,13 +349,41 @@ describe('Full Draw', function(){
         expect(stage.get('monkeys2').at(0).cid).to.be.equal(monkeyY2.cid);
         expect(stage.get('monkeys2').at(1).cid).to.be.equal(monkeyX2.cid);
 
-        game.end();
+        //////////////////////////////////////////////////////
+        //Test add and remove of Dynamic objects
 
-        game.renderer.onLayerFill.restore();
-        game.renderer.onLayerClear.restore();
+        expect(game.renderer.onAddObject).to.not.have.been.called;
+        expect(game.renderer.onRemoveObject).to.not.have.been.called;
 
-        done();
+        // add objects to Game and Scene
+        var gameObjA = new Dummy({ name: 'gameDummy_A' });
+        var gameObjB = new Dummy({ name: 'gameDummy_B' });
 
+        game.addObject([gameObjA, gameObjB]);
+
+        var sceneObjA = new Dummy({ name: 'sceneDummy_A' });
+        var sceneObjB = new Dummy({ name: 'sceneDummy_B' });
+
+        scenes.secondSc.addObject([ sceneObjA, sceneObjB ]);
+
+        // remove objects to Game and Scene
+        game.removeObject(gameObjB);
+        scenes.secondSc.removeObject(sceneObjB);
+
+        // let the game run for 50 ms more
+        setTimeout(function(){
+
+          expect(game.renderer.onAddObject).to.have.been.callCount(4);
+          expect(game.renderer.onRemoveObject).to.have.been.callCount(2);
+
+          game.end();
+
+          game.renderer.onLayerFill.restore();
+          game.renderer.onLayerClear.restore();
+
+          done();
+
+        }, 50);
       }, 50);
     }, 50);
 

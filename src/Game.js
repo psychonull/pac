@@ -28,6 +28,7 @@ var Game = module.exports = Gameloop.extend({
 
     this.objects = new GameObjectList();
     this.objects.on('add', this._onAddObject.bind(this));
+    this.objects.on('remove', this._onRemoveObject.bind(this));
 
     // Private members
     this.assetsLoaded = false;
@@ -107,8 +108,11 @@ var Game = module.exports = Gameloop.extend({
 
     this.scenes = new EngineComponents.Scenes(_scenes, options);
 
-    this.scenes.on('exit', this.onExitScene.bind(this));
-    this.scenes.on('enter', this.onEnterScene.bind(this));
+    this.scenes
+      .on('exit', this.onExitScene.bind(this))
+      .on('enter', this.onEnterScene.bind(this))
+      .on('addObject', this.onSceneAddObject.bind(this))
+      .on('removeObject', this.onSceneRemoveObject.bind(this));
   },
 
   start: function(sceneName){
@@ -191,9 +195,18 @@ var Game = module.exports = Gameloop.extend({
       this.renderer.setBackTexture(scene.texture);
     }
 
-    this.renderer.stage.addObjects(this.objects);
-    this.renderer.stage.addObjects(scene.objects);
-    this.renderer.stage.ready();
+    this.renderer.stage
+      .addObjects(this.objects)
+      .addObjects(scene.objects)
+      .ready();
+  },
+
+  onSceneAddObject: function(obj){
+    this.renderer.stage.addObjects(obj);
+  },
+
+  onSceneRemoveObject: function(obj){
+    this.renderer.stage.removeObject(obj);
   },
 
   addObject: function(toAdd){
@@ -201,9 +214,27 @@ var Game = module.exports = Gameloop.extend({
     return this;
   },
 
+  removeObject: function(toRemove){
+    this.objects.remove(toRemove);
+    return this;
+  },
+
   _onAddObject: function(obj){
     obj.game = this;
     obj.scene = null;
+
+    if (this.renderer.stage.isReady){
+      this.renderer.stage.addObjects(obj);
+    }
+  },
+
+  _onRemoveObject: function(obj){
+    obj.game = null;
+    obj.scene = null;
+
+    if (this.renderer.stage.isReady){
+      this.renderer.stage.removeObject(obj);
+    }
   },
 
   findOne: function(search){

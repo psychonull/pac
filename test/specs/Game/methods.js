@@ -130,6 +130,7 @@ describe('Objects', function(){
     expect(game.objects.length).to.be.equal(0);
 
     expect(game.addObject).to.be.a('function');
+    expect(game.removeObject).to.be.a('function');
     expect(game.findOne).to.be.a('function');
     expect(game.find).to.be.a('function');
   });
@@ -139,12 +140,40 @@ describe('Objects', function(){
     it('must allow to add objects at game level', function() {
       var game = pac.create();
 
+      game.use('renderer', MockRenderer);
+
       expect(game.objects.length).to.be.equal(0);
       game.addObject(new GameObject());
       expect(game.objects.length).to.be.equal(1);
 
       game.addObject([ new GameObject(), new GameObject() ]);
       expect(game.objects.length).to.be.equal(3);
+    });
+
+  });
+
+  describe('#removeObject', function(){
+
+    it('must allow to remove objects at game level', function() {
+      var game = pac.create();
+
+      game.use('renderer', MockRenderer);
+
+      expect(game.objects.length).to.be.equal(0);
+
+      var toRemove = new GameObject();
+      game.addObject([ toRemove, new GameObject() ]);
+      expect(game.objects.length).to.be.equal(2);
+
+      expect(toRemove.game).to.be.equal(game);
+      expect(toRemove.scene).to.be.null;
+
+      game.removeObject(toRemove);
+
+      expect(game.objects.length).to.be.equal(1);
+
+      expect(toRemove.game).to.be.null;
+      expect(toRemove.scene).to.be.null;
     });
 
   });
