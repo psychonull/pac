@@ -68,6 +68,11 @@ describe('Predefined', function(){
     expect(pac.actions.Tween.prototype).to.be.an.instanceof(pac.Action);
   });
 
+  it('must expose pac.actions.AutoZIndex Action', function(){
+    expect(pac.actions.AutoZIndex).to.be.a('function');
+    expect(pac.actions.AutoZIndex.prototype).to.be.an.instanceof(pac.Action);
+  });
+
   require('./Clickable.js');
   require('./Hoverable.js');
   require('./Delay.js');
@@ -83,5 +88,6 @@ describe('Predefined', function(){
   require('./Animate.js');
   require('./Execute.js');
   require('./Tween.js');
+  require('./AutoZIndex.js');
 
 });

@@ -18,6 +18,7 @@ module.exports = {
   // Walking
   Walker: require('./Walker'),
   WalkTo: require('./WalkTo'),
+  AutoZIndex: require('./AutoZIndex'),
 
   // Dialogues
   Speaker: require('./Speaker'),
