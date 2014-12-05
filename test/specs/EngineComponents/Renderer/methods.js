@@ -119,13 +119,17 @@ describe('Methods', function(){
     var testObj = new TestObject();
     renderer.stage.addObjects(testObj);
 
-    testObj.setZIndex(10);
+    testObj.zIndex = 10;
+
+    renderer.stage.update();
 
     expect(renderer.onZIndexChange).to.not.have.been.called;
 
     renderer.stage.ready();
 
-    testObj.setZIndex(12);
+    testObj.zIndex = 12;
+
+    renderer.stage.update();
 
     expect(renderer.onZIndexChange).to.have.been.calledOnce;
     expect(renderer.onZIndexChange)

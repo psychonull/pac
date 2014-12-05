@@ -317,7 +317,9 @@ describe('Methods', function(){
 
       expectedLayer = 'testLayer1';
       expectedObject = objects[1];
-      expectedObject.setZIndex(70);
+      expectedObject.zIndex = 70;
+
+      stage.update();
 
       expect(called).to.be.equal(0);
 
@@ -325,13 +327,17 @@ describe('Methods', function(){
 
       expectedLayer = 'testLayer1';
       expectedObject = objects[1];
-      expectedObject.setZIndex(5);
+      expectedObject.zIndex = 5;
+
+      stage.update();
 
       expect(called).to.be.equal(1);
 
       expectedLayer = 'default';
       expectedObject = objects[3];
-      expectedObject.setZIndex(8);
+      expectedObject.zIndex = 8;
+
+      stage.update();
 
       expect(called).to.be.equal(2);
     });

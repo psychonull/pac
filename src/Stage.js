@@ -160,6 +160,16 @@ var Stage = module.exports = MapList.extend({
     }, this);
 
     return found;
+  },
+
+  update: function(dt){
+
+    if (this.isReady){
+
+      this.each(function(layer, name){
+        layer.update(dt);
+      });
+    }
   }
 
 }, {

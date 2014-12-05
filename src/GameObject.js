@@ -81,15 +81,6 @@ var GameObject = module.exports = Emitter.extend({
 
   init: function(){ },
 
-  setZIndex: function(zIndex){
-    var current = this.zIndex;
-
-    if (zIndex !== current){
-      this.zIndex = zIndex;
-      this.emit('change:zIndex', zIndex, current);
-    }
-  },
-
   update: function(dt) { },
 
   updateHierarchy: function(dt){

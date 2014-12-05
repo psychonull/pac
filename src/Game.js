@@ -160,6 +160,8 @@ var Game = module.exports = Gameloop.extend({
     this.objects.update(dt);
     this.scenes.update(dt);
 
+    this.renderer.stage.update(dt);
+
     this.emit('update', dt);
   },
 

@@ -194,6 +194,8 @@ describe('Full Update', function(){
     sinon.spy(scenes.secondSc, 'onEnter');
     sinon.spy(scenes.secondSc, 'onExit');
 
+    sinon.spy(game.renderer.stage, 'update');
+
     expect(scenes.firstSc.game).to.be.ok;
     expect(scenes.firstSc.game).to.be.equal(game);
 
@@ -239,8 +241,11 @@ describe('Full Update', function(){
         expect(scenes.secondSc.onEnter).to.have.been.calledOnce;
         expect(scenes.secondSc.onExit).to.not.have.been.called;
 
+        expect(game.renderer.stage.update).to.have.been.called;
+
         game.inputs.update.restore();
         gameMonkey.update.restore();
+        game.renderer.stage.update.restore();
 
         done();
 
