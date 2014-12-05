@@ -110,6 +110,14 @@ var PixiRenderer = module.exports = Renderer.extend({
     this._removePixiObject(obj, pixiLayer);
   },
 
+  onZIndexChange: function(obj, layer){
+    var idx = this.stage.get(layer).indexOf(obj);
+    var pixiLayer = this.pixiLayers[layer];
+    var pixiObj = this._getPixiObjectByCID(obj.cid, pixiLayer);
+
+    pixiLayer.setChildIndex(pixiObj, idx);
+  },
+
   onLayerFill: function(layer){
 
     this.stage.get(layer).each(function(obj, index){

@@ -57,6 +57,10 @@ var NativeRenderer = module.exports = Renderer.extend({
     // Nothing to do for Naive implementation
   },
 
+  onZIndexChange: function(obj, layer){
+    // Nothing to do for Naive implementation
+  },
+
   onLayerFill: function(layer){
 
     this.stage.get(layer).each(function(obj, index){
