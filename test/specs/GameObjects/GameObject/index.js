@@ -332,4 +332,61 @@ describe('GameObject', function(){
 
   });
 
+  describe('#setZIndex', function(){
+
+    it('must fire an event when the zIndex changes', function(){
+
+      var MyGameObject = pac.GameObject.extend({
+        position: { x: 200, y: 200 },
+        layer: 'front',
+        zIndex: 5
+      });
+
+      var obj = new MyGameObject({
+        position: { x: 300, y: 200 }
+      });
+
+      expect(obj.setZIndex).to.be.a('function');
+
+      var newZIndex = 10;
+      var called = 0;
+
+      obj.on('change:zIndex', function(newValue, oldValue){
+        called++;
+        expect(oldValue).to.be.equal(5);
+        expect(newValue).to.be.equal(newZIndex);
+
+        expect(this.zIndex).to.be.equal(newValue);
+      });
+
+      obj.setZIndex(newZIndex);
+      expect(called).to.be.equal(1);
+      expect(obj.zIndex).to.be.equal(newZIndex);
+    });
+
+    it('must NOT fire an event when the zIndex is the same', function(){
+
+      var MyGameObject = pac.GameObject.extend({
+        position: { x: 200, y: 200 },
+        layer: 'front',
+        zIndex: 5
+      });
+
+      var obj = new MyGameObject({
+        position: { x: 300, y: 200 }
+      });
+
+      expect(obj.setZIndex).to.be.a('function');
+
+      var called = 0;
+      obj.on('change:zIndex', function(){
+        called++;
+      });
+
+      obj.setZIndex(5);
+      expect(called).to.be.equal(0);
+    });
+
+  });
+
 });

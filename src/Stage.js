@@ -53,6 +53,14 @@ var Stage = module.exports = MapList.extend({
       })(name);
     });
 
+    layer.on('change:zIndex', function(obj){
+      (function(_name){
+        if (self.isReady){
+          self.emit('zIndexChanged', obj, _name);
+        }
+      })(name);
+    });
+
     layer.on('clear', function(obj){
       (function(_name){ self.emit('layerClear', _name); })(name);
     });

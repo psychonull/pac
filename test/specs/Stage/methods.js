@@ -285,4 +285,57 @@ describe('Methods', function(){
 
   });
 
+  describe('zIndex', function(){
+
+    it('must fire [change:zIndex] when a Layer fires it', function(){
+
+      var layers = ['testLayer1'];
+
+      var stage = Stage.create(layers);
+
+      var objects = [
+        // testLayer1
+        new TestObject({ layer: 'testLayer1', zIndex: 2 }),
+        new TestObject({ layer: 'testLayer1', zIndex: 1 }),
+
+        // default
+        new TestObject({ name: 'this default one', zIndex: 5 }),
+        new TestObject({ zIndex: 2 }),
+      ];
+
+      stage.addObjects(objects);
+
+      var expectedLayer;
+      var expectedObject;
+
+      var called = 0;
+      stage.on('zIndexChanged', function(obj, layer){
+        called++;
+        expect(obj).to.be.equal(expectedObject);
+        expect(layer).to.be.equal(expectedLayer);
+      });
+
+      expectedLayer = 'testLayer1';
+      expectedObject = objects[1];
+      expectedObject.setZIndex(70);
+
+      expect(called).to.be.equal(0);
+
+      stage.ready();
+
+      expectedLayer = 'testLayer1';
+      expectedObject = objects[1];
+      expectedObject.setZIndex(5);
+
+      expect(called).to.be.equal(1);
+
+      expectedLayer = 'default';
+      expectedObject = objects[3];
+      expectedObject.setZIndex(8);
+
+      expect(called).to.be.equal(2);
+    });
+
+  });
+
 });

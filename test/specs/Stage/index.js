@@ -11,4 +11,6 @@ describe('Stage', function(){
   require('./constructor');
   require('./methods');
 
+  require('./Layer');
+
 });

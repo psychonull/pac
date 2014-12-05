@@ -108,6 +108,32 @@ describe('Methods', function(){
     TestRenderer.prototype.onLayerClear.restore();
   });
 
+  it('must call onZIndexChange when an object changes zIndex ONLY if isReady',
+    function(){
+
+    sinon.spy(TestRenderer.prototype, 'onZIndexChange');
+
+    var renderer = new TestRenderer();
+    expect(renderer.onZIndexChange).to.be.a('function');
+
+    var testObj = new TestObject();
+    renderer.stage.addObjects(testObj);
+
+    testObj.setZIndex(10);
+
+    expect(renderer.onZIndexChange).to.not.have.been.called;
+
+    renderer.stage.ready();
+
+    testObj.setZIndex(12);
+
+    expect(renderer.onZIndexChange).to.have.been.calledOnce;
+    expect(renderer.onZIndexChange)
+      .to.have.been.calledWith(testObj, 'default');
+
+    TestRenderer.prototype.onZIndexChange.restore();
+  });
+
   it('must expose a render method', function(){
     var renderer = new TestRenderer();
     expect(renderer.render).to.be.a('function');

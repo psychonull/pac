@@ -39,7 +39,8 @@ var Renderer = module.exports = EngineComponent.extend({
       .on('layerFill', this.onLayerFill.bind(this))
       .on('layerClear', this.onLayerClear.bind(this))
       .on('addToLayer', this.onAddObject.bind(this))
-      .on('removeFromLayer', this.onRemoveObject.bind(this));
+      .on('removeFromLayer', this.onRemoveObject.bind(this))
+      .on('zIndexChanged', this.onZIndexChange.bind(this));
   },
 
   init: function(game, options) { },
@@ -49,6 +50,7 @@ var Renderer = module.exports = EngineComponent.extend({
 
   onAddObject: function(obj, layer){ },
   onRemoveObject: function(obj, layer){ },
+  onZIndexChange: function(obj, layer){ },
 
   onLayerFill: function(layer){
     throw new Error('Must override renderer.onLayerFill()');
