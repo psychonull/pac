@@ -7,7 +7,7 @@ describe('Inputs', function(){
   require('./Input.js');
 
   require('./MouseInput');
-  //require('./InputKeyboard');
+  require('./KeyboardInput');
 
   require('./InputManager');
 

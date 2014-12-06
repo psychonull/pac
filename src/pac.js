@@ -49,6 +49,7 @@ module.exports = {
   Animation: require('./Animation'),
 
   Input: require('./Input'),
-  MouseInput: require('./MouseInput')
+  MouseInput: require('./MouseInput'),
+  KeyboardInput: require('./KeyboardInput')
 
 };

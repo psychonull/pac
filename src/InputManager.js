@@ -3,6 +3,7 @@ var MapList = require('./MapList');
 var Input = require('./Input');
 
 var MouseInput = require('./MouseInput');
+var KeyboardInput = require('./KeyboardInput');
 var Point = require('./Point');
 
 var Stage = require('./Stage');
@@ -140,6 +141,10 @@ var InputManager = module.exports = MapList.extend({
         if (input instanceof MouseInput){
           data.mouse = input;
         }
+        if (input instanceof KeyboardInput){
+          data.keyboard = input;
+        }
+
       });
     }
 

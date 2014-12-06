@@ -5,6 +5,7 @@ var InputManager = require('../../../src/InputManager');
 var MapList = require('../../../src/MapList');
 var Input = require('../../../src/Input');
 var MouseInput = require('../../../src/MouseInput');
+var KeyboardInput = require('../../../src/KeyboardInput');
 
 var Stage = require('../../../src/Stage');
 var Sprite = require('../../../src/Sprite');
@@ -55,7 +56,19 @@ describe('InputManager', function(){
       expect(mouse.enabled).to.be.equal(true);
     });
 
-    it('must support KeyboardInput type');
+    it('must support KeyboardInput type', function(){
+      var canvas = document.createElement('canvas');
+
+      var manager = InputManager.create(KeyboardInput, {
+        container: canvas,
+        enabled: true
+      });
+
+      var keyboard = manager.get('keyboard');
+      expect(keyboard).to.be.instanceof(KeyboardInput);
+      expect(keyboard.container).to.be.equal(canvas);
+      expect(keyboard.enabled).to.be.equal(true);
+    });
 
     it('must set the state of inputs when they happen', function(){
 

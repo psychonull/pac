@@ -34,7 +34,9 @@ module.exports = Emitter.extend({
   events: {
     MOVE: 'cursor:move',
     DOWN: 'cursor:down',
-    UP: 'cursor:up'
+    UP: 'cursor:up',
+    KEYDOWN: 'key:down',
+    KEYUP: 'key:up'
   }
 
 });

@@ -43,6 +43,8 @@ describe('Input', function(){
       expect(Input.events.MOVE).to.be.equal('cursor:move');
       expect(Input.events.DOWN).to.be.equal('cursor:down');
       expect(Input.events.UP).to.be.equal('cursor:up');
+      expect(Input.events.KEYDOWN).to.be.equal('key:down');
+      expect(Input.events.KEYUP).to.be.equal('key:up');
     });
 
   });
