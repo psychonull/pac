@@ -7,11 +7,13 @@ module.exports = GameObject.extend({
   fill: null,
   stroke: null,
   lineWidth: 1,
+  alpha: 1,
 
   constructor: function(options){
     this.fill = (options && options.fill) || this.fill;
     this.stroke = (options && options.stroke) || this.stroke;
     this.lineWidth = (options && options.lineWidth) || this.lineWidth;
+    this.alpha = (options && options.alpha) || this.alpha;
 
     GameObject.apply(this, arguments);
   },

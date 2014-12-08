@@ -347,7 +347,8 @@ var PixiRenderer = module.exports = Renderer.extend({
       else if(obj instanceof Shape){
         pixiObj.position.x = obj.position.x;
         pixiObj.position.y = obj.position.y;
-
+        pixiObj.alpha = obj.alpha;
+        
         this._createShape(obj, pixiObj);
       }
       pixiObj.visible = obj.visible;
