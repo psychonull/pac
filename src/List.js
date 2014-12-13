@@ -177,16 +177,42 @@ var List = module.exports = Emitter.extend({
   },
 
   find: function(search){
+    var found;
+
+    if (typeof search === 'function'){
+      found = [];
+
+      this.each(function(item){
+        if (item instanceof search){
+          found.push(item);
+        }
+      });
+
+      return new List(found);
+    }
 
     if (typeof search === 'string'){
       search = { name: search };
     }
 
-    var found = _.filter(this._items, search);
+    found = _.filter(this._items, search);
     return new List(found);
   },
 
   findOne: function(search){
+    if (typeof search === 'function'){
+      var found;
+
+      this.each(function(item){
+        if (item instanceof search){
+          found = item;
+          return false;
+        }
+      });
+
+      return found;
+    }
+
     if (typeof search === 'string'){
       search = { name: search };
     }
@@ -196,6 +222,12 @@ var List = module.exports = Emitter.extend({
 
   last: function(){
     return _.last(this._items);
+  },
+
+  move: function(item, toIndex){
+    var fromIndex = this.indexOf(item);
+    this._items.splice(toIndex, 0, this._items.splice(fromIndex, 1)[0]);
+    return this;
   }
 
 });

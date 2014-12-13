@@ -495,10 +495,13 @@ describe('List', function(){
 
       it('must return a new List of items found', function(){
 
+        var TestItem2 = TestItem.extend();
+
         var list = new TestList([
           new TestItem(),
           new TestItem({ name: 'named' }),
-          new TestItem({ test: true })
+          new TestItem({ test: true }),
+          new TestItem2()
         ]);
 
         expect(list.at(0).name).to.be.equal('GameObject');
@@ -512,7 +515,7 @@ describe('List', function(){
 
         var result = list.find('GameObject');
         expect(result).to.be.instanceof(List);
-        expect(result.length).to.be.equal(2);
+        expect(result.length).to.be.equal(3);
 
         result = list.find('named');
         expect(result.length).to.be.equal(1);
@@ -524,7 +527,18 @@ describe('List', function(){
         expect(result.length).to.be.equal(1);
 
         result = list.find({ test: false });
-        expect(result.length).to.be.equal(2);
+        expect(result.length).to.be.equal(3);
+
+        // by type
+
+        result = list.find(GameObject);
+        expect(result.length).to.be.equal(4);
+
+        result = list.find(TestItem);
+        expect(result.length).to.be.equal(4);
+
+        result = list.find(TestItem2);
+        expect(result.length).to.be.equal(1);
       });
 
     });
@@ -533,10 +547,13 @@ describe('List', function(){
 
       it('must return a the first item found', function(){
 
+        var TestItem2 = TestItem.extend();
+
         var list = new TestList([
           new TestItem(),
           new TestItem({ name: 'named' }),
-          new TestItem({ test: true })
+          new TestItem({ test: true }),
+          new TestItem2()
         ]);
 
         var result = list.findOne('GameObject');
@@ -553,6 +570,20 @@ describe('List', function(){
 
         result = list.findOne({ test: false });
         expect(result).to.be.equal(list.at(0));
+
+        // by type
+
+        result = list.findOne(GameObject);
+        expect(result).to.be.equal(list.at(0));
+
+        result = list.findOne(TestItem);
+        expect(result).to.be.equal(list.at(0));
+
+        result = list.findOne(TestItem2);
+        expect(result).to.be.equal(list.at(3));
+
+        result = list.findOne(List);
+        expect(result).to.be.undefined;
       });
 
     });
@@ -569,6 +600,25 @@ describe('List', function(){
 
         var result = list.last();
         expect(result).to.be.equal(list.at(2));
+
+      });
+
+    });
+
+    describe('#move', function(){
+
+      it('must move an item to a position', function(){
+
+        var moveItem = new TestItem({ name: 'named' });
+        var list = new TestList([
+          new TestItem(),
+          moveItem,
+          new TestItem({ test: true })
+        ]);
+
+        expect(list.indexOf(moveItem)).to.be.equal(1);
+        list.move(moveItem, 2);
+        expect(list.indexOf(moveItem)).to.be.equal(2);
 
       });
 
