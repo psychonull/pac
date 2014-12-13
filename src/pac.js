@@ -40,6 +40,8 @@ module.exports = {
   List: require('./List'),
   MapList: require('./MapList'),
 
+  WrappedObject: require('./WrappedObject'),
+
   ActionList: require('./ActionList'),
   Action: require('./Action'),
 
