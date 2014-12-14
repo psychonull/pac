@@ -29,7 +29,7 @@ var InventoryCommand = module.exports = BaseCommand.extend({
       this.commandBar.showHoverMessage(obj);
     }
     else {
-      this.insertBehindMe(new Command(this.command));
+      this.insertBelow(new Command(this.command));
     }
 
     this.isFinished = true;

@@ -43,18 +43,18 @@ describe('Methods', function(){
 
   });
 
-  describe('#insertInFrontOfMe', function(){
+  describe('#insertAbove', function(){
 
-    it('must call the actions insertBefore with this action', function(){
+    it('must insert an action into the list Above this action', function(){
 
       var thisAction = new Action();
       var list = new ActionList([ new Action(), thisAction, new Action() ]);
       var lenBefore = list.length;
 
-      expect(thisAction.insertInFrontOfMe).to.be.a('function');
+      expect(thisAction.insertAbove).to.be.a('function');
 
       var toInsert = new Action();
-      thisAction.insertInFrontOfMe(toInsert);
+      thisAction.insertAbove(toInsert);
 
       expect(list.length).to.be.equal(lenBefore+1);
       expect(list.at(1).cid).to.be.equal(toInsert.cid);
@@ -63,22 +63,147 @@ describe('Methods', function(){
 
   });
 
-  describe('#insertBehindMe', function(){
+  describe('#insertBelow', function(){
 
-    it('must call the actions insertAfter with this action', function(){
+    it('must insert an action into the list Below this action', function(){
 
       var thisAction = new Action();
       var list = new ActionList([ new Action(), thisAction, new Action() ]);
       var lenBefore = list.length;
 
-      expect(thisAction.insertBehindMe).to.be.a('function');
+      expect(thisAction.insertBelow).to.be.a('function');
 
       var toInsert = new Action();
-      thisAction.insertBehindMe(toInsert);
+      thisAction.insertBelow(toInsert);
 
       expect(list.length).to.be.equal(lenBefore+1);
       expect(list.at(1).cid).to.be.equal(thisAction.cid);
       expect(list.at(2).cid).to.be.equal(toInsert.cid);
+    });
+
+    it('must add an action into the list Below last action', function(){
+
+      var thisAction = new Action();
+      var list = new ActionList([ new Action(), new Action(), thisAction ]);
+      var lenBefore = list.length;
+
+      expect(thisAction.insertBelow).to.be.a('function');
+
+      var toInsert = new Action();
+      thisAction.insertBelow(toInsert);
+
+      expect(list.length).to.be.equal(lenBefore+1);
+      expect(list.at(2).cid).to.be.equal(thisAction.cid);
+      expect(list.at(3).cid).to.be.equal(toInsert.cid);
+    });
+
+  });
+
+  describe('Movement', function(){
+
+    describe('#moveUp', function(){
+
+      it('must move itself to current index -1', function(){
+        var act = new Action();
+        expect(act.moveUp).to.be.a('function');
+
+        var list = new ActionList([ new Action(), act, new Action() ]);
+        sinon.spy(list, 'move');
+
+        act.moveUp();
+
+        expect(list.move).to.have.been.calledWith(act, 0);
+      });
+
+    });
+
+    describe('#moveDown', function(){
+
+      it('must move itself to current index +1', function(){
+        var act = new Action();
+        expect(act.moveDown).to.be.a('function');
+
+        var list = new ActionList([ new Action(), act, new Action() ]);
+        sinon.spy(list, 'move');
+
+        act.moveDown();
+
+        expect(list.move).to.have.been.calledWith(act, 2);
+      });
+
+    });
+
+    describe('#moveTop', function(){
+
+      it('must move itself current index to 0', function(){
+        var act = new Action();
+        expect(act.moveTop).to.be.a('function');
+
+        var list = new ActionList([ new Action(), new Action(), act ]);
+        sinon.spy(list, 'move');
+
+        act.moveTop();
+
+        expect(list.move).to.have.been.calledWith(act, 0);
+      });
+
+    });
+
+    describe('#moveBottom', function(){
+
+      it('must move itself current index to list.length', function(){
+        var act = new Action();
+        expect(act.moveBottom).to.be.a('function');
+
+        var list = new ActionList(
+          [new Action(), act ,new Action(),new Action()]);
+        sinon.spy(list, 'move');
+
+        act.moveBottom();
+
+        expect(list.move).to.have.been.calledWith(act, 3);
+      });
+
+    });
+
+    describe('#moveTo', function(){
+
+      it('must move itself current index to a given index', function(){
+        var act = new Action();
+        expect(act.moveTo).to.be.a('function');
+
+        var list = new ActionList(
+          [new Action(),new Action(), act ,new Action()]);
+        sinon.spy(list, 'move');
+
+        act.moveTo(1);
+
+        expect(list.move).to.have.been.calledWith(act, 1);
+      });
+
+    });
+
+    it('must not throw errors', function(){
+      var act = new Action();
+      expect(act.moveTo).to.be.a('function');
+
+      var list = new ActionList(
+        [new Action(),new Action(), act ,new Action()]);
+
+      expect(function(){
+
+        act.moveTo(-2);
+        act.moveTo(0);
+        act.moveTo(50);
+
+        (new Action()).moveTo(1);
+
+        (new Action()).moveTop();
+        (new Action()).moveBottom();
+        (new Action()).moveUp();
+        (new Action()).moveDown();
+
+      }).to.not.throw();
     });
 
   });

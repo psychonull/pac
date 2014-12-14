@@ -89,6 +89,8 @@ var List = module.exports = Emitter.extend({
     this.length++;
 
     this.emit('add', item);
+
+    return this;
   },
 
   _validate: function(item){

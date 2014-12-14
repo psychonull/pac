@@ -17,7 +17,7 @@ module.exports = Emitter.extend({
       this.requires.forEach(function(Action){
 
         if (!this.actions.has(Action)){
-          this.insertInFrontOfMe(new Action());
+          this.insertAbove(new Action());
           createdOne = true;
         }
       }, this);
@@ -37,12 +37,76 @@ module.exports = Emitter.extend({
     throw new Error('Must override action.update()');
   },
 
-  insertInFrontOfMe: function(action) {
-    this.actions.insertBefore(action, this);
+  insertAbove: function(action) {
+    if (!this.actions) return;
+
+    var idx = this.index();
+    this.actions.insertAt(idx, action);
+    return this;
   },
 
-  insertBehindMe: function(action) {
-    this.actions.insertAfter(action, this);
+  insertBelow: function(action) {
+    if (!this.actions) return;
+
+    var idx = this.index();
+    var max = this.actions.length-1;
+
+    if (idx >= max){
+      this.actions.add(action);
+      return this;
+    }
+
+    this.actions.insertAt(idx+1, action);
+    return this;
   },
+
+  moveUp: function(){
+    this.moveTo(this.index() - 1);
+    return this;
+  },
+
+  moveDown: function(){
+    this.moveTo(this.index() + 1);
+    return this;
+  },
+
+  moveTop: function(){
+    this.moveTo(0);
+    return this;
+  },
+
+  moveBottom: function(){
+    if (this.actions){
+      this.moveTo(this.actions.length-1);
+    }
+
+    return this;
+  },
+
+  moveTo: function(index){
+    var idx = this.index();
+
+    if (idx === -1 || idx === index){
+      // This action isn't on a list
+      // or is at same position of request index
+      return this;
+    }
+
+    if (index < 0 || index >= this.actions.length){
+      // The requested index is out bounds
+      return this;
+    }
+
+    this.actions.move(this, index);
+    return this;
+  },
+
+  index: function(){
+    if (this.actions){
+      return this.actions.indexOf(this);
+    }
+
+    return -1;
+  }
 
 });

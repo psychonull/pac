@@ -50,8 +50,9 @@ var WalkLeft = Action.extend({
   },
 
   onEnd: function() {
-    this.insertInFrontOfMe(new Delay({ times: 2 }));
-    this.insertInFrontOfMe(new WalkRight());
+    this
+      .insertAbove(new Delay({ times: 2 }))
+      .insertAbove(new WalkRight());
   },
 
   update: function(dt) {

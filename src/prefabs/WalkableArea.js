@@ -57,7 +57,7 @@ module.exports = GameObject.extend({
       // since we are moving to other point
       walker.actions.removeAll(WalkTo);
 
-      walker.actions.pushFront(new WalkTo({
+      walker.actions.insertAt(0, new WalkTo({
         target: toPos,
         velocity: walker.velocity,
         pivot: walker.feet,

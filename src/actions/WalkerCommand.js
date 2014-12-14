@@ -23,7 +23,7 @@ var WalkerCommand = module.exports = BaseCommand.extend({
   update: function(dt) {
 
     if (this.walker.targetReached){
-      this.insertBehindMe(new Command(this.command));
+      this.insertBelow(new Command(this.command));
     }
 
     if (!this.walker.walkingTo){

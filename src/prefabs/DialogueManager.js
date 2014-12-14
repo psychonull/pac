@@ -50,7 +50,7 @@ var DialogueManager = Emitter.extend({
     else {
       text = dialogueUnit.value;
     }
-    owner.actions.pushBack(new this.speakClass({
+    owner.actions.add(new this.speakClass({
       text: text,
       after: _.bind(this.next, this)
     }));

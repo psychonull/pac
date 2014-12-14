@@ -59,7 +59,7 @@ module.exports = Action.extend({
   onClick: function(obj, command){
 
     if (obj.isInInventory){
-      this.actions.pushFront(new InventoryCommand(command));
+      this.actions.insertAt(0, new InventoryCommand(command));
       return;
     }
 
@@ -69,11 +69,11 @@ module.exports = Action.extend({
       this.walkableArea.moveWalkersToObject(obj, this.nearness);
 
       if (this._runCommand(obj, command)){
-        this.actions.pushFront(new WalkerCommand(command));
+        this.actions.insertAt(0, new WalkerCommand(command));
       }
     }
     else {
-      this.actions.pushFront(new Command(command));
+      this.actions.insertAt(0, new Command(command));
     }
 
   },
