@@ -13,5 +13,5 @@ describe('Action', function(){
 
   require('./constructor');
   require('./methods');
-  
+
 });

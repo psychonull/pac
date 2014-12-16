@@ -44,6 +44,7 @@ module.exports = {
 
   ActionList: require('./ActionList'),
   Action: require('./Action'),
+  WrappedAction: require('./WrappedAction'),
 
   actions: require('./actions'),
 

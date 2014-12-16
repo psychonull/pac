@@ -78,8 +78,8 @@ var ActionList = module.exports = List.extend({
 
         if (action.isBlocking){
 
-          if (action.blockOnce === true){
-            action.blockOnce = action.isBlocking = false;
+          if (action.isBlockOnce){
+            action.isBlockOnce = action.isBlocking = false;
           }
 
           return false; // break loop

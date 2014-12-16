@@ -18,6 +18,7 @@ describe('Action Lists', function(){
 
   require('./Action');
   require('./ActionList');
+  require('./WrappedAction');
   require('./Predefined');
 
 });

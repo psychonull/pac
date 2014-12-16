@@ -35,15 +35,18 @@ module.exports = Emitter.extend({
 
   block: function(){
     this.isBlocking = true;
+    return this;
   },
 
   blockOnce: function(){
     this.isBlocking = true;
-    this.blockOnce = true;
+    this.isBlockOnce = true;
+    return this;
   },
 
   unblock: function(){
     this.isBlocking = false;
+    return this;
   },
 
   insertAbove: function(action) {
