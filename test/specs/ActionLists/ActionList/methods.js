@@ -1,6 +1,7 @@
 
 var ActionList = require('../../../../src/ActionList');
 var Action = require('../../../../src/Action');
+var WrappedAction = require('../../../../src/WrappedAction');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -64,6 +65,58 @@ describe('Methods', function(){
       expect(list.has(TestAction1)).to.be.true;
       expect(list.has(TestAction2)).to.be.true;
       expect(list.has(TestAction3)).to.be.false;
+    });
+
+  });
+
+  describe('#find', function(){
+
+    it('must return a WrappedAction', function(){
+      var list = new ActionList();
+      expect(list.find).to.be.a('function');
+
+      var found = list.find(Action);
+      expect(found).to.be.instanceof(WrappedAction);
+      expect(found.length).to.be.equal(0);
+    });
+
+    it('must return a WrappedAction with Actions', function(){
+      var list = new ActionList([ new TestAction1(), new TestAction2()]);
+      expect(list.find).to.be.a('function');
+
+      var found = list.find(Action);
+
+      expect(found).to.be.instanceof(WrappedAction);
+      expect(found.length).to.be.equal(2);
+
+      found.remove();
+      expect(list.length).to.be.equal(0);
+    });
+
+  });
+
+  describe('#findOne', function(){
+
+    it('must return a WrappedAction', function(){
+      var list = new ActionList();
+      expect(list.findOne).to.be.a('function');
+
+      var found = list.findOne(Action);
+      expect(found).to.be.instanceof(WrappedAction);
+      expect(found.length).to.be.equal(0);
+    });
+
+    it('must return a WrappedAction with Actions', function(){
+      var list = new ActionList([ new TestAction1(), new TestAction2()]);
+      expect(list.findOne).to.be.a('function');
+
+      var found = list.findOne(Action);
+
+      expect(found).to.be.instanceof(WrappedAction);
+      expect(found.length).to.be.equal(1);
+
+      found.remove();
+      expect(list.length).to.be.equal(1);
     });
 
   });
@@ -149,7 +202,6 @@ describe('Methods', function(){
         onEnd: function() {},
         update: function() {}
       });
-
 
       var removeA = new RemoveType('A');
       var removeB = new RemoveType('B');

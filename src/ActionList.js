@@ -1,6 +1,7 @@
 
 var List = require('./List');
 var Action = require('./Action');
+var WrappedAction = require('./WrappedAction');
 
 var ActionList = module.exports = List.extend({
 
@@ -112,6 +113,21 @@ var ActionList = module.exports = List.extend({
       action.onEnd();
       action.started = false;
     }
+  },
+
+  find: function(){
+    var found = ActionList.__super__.find.apply(this, arguments);
+    return new WrappedAction(found);
+  },
+
+  findOne: function(){
+    var found = ActionList.__super__.findOne.apply(this, arguments);
+
+    if (found){
+      return new WrappedAction([ found ]);
+    }
+
+    return new WrappedAction();
   }
 
 });
