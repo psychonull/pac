@@ -47,6 +47,15 @@ var ActionList = module.exports = List.extend({
     return this;
   },
 
+  remove: function(action){
+    if (action.started){
+      action.onEnd();
+      action.started = false;
+    }
+
+    ActionList.__super__.remove.apply(this, arguments);
+  },
+
   update: function(dt){
     var finishedActions = [];
 
@@ -67,10 +76,12 @@ var ActionList = module.exports = List.extend({
           finishedActions.push(action);
         }
 
-        //TODO: Check if this should be an ELSE
-        //else if (action.isBlocking){
-
         if (action.isBlocking){
+
+          if (action.blockOnce === true){
+            action.blockOnce = action.isBlocking = false;
+          }
+
           return false; // break loop
         }
 
@@ -92,12 +103,14 @@ var ActionList = module.exports = List.extend({
   },
 
   _endAction: function(action, remove){
-    if (action.started){
-      action.onEnd();
-    }
-
     if (remove){
       this.remove(action);
+      return;
+    }
+
+    if (action.started){
+      action.onEnd();
+      action.started = false;
     }
   }
 

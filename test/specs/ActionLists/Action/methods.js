@@ -31,13 +31,13 @@ describe('Methods', function(){
 
   describe('#update', function(){
 
-    it('must have an update method and be a must override', function(){
+    it('must have an update method', function(){
       var action = new Action();
       expect(action.update).to.be.a('function');
 
       expect(function(){
         action.update();
-      }).to.throw('Must override action.update()');
+      }).to.not.throw();
 
     });
 
@@ -95,6 +95,70 @@ describe('Methods', function(){
       expect(list.length).to.be.equal(lenBefore+1);
       expect(list.at(2).cid).to.be.equal(thisAction.cid);
       expect(list.at(3).cid).to.be.equal(toInsert.cid);
+    });
+
+  });
+
+  describe('Blocking', function(){
+
+    describe('#block', function(){
+
+      it('must set itself as blocking', function(){
+        var act = new Action();
+        expect(act.block).to.be.a('function');
+
+        expect(act.isBlocking).to.be.false;
+        act.block();
+        expect(act.isBlocking).to.be.true;
+      });
+
+    });
+
+    describe('#unblock', function(){
+
+      it('must unset itself as blocking', function(){
+        var act = new Action();
+        expect(act.unblock).to.be.a('function');
+
+        act.block();
+        expect(act.isBlocking).to.be.true;
+        act.unblock();
+        expect(act.isBlocking).to.be.false;
+      });
+
+    });
+
+    describe('#blockOnce', function(){
+
+      it('must set itself as blocking for only one update run', function(){
+        var act = new Action();
+        expect(act.blockOnce).to.be.a('function');
+
+        var list = new ActionList([ act ]);
+
+        expect(act.isBlocking).to.be.false;
+        act.blockOnce();
+        expect(act.isBlocking).to.be.true;
+        list.update();
+        expect(act.isBlocking).to.be.false;
+      });
+
+    });
+
+  });
+
+  describe('#remove', function(){
+
+    it('must allow to remove itself', function(){
+      var act = new Action();
+      expect(act.remove).to.be.a('function');
+
+      var list = new ActionList([ new Action(), act, new Action() ]);
+      sinon.spy(list, 'remove');
+
+      act.remove();
+
+      expect(list.remove).to.have.been.calledWith(act);
     });
 
   });

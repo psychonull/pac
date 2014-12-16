@@ -29,12 +29,21 @@ module.exports = Emitter.extend({
   },
 
   init: function() { },
-
   onStart: function() { },
   onEnd: function() { },
+  update: function(dt) { },
 
-  update: function(dt) {
-    throw new Error('Must override action.update()');
+  block: function(){
+    this.isBlocking = true;
+  },
+
+  blockOnce: function(){
+    this.isBlocking = true;
+    this.blockOnce = true;
+  },
+
+  unblock: function(){
+    this.isBlocking = false;
   },
 
   insertAbove: function(action) {
@@ -107,6 +116,12 @@ module.exports = Emitter.extend({
     }
 
     return -1;
+  },
+
+  remove: function(){
+    if (this.actions){
+      this.actions.remove(this);
+    }
   }
 
 });

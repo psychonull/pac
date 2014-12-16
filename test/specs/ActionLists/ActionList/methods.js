@@ -136,4 +136,72 @@ describe('Methods', function(){
 
   });
 
+  describe('#remove', function(){
+
+    it('must remove an Actions and finalize it if is started', function(){
+
+      var RemoveType = Action.extend({
+        init: function(name){
+          this.isBlocking = true;
+          this.name = name;
+        },
+        onStart: function() {},
+        onEnd: function() {},
+        update: function() {}
+      });
+
+
+      var removeA = new RemoveType('A');
+      var removeB = new RemoveType('B');
+      var removeC = new RemoveType('C');
+
+      sinon.spy(removeA, 'onStart');
+      sinon.spy(removeB, 'onStart');
+      sinon.spy(removeC, 'onStart');
+
+      sinon.spy(removeA, 'onEnd');
+      sinon.spy(removeB, 'onEnd');
+      sinon.spy(removeC, 'onEnd');
+
+      var list = new ActionList([
+        removeA,
+        new TestAction2(),
+        removeB,
+        removeC,
+        new TestAction3()
+      ]);
+
+      expect(list.remove).to.be.a('function');
+      expect(list.length).to.be.equal(5);
+
+      list.update();
+
+      expect(removeA.started).to.be.true;
+      expect(removeB.started).to.be.false;
+      expect(removeC.started).to.be.false;
+
+      // Only called first one since is blocking
+      expect(removeA.onStart).to.have.been.calledOnce;
+      expect(removeB.onStart).to.not.have.been.called;
+      expect(removeC.onStart).to.not.have.been.called;
+
+      expect(list.has(RemoveType)).to.be.true;
+      expect(list.has(TestAction2)).to.be.true;
+      expect(list.has(TestAction3)).to.be.true;
+
+      list.remove(removeA);
+      expect(list.length).to.be.equal(4);
+
+      list.remove(removeB);
+      expect(list.length).to.be.equal(3);
+
+      // Only called first one since is the only one started
+      expect(removeA.onEnd).to.have.been.calledOnce;
+      expect(removeB.onEnd).to.not.have.been.called;
+      expect(removeC.onEnd).to.not.have.been.called;
+
+    });
+
+  });
+
 });
