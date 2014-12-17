@@ -43,6 +43,6 @@ describe('PAC', function(){
 */
   require('./ActionLists');
   //require('./Prefabs');
-  //require('./WrappedObject');
+  require('./WrappedObject');
 
 });

@@ -19,10 +19,11 @@ describe('Actions', function(){
   it('must expose pre-defined actions', function(){
     expect(pac.actions).to.be.an('object');
   });
-
+/*
   require('./Action');
   require('./ActionList');
   require('./WrappedAction');
+*/
   require('./ActionLanes');
   //require('./Predefined');
 
