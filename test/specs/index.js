@@ -2,7 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 describe('PAC', function(){
-
+/*
   describe('Pac initialization', function(){
     var pac = require('../../src');
 
@@ -40,8 +40,9 @@ describe('PAC', function(){
   require('./Lists');
   require('./Assets');
   require('./Inputs');
+*/
   require('./ActionLists');
-  require('./Prefabs');
-  require('./WrappedObject');
+  //require('./Prefabs');
+  //require('./WrappedObject');
 
 });

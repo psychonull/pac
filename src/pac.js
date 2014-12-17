@@ -42,6 +42,7 @@ module.exports = {
 
   WrappedObject: require('./WrappedObject'),
 
+  ActionLanes: require('./ActionLanes'),
   ActionList: require('./ActionList'),
   Action: require('./Action'),
   WrappedAction: require('./WrappedAction'),

@@ -249,9 +249,9 @@ describe('Full Update', function(){
 
         done();
 
-      }, 50);
+      }, 100);
 
-    }, 50);
+    }, 100);
 
   });
 
@@ -388,9 +388,9 @@ describe('Full Draw', function(){
 
           done();
 
-        }, 50);
-      }, 50);
-    }, 50);
+        }, 100);
+      }, 100);
+    }, 100);
 
   });
 

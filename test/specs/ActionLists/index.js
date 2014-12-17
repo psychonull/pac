@@ -2,7 +2,11 @@
 var pac = require('../../../src/pac');
 var expect = require('chai').expect;
 
-describe('Action Lists', function(){
+describe('Actions', function(){
+
+  it('must expose ActionLanes Class', function(){
+    expect(pac.ActionLanes).to.be.a('function');
+  });
 
   it('must expose ActionList Class', function(){
     expect(pac.ActionList).to.be.a('function');
@@ -19,6 +23,7 @@ describe('Action Lists', function(){
   require('./Action');
   require('./ActionList');
   require('./WrappedAction');
-  require('./Predefined');
+  require('./ActionLanes');
+  //require('./Predefined');
 
 });
