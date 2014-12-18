@@ -2,6 +2,7 @@
 var ActionLanes = require('../../../../src/ActionLanes');
 var ActionList = require('../../../../src/ActionList');
 var Action = require('../../../../src/Action');
+var WrappedAction = require('../../../../src/WrappedAction');
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -98,11 +99,50 @@ describe('Methods', function(){
   });
 
   describe('#find', function(){
-    it('must allow to find actions across lanes');
+
+    it('must allow to find actions across lanes', function(){
+      var lanes = ActionLanes.create([ 'lane1', 'lane2' ]);
+
+      var act1 = new ActLane1();
+      var act2 = new ActLane1();
+      var act3 = new ActLane2();
+      var act4 = new ActLane2();
+
+      lanes.add(act1).add(act2).add(act3).add(act4);
+      var found = lanes.find(Action);
+      expect(found.length).to.be.equal(4);
+      expect(found).to.be.instanceof(WrappedAction);
+
+      found = lanes.find(ActLane2);
+      expect(found.length).to.be.equal(2);
+    });
+
   });
 
   describe('#findOne', function(){
-    it('must allow to find one action across lanes');
+
+    it('must allow to find one action across lanes', function(){
+      var lanes = ActionLanes.create([ 'lane0', 'lane1', 'lane2' ]);
+
+      var act1 = new ActLane1();
+      var act2 = new ActLane1();
+      var act3 = new ActLane2();
+      var act4 = new ActLane2();
+
+      lanes.add(act1).add(act2).add(act3).add(act4);
+
+      var found = lanes.findOne(Action);
+      expect(found.length).to.be.equal(1);
+      expect(found.at(0)).to.be.equal(act1);
+
+      found = lanes.findOne(ActLane2);
+      expect(found.length).to.be.equal(1);
+      expect(found.at(0)).to.be.equal(act3);
+
+      found = lanes.findOne('YYY');
+      expect(found.length).to.be.equal(0);
+    });
+
   });
 
   describe('#update', function(){

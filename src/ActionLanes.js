@@ -1,6 +1,7 @@
 
 var MapList = require('./MapList');
 var Action = require('./Action');
+var WrappedAction = require('./WrappedAction');
 
 var ActionLanes = module.exports = MapList.extend({
 
@@ -101,6 +102,40 @@ var ActionLanes = module.exports = MapList.extend({
     // Add for Lanes
     ActionLanes.__super__.add.apply(this, arguments);
     return this;
+  },
+
+  find: function(search){
+    var wrapped;
+
+    this.each(function(lane){
+
+      var result = lane.find(search);
+
+      if (!wrapped){
+        wrapped = result;
+      }
+      else {
+        wrapped.add(result);
+      }
+    });
+
+    return wrapped;
+  },
+
+  findOne: function(search){
+    var found;
+
+    this.each(function(lane){
+
+      var result = lane.findOne(search);
+
+      if (result.length > 0){
+        found = result;
+        return false;
+      }
+    });
+
+    return found || new WrappedAction();
   },
 
 }, {
